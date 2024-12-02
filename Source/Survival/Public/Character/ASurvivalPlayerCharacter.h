@@ -11,7 +11,7 @@ class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase,public IHandleInputInterface
+class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase, public IHandleInputInterface
 {
 	GENERATED_BODY()
 
@@ -23,11 +23,16 @@ public:
 	virtual void HandleInputLook(const FInputActionValue& Value) override;
 	virtual void HandleInputShoot(const FInputActionValue& Value) override;
 	//~End InputComponent
-	
-protected:
 
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	virtual void BeginPlay() override;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	TObjectPtr<UCameraComponent> Camera;
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	TObjectPtr<USpringArmComponent> SpringArm;
+	//第三人称Mesh，为了解决隐藏第一人称头部导致的阴影消失问题，只做显示阴影使用！
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category ="Mesh")
+	TObjectPtr<USkeletalMeshComponent> ThirdPersonMesh;
 };
+
