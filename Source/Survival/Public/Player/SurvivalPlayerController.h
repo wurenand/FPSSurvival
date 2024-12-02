@@ -6,6 +6,8 @@
 #include "GameFramework/PlayerController.h"
 #include "SurvivalPlayerController.generated.h"
 
+struct FInputActionValue;
+class UInputAction;
 class UInputMappingContext;
 /**
  * 
@@ -18,6 +20,18 @@ public:
 	virtual void BeginPlay() override;
 protected:
 	virtual void SetupInputComponent() override;
+	
+	//~Begin Input
+	void ForwardInputMove(const FInputActionValue& Value);
+	void ForwardInputLook(const FInputActionValue& Value);
+	void ForwardInputShoot(const FInputActionValue& Value);
 	UPROPERTY(EditAnywhere,Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
+	UPROPERTY(EditAnywhere,Category = "Input")
+	TObjectPtr<UInputAction> ActionMove;
+	UPROPERTY(EditAnywhere,Category = "Input")
+	TObjectPtr<UInputAction> ActionLook;
+	UPROPERTY(EditAnywhere,Category = "Input")
+	TObjectPtr<UInputAction> ActionShoot;
+	//~End Input
 };

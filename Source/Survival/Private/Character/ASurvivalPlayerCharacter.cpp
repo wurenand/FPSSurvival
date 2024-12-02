@@ -3,30 +3,40 @@
 
 #include "Character/ASurvivalPlayerCharacter.h"
 
-
-// Sets default values
 AASurvivalPlayerCharacter::AASurvivalPlayerCharacter()
 {
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
 void AASurvivalPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-// Called every frame
 void AASurvivalPlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-// Called to bind functionality to input
 void AASurvivalPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
+
+
+void AASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
+{
+	
+}
+
+void AASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
+{
+}
+
+void AASurvivalPlayerCharacter::HandleInputShoot(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : TRY SHOOT"));
+}
+
 

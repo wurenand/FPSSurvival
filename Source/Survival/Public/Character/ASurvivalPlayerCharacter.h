@@ -4,25 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "SurvivalCharacterBase.h"
+#include "Interface/HandleInputInterface.h"
 #include "ASurvivalPlayerCharacter.generated.h"
 
 UCLASS()
-class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase
+class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase,public IHandleInputInterface
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	AASurvivalPlayerCharacter();
 
+	//~Begin InputComponent
+	virtual void HandleInputMove(const FInputActionValue& Value) override;
+	virtual void HandleInputLook(const FInputActionValue& Value) override;
+	virtual void HandleInputShoot(const FInputActionValue& Value) override;
+	//~End InputComponent
+	
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 };
