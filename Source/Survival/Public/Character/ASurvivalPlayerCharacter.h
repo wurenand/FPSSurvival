@@ -7,6 +7,9 @@
 #include "Interface/HandleInputInterface.h"
 #include "ASurvivalPlayerCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
+
 UCLASS()
 class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase,public IHandleInputInterface
 {
@@ -22,7 +25,9 @@ public:
 	//~End InputComponent
 	
 protected:
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	TObjectPtr<UCameraComponent> Camera;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Camera")
+	TObjectPtr<USpringArmComponent> SpringArm;
 };
