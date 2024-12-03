@@ -17,7 +17,8 @@ class SURVIVAL_API ASurvivalPlayerState : public APlayerState
 
 public:
 	ASurvivalPlayerState();
-
+	
+	UAbilityComponent* GetAbilityComponent() const;
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Ability")
 	TObjectPtr<UAbilityComponent> AbilityComponent;

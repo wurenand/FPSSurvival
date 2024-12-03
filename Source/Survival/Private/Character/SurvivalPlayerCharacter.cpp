@@ -4,8 +4,12 @@
 #include "Character/SurvivalPlayerCharacter.h"
 
 #include "InputActionValue.h"
+#include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "Player/SurvivalPlayerState.h"
 
 ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
@@ -26,6 +30,12 @@ ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 	ThirdPersonMesh->SetCastHiddenShadow(true);//打开隐藏阴影，即使HideInGame也能投射Shadow
 }
 
+void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ASurvivalPlayerCharacter,Weapon);
+}
+
 void ASurvivalPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -39,11 +49,42 @@ void ASurvivalPlayerCharacter::BeginPlay()
 void ASurvivalPlayerCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+	if (ASurvivalPlayerState* SurvivalPlayerState = (GetController()->GetPlayerState<ASurvivalPlayerState>()))
+	{
+		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
+		InitializeAbilityComponent();
+	}
 }
 
 void ASurvivalPlayerCharacter::OnRep_PlayerState()
 {
 	Super::OnRep_PlayerState();
+	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
+	{
+		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
+		InitializeAbilityComponent();
+	}
+}
+
+void ASurvivalPlayerCharacter::OnRep_Weapon()
+{
+	if (Weapon)
+	{
+		Weapon->EquipWeapon(this);
+	}
+}
+
+void ASurvivalPlayerCharacter::InitializeAbilityComponent()
+{
+	if (HasAuthority())
+	{
+		checkf(AbilityComponent->WeaponClass,TEXT("AbilityComponent::WeaponClass is NULL"))
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.Owner = GetController();
+		//只在Server端生成，注意要给Weapon设置为复制，这样Client端才会同步生成
+	 	Weapon = Cast<AWeaponBase>(GetWorld()->SpawnActor(AbilityComponent->WeaponClass,0,0,SpawnParameters));
+		OnRep_Weapon();
+	}
 }
 
 

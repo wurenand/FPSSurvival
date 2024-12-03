@@ -6,4 +6,3 @@ UAbilityComponent::UAbilityComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 
 }
-

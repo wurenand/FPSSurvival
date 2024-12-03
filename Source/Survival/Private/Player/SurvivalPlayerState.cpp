@@ -11,3 +11,8 @@ ASurvivalPlayerState::ASurvivalPlayerState()
 	AbilityComponent->SetIsReplicated(true);
 }
 
+UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
+{
+	return AbilityComponent;
+}
+
