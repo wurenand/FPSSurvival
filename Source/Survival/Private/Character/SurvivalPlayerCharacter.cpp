@@ -74,6 +74,11 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	}
 }
 
+void ASurvivalPlayerCharacter::ShootWeaponLoop()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Shooing!!!"));
+}
+
 void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 {
 	if (HasAuthority())
@@ -107,8 +112,41 @@ void ASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 		AddControllerPitchInput(-LookVector.Y);
 	}
 }
-
-void ASurvivalPlayerCharacter::HandleInputShoot(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputShootStarted(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : TRY SHOOT"));
+	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try Start SHOOT"));
+	if (bIsReloading) return;
+	SRV_ShootWeapon(true);
+}
+
+
+void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue& Value)
+{
+	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try End SHOOT"));
+	SRV_ShootWeapon(false);
+}
+
+
+void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting)
+{
+	if (bShouldShooting)
+	{
+		if (bIsShooting)
+		{
+			return;
+		}
+		float ShootSpeed = 1;
+		//手动调用一次解决 玩家只按一次使得定时器迅速被清除导致的不能射击问题
+		ShootWeaponLoop();
+		GetWorld()->GetTimerManager().SetTimer(ShootTimer,this,&ASurvivalPlayerCharacter::ShootWeaponLoop,ShootSpeed,true);
+		bIsShooting = true;
+	}
+	else
+	{
+		if (ShootTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ShootTimer);
+			bIsShooting = false;
+		}
+	}
 }

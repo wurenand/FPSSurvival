@@ -26,7 +26,8 @@ void ASurvivalPlayerController::SetupInputComponent()
 	{
 		EnhancedInputComponent->BindAction(ActionMove,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputMove);
 		EnhancedInputComponent->BindAction(ActionLook,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputLook);
-		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputShoot);
+		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Started,this,&ASurvivalPlayerController::ForwardInputShootStarted);
+		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Completed,this,&ASurvivalPlayerController::ForwardInputShootCompleted);
 	}
 }
 
@@ -46,10 +47,19 @@ void ASurvivalPlayerController::ForwardInputLook(const FInputActionValue& Value)
 	}
 }
 
-void ASurvivalPlayerController::ForwardInputShoot(const FInputActionValue& Value)
+void ASurvivalPlayerController::ForwardInputShootStarted(const FInputActionValue& Value)
 {
 	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
 	{
-		Interface->HandleInputShoot(Value);
+		Interface->HandleInputShootStarted(Value);
 	}
 }
+
+void ASurvivalPlayerController::ForwardInputShootCompleted(const FInputActionValue& Value)
+{
+	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
+	{
+		Interface->HandleInputShootCompleted(Value);
+	}
+}
+

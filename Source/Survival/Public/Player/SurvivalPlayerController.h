@@ -24,7 +24,8 @@ protected:
 	//~Begin Input
 	void ForwardInputMove(const FInputActionValue& Value);
 	void ForwardInputLook(const FInputActionValue& Value);
-	void ForwardInputShoot(const FInputActionValue& Value);
+	void ForwardInputShootStarted(const FInputActionValue& Value);
+	void ForwardInputShootCompleted(const FInputActionValue& Value);
 	UPROPERTY(EditAnywhere,Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 	UPROPERTY(EditAnywhere,Category = "Input")

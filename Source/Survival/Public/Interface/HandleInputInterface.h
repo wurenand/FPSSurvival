@@ -25,5 +25,7 @@ class SURVIVAL_API IHandleInputInterface
 public:
 	virtual void HandleInputMove(const FInputActionValue& Value) = 0;
 	virtual void HandleInputLook(const FInputActionValue& Value) = 0;
-	virtual void HandleInputShoot(const FInputActionValue& Value) = 0;
+	//这里使用Started和Completed来通过只发两次RPC 实现一直开火的功能 节省贷款
+	virtual void HandleInputShootStarted(const FInputActionValue& Value) = 0;
+	virtual void HandleInputShootCompleted(const FInputActionValue& Value) = 0;
 };
