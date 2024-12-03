@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/ASurvivalPlayerCharacter.h"
+#include "Character/SurvivalPlayerCharacter.h"
 
 #include "InputActionValue.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
-AASurvivalPlayerCharacter::AASurvivalPlayerCharacter()
+ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
@@ -26,7 +26,7 @@ AASurvivalPlayerCharacter::AASurvivalPlayerCharacter()
 	ThirdPersonMesh->SetCastHiddenShadow(true);//打开隐藏阴影，即使HideInGame也能投射Shadow
 }
 
-void AASurvivalPlayerCharacter::BeginPlay()
+void ASurvivalPlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	//隐藏Mesh头部，避免遮挡射线机
@@ -37,7 +37,7 @@ void AASurvivalPlayerCharacter::BeginPlay()
 }
 
 
-void AASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
 {
 	FVector2D MoveVector = Value.Get<FVector2D>();
 	if (Controller)
@@ -47,7 +47,7 @@ void AASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
 	}
 }
 
-void AASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 {
 	FVector2D LookVector = Value.Get<FVector2D>();
 	if (Controller)
@@ -57,7 +57,7 @@ void AASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 	}
 }
 
-void AASurvivalPlayerCharacter::HandleInputShoot(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputShoot(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : TRY SHOOT"));
 }

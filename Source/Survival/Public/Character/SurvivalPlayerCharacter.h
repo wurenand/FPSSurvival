@@ -5,18 +5,18 @@
 #include "CoreMinimal.h"
 #include "SurvivalCharacterBase.h"
 #include "Interface/HandleInputInterface.h"
-#include "ASurvivalPlayerCharacter.generated.h"
+#include "SurvivalPlayerCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
-class SURVIVAL_API AASurvivalPlayerCharacter : public ASurvivalCharacterBase, public IHandleInputInterface
+class SURVIVAL_API ASurvivalPlayerCharacter : public ASurvivalCharacterBase, public IHandleInputInterface
 {
 	GENERATED_BODY()
 
 public:
-	AASurvivalPlayerCharacter();
+	ASurvivalPlayerCharacter();
 
 	//~Begin InputComponent
 	virtual void HandleInputMove(const FInputActionValue& Value) override;
