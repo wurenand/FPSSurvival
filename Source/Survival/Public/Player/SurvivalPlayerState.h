@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerState.h"
 #include "SurvivalPlayerState.generated.h"
 
+class UAbilityComponent;
 /**
  * 
  */
@@ -13,4 +14,11 @@ UCLASS()
 class SURVIVAL_API ASurvivalPlayerState : public APlayerState
 {
 	GENERATED_BODY()
+
+public:
+	ASurvivalPlayerState();
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Ability")
+	TObjectPtr<UAbilityComponent> AbilityComponent;
 };

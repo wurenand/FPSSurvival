@@ -2,3 +2,12 @@
 
 
 #include "Survival/Public/Player/SurvivalPlayerState.h"
+
+#include "Components/AbilityComponent.h"
+
+ASurvivalPlayerState::ASurvivalPlayerState()
+{
+	AbilityComponent = CreateDefaultSubobject<UAbilityComponent	>(TEXT("AbilityComponent"));
+	AbilityComponent->SetIsReplicated(true);
+}
+

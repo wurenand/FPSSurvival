@@ -36,6 +36,16 @@ void ASurvivalPlayerCharacter::BeginPlay()
 	}
 }
 
+void ASurvivalPlayerCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}
+
+void ASurvivalPlayerCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+}
+
 
 void ASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
 {
