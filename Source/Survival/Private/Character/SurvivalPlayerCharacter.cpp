@@ -4,8 +4,10 @@
 #include "Character/SurvivalPlayerCharacter.h"
 
 #include "InputActionValue.h"
+#include "Actor/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
+#include "Chaos/PBDSuspensionConstraintData.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Library/DataHelperLibrary.h"
@@ -165,4 +167,16 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Shooing!!!"));
 	Mult_ShootWeaponEffect(GetActorLocation());
+	TSubclassOf<AProjectileBase> BulletClass = Weapon->WeaponInfo.BulletClass;
+	checkf(BulletClass, TEXT("WeaponTable BulletClass is NULL"));
+	FTransform BulletTransform = GetActorTransform();
+	BulletTransform.SetLocation(BulletTransform.GetLocation() + GetActorForwardVector() * 20);
+	//TODO:(后续，使用蒙太奇Event具体Spawn时机，Spawn的位置...)
+	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
+		BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
+		ESpawnActorScaleMethod::MultiplyWithRoot);
+	//TODO:这里可以配置数据
+	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
+	Projectile->SetInitialSpeed(500.f);
+	Projectile->FinishSpawning(BulletTransform);
 }

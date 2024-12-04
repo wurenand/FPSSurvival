@@ -4,6 +4,7 @@
 #include "GameFramework/Actor.h"
 #include "WeaponBase.generated.h"
 
+class AProjectileBase;
 class ASurvivalPlayerCharacter;
 
 /**
@@ -21,6 +22,8 @@ struct FWeaponInfo : public FTableRowBase
 	float BaseMagCount = 0;
 	UPROPERTY(EditAnywhere)
 	float BaseShootingSpeed = 1.0f;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AProjectileBase> BulletClass;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> ShootMontage = nullptr;
 	UPROPERTY(EditAnywhere)
