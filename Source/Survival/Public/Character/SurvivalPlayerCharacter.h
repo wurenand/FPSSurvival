@@ -62,6 +62,9 @@ protected:
 	FTimerHandle ShootTimer;
 	UFUNCTION(Server,Reliable,Category= "Shoot")
 	void SRV_ShootWeapon(bool bShouldShooting);
+	//多播，负责处理蒙太奇，音效，特效
+	UFUNCTION(NetMulticast,Reliable,Category = "Shoot")
+	void Mult_ShootWeaponEffect(FVector Location);
 	void ShootWeaponLoop();
 };
 

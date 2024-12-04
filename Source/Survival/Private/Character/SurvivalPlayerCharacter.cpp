@@ -74,11 +74,6 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	}
 }
 
-void ASurvivalPlayerCharacter::ShootWeaponLoop()
-{
-	UE_LOG(LogTemp,Warning,TEXT("Shooing!!!"));
-}
-
 void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 {
 	if (HasAuthority())
@@ -89,6 +84,7 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		//只在Server端生成，注意要给Weapon设置为复制，这样Client端才会同步生成
 	 	Weapon = Cast<AWeaponBase>(GetWorld()->SpawnActor(AbilityComponent->WeaponClass,0,0,SpawnParameters));
 		OnRep_Weapon();
+		//TODO:在AbilityComponent中设置点委托，用于绑定来更新例如HP，射速等的数据
 	}
 }
 
@@ -149,4 +145,15 @@ void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooti
 			bIsShooting = false;
 		}
 	}
+}
+
+void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Location)
+{
+	
+}
+
+void ASurvivalPlayerCharacter::ShootWeaponLoop()
+{
+	UE_LOG(LogTemp,Warning,TEXT("Shooing!!!"));
+	Mult_ShootWeaponEffect(GetActorLocation());
 }
