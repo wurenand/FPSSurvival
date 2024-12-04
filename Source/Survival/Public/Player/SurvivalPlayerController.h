@@ -20,6 +20,9 @@ public:
 	virtual void BeginPlay() override;
 protected:
 	virtual void SetupInputComponent() override;
+
+	UFUNCTION(Server,Unreliable)
+	void SRV_UpdateAimDirection();
 	
 	//~Begin Input
 	void ForwardInputMove(const FInputActionValue& Value);

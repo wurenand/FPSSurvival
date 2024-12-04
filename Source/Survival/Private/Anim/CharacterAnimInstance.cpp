@@ -5,6 +5,7 @@
 
 #include "KismetAnimationLibrary.h"
 #include "Character/SurvivalCharacterBase.h"
+#include "Character/SurvivalPlayerCharacter.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
@@ -20,6 +21,10 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		FVector Velocity = GetCharacterBase()->GetVelocity();
 		MovementSpeed = Velocity.Length();
 		MovementDirection = UKismetAnimationLibrary::CalculateDirection(Velocity,GetCharacterBase()->GetActorRotation());
+		if (ASurvivalPlayerCharacter* Player = Cast<ASurvivalPlayerCharacter>(GetCharacterBase()))
+		{
+			AimDirection = Player->AimDirection;
+		}
 	}
 }
 

@@ -36,6 +36,10 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	//在Client端调用，用于获得PS中的Component
 	virtual void OnRep_PlayerState() override;
+
+	//AnimInstance
+	UPROPERTY(Replicated)
+	float AimDirection;
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")

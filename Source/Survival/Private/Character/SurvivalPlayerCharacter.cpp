@@ -7,7 +7,6 @@
 #include "Actor/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
-#include "Chaos/PBDSuspensionConstraintData.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -19,7 +18,7 @@ ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm->bUsePawnControlRotation = true; //让摄像机与Pawn相同旋转
+	SpringArm->bUsePawnControlRotation = true; //让摄像机与PawnController相同旋转
 	SpringArm->TargetArmLength = 0;
 	SpringArm->SetupAttachment(GetMesh(), FName(TEXT("S_Camera")));
 
@@ -39,6 +38,7 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, Weapon);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
+	DOREPLIFETIME(ASurvivalPlayerCharacter, AimDirection);
 }
 
 void ASurvivalPlayerCharacter::BeginPlay()
