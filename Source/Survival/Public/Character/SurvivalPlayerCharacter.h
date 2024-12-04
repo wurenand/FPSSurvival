@@ -27,6 +27,7 @@ public:
 	virtual void HandleInputLook(const FInputActionValue& Value) override;
 	virtual void HandleInputShootStarted(const FInputActionValue& Value) override;
 	virtual void HandleInputShootCompleted(const FInputActionValue& Value) override;
+	virtual void HandleInputReload(const FInputActionValue& Value) override;
 	//~End InputComponent
 
 	virtual void BeginPlay() override;
@@ -60,11 +61,22 @@ protected:
 	bool bIsReloading = false;
 	bool bIsShooting = false;
 	FTimerHandle ShootTimer;
+	
+	UPROPERTY(ReplicatedUsing = OnRep_CurrentMagCount,BlueprintReadOnly,Category = "ShootData")
+	int32 CurrentMagCount = 0;
+	//用于更新UI
+	UFUNCTION()
+	void OnRep_CurrentMagCount();
 	UFUNCTION(Server,Reliable,Category= "Shoot")
 	void SRV_ShootWeapon(bool bShouldShooting);
 	//多播，负责处理蒙太奇，音效，特效
 	UFUNCTION(NetMulticast,Reliable,Category = "Shoot")
 	void Mult_ShootWeaponEffect(FVector Location);
 	void ShootWeaponLoop();
+
+	UFUNCTION(Server,Reliable,Category ="Reload")
+	void SRV_ReloadWeapon();
+	UFUNCTION(NetMulticast,Reliable,Category ="Reload")
+	void Mult_ReloadWeaponEffect();
 };
 

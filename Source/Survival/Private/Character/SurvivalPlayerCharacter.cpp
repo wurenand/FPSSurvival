@@ -10,6 +10,7 @@
 #include "Chaos/PBDSuspensionConstraintData.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SurvivalPlayerState.h"
@@ -37,6 +38,7 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, Weapon);
+	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
 }
 
 void ASurvivalPlayerCharacter::BeginPlay()
@@ -75,6 +77,7 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	{
 		Weapon->EquipWeapon(this);
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
+		CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
 	}
 }
 
@@ -131,6 +134,19 @@ void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue
 	SRV_ShootWeapon(false);
 }
 
+void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
+{
+	if (bIsReloading)
+	{
+		return;
+	}
+	if (bIsShooting)
+	{
+		SRV_ShootWeapon(false);
+	}
+	SRV_ReloadWeapon();
+}
+
 
 void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting)
 {
@@ -163,9 +179,20 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 	PlayAnimMontage(Weapon->WeaponInfo.ShootMontage, 1);
 }
 
+void ASurvivalPlayerCharacter::OnRep_CurrentMagCount()
+{
+	//TODO:Delegate
+}
+
 void ASurvivalPlayerCharacter::ShootWeaponLoop()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Shooing!!!"));
+	if (CurrentMagCount <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("NeedReload"));
+		return;
+	}
+	CurrentMagCount--;
+	UE_LOG(LogTemp, Warning, TEXT("Shooing!!! MagLeft %d"),CurrentMagCount);
 	Mult_ShootWeaponEffect(GetActorLocation());
 	TSubclassOf<AProjectileBase> BulletClass = Weapon->WeaponInfo.BulletClass;
 	checkf(BulletClass, TEXT("WeaponTable BulletClass is NULL"));
@@ -179,4 +206,25 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
 	Projectile->SetInitialSpeed(500.f);
 	Projectile->FinishSpawning(BulletTransform);
+}
+
+void ASurvivalPlayerCharacter::Mult_ReloadWeaponEffect_Implementation()
+{
+	//TODO:后续改成MontageEvent？
+	float TimeLeft = PlayAnimMontage(Weapon->WeaponInfo.ReloadMontage, 1);
+	if (HasAuthority())
+	{
+		UKismetSystemLibrary::Delay(this,TimeLeft,FLatentActionInfo());
+		bIsReloading = false;
+		CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
+	}
+}
+
+void ASurvivalPlayerCharacter::SRV_ReloadWeapon_Implementation()
+{
+	if (!bIsReloading)
+	{
+		bIsReloading = true;
+		Mult_ReloadWeaponEffect();
+	}
 }

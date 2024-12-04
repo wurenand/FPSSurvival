@@ -28,6 +28,7 @@ void ASurvivalPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(ActionLook,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputLook);
 		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Started,this,&ASurvivalPlayerController::ForwardInputShootStarted);
 		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Completed,this,&ASurvivalPlayerController::ForwardInputShootCompleted);
+		EnhancedInputComponent->BindAction(ActionReload,ETriggerEvent::Started,this,&ASurvivalPlayerController::ForwardInputReload);
 	}
 }
 
@@ -60,6 +61,14 @@ void ASurvivalPlayerController::ForwardInputShootCompleted(const FInputActionVal
 	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
 	{
 		Interface->HandleInputShootCompleted(Value);
+	}
+}
+
+void ASurvivalPlayerController::ForwardInputReload(const FInputActionValue& Value)
+{
+	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
+	{
+		Interface->HandleInputReload(Value);
 	}
 }
 

@@ -20,7 +20,7 @@ AProjectileBase::AProjectileBase()
 void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SetLifeSpan(LifeSpan);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this,&AProjectileBase::OnHit);
 	
 	//做一些速度初始化，为什么不在构造函数做？...

@@ -47,4 +47,6 @@ protected:
 	float InitialSpeed = 500.f;
 	UPROPERTY(BlueprintReadOnly, Category = "ProjectileInfo")
 	float Damage = 10.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "ProjectileInfo")
+	float LifeSpan = 5.f;
 };

@@ -28,4 +28,5 @@ public:
 	//这里使用Started和Completed来通过只发两次RPC 实现一直开火的功能 节省贷款
 	virtual void HandleInputShootStarted(const FInputActionValue& Value) = 0;
 	virtual void HandleInputShootCompleted(const FInputActionValue& Value) = 0;
+	virtual void HandleInputReload(const FInputActionValue& Value) = 0;
 };
