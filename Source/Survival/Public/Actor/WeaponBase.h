@@ -13,7 +13,6 @@ USTRUCT(BlueprintType, Blueprintable)
 struct FWeaponInfo : public FTableRowBase
 {
 	GENERATED_BODY()
-protected:
 	UPROPERTY(EditAnywhere)
 	FName WeaponName;
 	UPROPERTY(EditAnywhere)
@@ -43,6 +42,7 @@ public:
 	//用于从数据表中获得信息
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponInfo")
 	FName WeaponName;
+	FWeaponInfo WeaponInfo;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
