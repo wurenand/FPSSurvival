@@ -23,6 +23,8 @@ struct FWeaponInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere)
 	float BaseShootingSpeed = 1.0f;
 	UPROPERTY(EditAnywhere)
+	float BulletSpeed = 1000.f;
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectileBase> BulletClass;
 	UPROPERTY(EditAnywhere)
 	FName MagBoneName;
@@ -32,6 +34,8 @@ struct FWeaponInfo : public FTableRowBase
 	TObjectPtr<UAnimMontage> ReloadMontage = nullptr;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<USoundCue> ShootingSFX = nullptr;
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UParticleSystem> ShootingParticle = nullptr;
 };
 
 UCLASS()
@@ -44,6 +48,9 @@ public:
 
 	void EquipWeapon(ASurvivalPlayerCharacter* InCharacter);
 
+	//处理开火时的音效和特效
+	void HandleShootEffect();
+	
 	//用于从数据表中获得信息
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponInfo")
 	FName WeaponName;
@@ -52,6 +59,9 @@ public:
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; };
 
 protected:
+	void SpawnShootParticle();
+	void SpawnShootSound();
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")

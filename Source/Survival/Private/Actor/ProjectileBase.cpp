@@ -1,19 +1,26 @@
 #include "Actor/ProjectileBase.h"
+
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AProjectileBase::AProjectileBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	SetRootComponent(Root);
 	ProjectileMesh = CreateDefaultSubobject<UStaticMeshComponent>("ProjectileMesh");
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetRootComponent(ProjectileMesh);
+	ProjectileMesh->SetupAttachment(Root);
 	SphereCollision = CreateDefaultSubobject<USphereComponent>("SphereCollision");
 	SphereCollision->SetCollisionProfileName("OverlapAllDynamic");
 	SphereCollision->SetupAttachment(RootComponent);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->ProjectileGravityScale = 0.f;
+
+	TrailSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>("TrailSystemComponent");
+	TrailSystemComponent->SetupAttachment(RootComponent);
 	SetReplicates(true);
 }
 
@@ -34,9 +41,6 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	{
 		UE_LOG(LogTemp, Display, TEXT("OnHit Server"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("OnHit Client"));
-	}
+
 }
 

@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SurvivalPlayerState.h"
@@ -126,20 +127,19 @@ void ASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 
 void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue& Value)
 {
-	
 	if (bIsReloading)
 	{
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try Triggered SHOOT"));
-	SRV_ShootWeapon(true,AimTargetPoint);
+	SRV_ShootWeapon(true, AimTargetPoint);
 }
 
 
 void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try End SHOOT"));
-	SRV_ShootWeapon(false,AimTargetPoint);
+	SRV_ShootWeapon(false, AimTargetPoint);
 }
 
 void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
@@ -150,13 +150,13 @@ void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 	}
 	if (bIsShooting)
 	{
-		SRV_ShootWeapon(false,AimTargetPoint);
+		SRV_ShootWeapon(false, AimTargetPoint);
 	}
 	SRV_ReloadWeapon();
 }
 
 
-void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting,FVector LocalTargetPoint)
+void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting, FVector LocalTargetPoint)
 {
 	if (bShouldShooting)
 	{
@@ -167,11 +167,10 @@ void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooti
 		{
 			return;
 		}
-		float ShootSpeed = 1;
 		//手动调用一次解决 玩家只按一次使得定时器迅速被清除导致的不能射击问题
 		ShootWeaponLoop();
-		GetWorld()->GetTimerManager().SetTimer(ShootTimer, this, &ASurvivalPlayerCharacter::ShootWeaponLoop, ShootSpeed,
-		                                       true);
+		GetWorld()->GetTimerManager().SetTimer(ShootTimer, this, &ASurvivalPlayerCharacter::ShootWeaponLoop,
+		                                       Weapon->WeaponInfo.BaseShootingSpeed, true);
 		bIsShooting = true;
 	}
 	else
@@ -192,6 +191,7 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 		return;
 	}
 	PlayAnimMontage(Weapon->WeaponInfo.ShootMontage, 1);
+	Weapon->HandleShootEffect();
 }
 
 void ASurvivalPlayerCharacter::OnRep_CurrentMagCount()
@@ -224,7 +224,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 		ESpawnActorScaleMethod::MultiplyWithRoot);
 	//TODO:这里可以配置数据
 	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
-	Projectile->SetInitialSpeed(1000.f);
+	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
 	Projectile->FinishSpawning(BulletTransform);
 }
 
@@ -232,12 +232,13 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 void ASurvivalPlayerCharacter::Mult_ReloadWeaponEffect_Implementation()
 {
 	//TODO:后续改成MontageEvent？
-	UPlayMontageCallbackProxy* MontageProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
+	ReloadMontageProxy = nullptr; //让GC回收之前的对象
+	ReloadMontageProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
 		GetMesh(), Weapon->WeaponInfo.ReloadMontage, 1);
-	if (MontageProxy)
+	if (ReloadMontageProxy)
 	{
-		MontageProxy->OnNotifyBegin.AddDynamic(this, &ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin);
-		MontageProxy->OnCompleted.AddDynamic(this, &ASurvivalPlayerCharacter::OnReceiveMontageCompleted);
+		ReloadMontageProxy->OnNotifyBegin.AddDynamic(this, &ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin);
+		ReloadMontageProxy->OnCompleted.AddDynamic(this, &ASurvivalPlayerCharacter::OnReceiveMontageCompleted);
 	}
 }
 

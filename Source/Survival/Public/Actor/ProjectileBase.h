@@ -31,12 +31,19 @@ public:
 	virtual void BeginPlay() override;
 
 protected:
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<USceneComponent> Root;
 	UPROPERTY(EditAnywhere, Category = "Collsion")
 	TObjectPtr<USphereComponent> SphereCollision;
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	TObjectPtr<UStaticMeshComponent> ProjectileMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Movement")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	//~Begin FX
+	UPROPERTY(EditAnywhere,Category = "Effect")
+	TObjectPtr<UParticleSystemComponent> TrailSystemComponent;//在编辑器中配置.
+	//~End
 
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

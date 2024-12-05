@@ -7,6 +7,7 @@
 #include "Interface/HandleInputInterface.h"
 #include "SurvivalPlayerCharacter.generated.h"
 
+class UPlayMontageCallbackProxy;
 class UAbilityComponent;
 class USpringArmComponent;
 class UCameraComponent;
@@ -83,6 +84,9 @@ protected:
 	void SRV_ReloadWeapon();
 	UFUNCTION(NetMulticast,Reliable,Category ="Reload")
 	void Mult_ReloadWeaponEffect();
+	//加上UProperty用于GC
+	UPROPERTY()
+	TObjectPtr<UPlayMontageCallbackProxy> ReloadMontageProxy;
 	//~End
 
 	//~Begin Aim
