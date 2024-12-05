@@ -25,12 +25,13 @@ public:
 	//~Begin InputComponent
 	virtual void HandleInputMove(const FInputActionValue& Value) override;
 	virtual void HandleInputLook(const FInputActionValue& Value) override;
-	virtual void HandleInputShootStarted(const FInputActionValue& Value) override;
+	virtual void HandleInputShootTriggered(const FInputActionValue& Value) override;
 	virtual void HandleInputShootCompleted(const FInputActionValue& Value) override;
 	virtual void HandleInputReload(const FInputActionValue& Value) override;
 	//~End InputComponent
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 	//TODO:
 	//在Server端调用，用于获得PS中的Component
 	virtual void PossessedBy(AController* NewController) override;
@@ -40,7 +41,7 @@ public:
 	//AnimInstance
 	UPROPERTY(Replicated)
 	float AimDirection;
-	
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	TObjectPtr<UCameraComponent> Camera;
@@ -60,7 +61,7 @@ protected:
 	TObjectPtr<AWeaponBase> Weapon;
 	UFUNCTION()
 	void OnRep_Weapon();
-	//Shoot相关逻辑
+	//~Begin Shoot相关逻辑
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="Shoot")
 	bool bIsReloading = false;
 	bool bIsShooting = false;
@@ -72,7 +73,7 @@ protected:
 	UFUNCTION()
 	void OnRep_CurrentMagCount();
 	UFUNCTION(Server,Reliable,Category= "Shoot")
-	void SRV_ShootWeapon(bool bShouldShooting);
+	void SRV_ShootWeapon(bool bShouldShooting,FVector LocalAimTargetPoint);
 	//多播，负责处理蒙太奇，音效，特效
 	UFUNCTION(NetMulticast,Reliable,Category = "Shoot")
 	void Mult_ShootWeaponEffect(FVector Location);
@@ -82,11 +83,25 @@ protected:
 	void SRV_ReloadWeapon();
 	UFUNCTION(NetMulticast,Reliable,Category ="Reload")
 	void Mult_ReloadWeaponEffect();
+	//~End
+
+	//~Begin Aim
+	//Tick检测是否瞄准了目标，用于Broadcast给UI变红
+	void HitTraceTick(float DeltaSeconds);
+	FHitResult HitTraceResult;
+	float HitTickFrequency = 0.1f;
+	float HitTickCount = 0.f;
+	//记录玩家瞄准的位置
+	FVector AimTargetPoint;
+	UPROPERTY(EditAnywhere)
+	float AimLength = 3000.f;
+	//~End
 	
 	//~Begin Montage Callback
 	UFUNCTION()
 	void OnReceiveMontageNotifyBegin(FName NotifyName);
 	UFUNCTION()
 	void OnReceiveMontageCompleted(FName NotifyName);
+	//~End
 };
 

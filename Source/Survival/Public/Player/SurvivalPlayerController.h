@@ -27,7 +27,7 @@ protected:
 	//~Begin Input
 	void ForwardInputMove(const FInputActionValue& Value);
 	void ForwardInputLook(const FInputActionValue& Value);
-	void ForwardInputShootStarted(const FInputActionValue& Value);
+	void ForwardInputShootTriggered(const FInputActionValue& Value);
 	void ForwardInputShootCompleted(const FInputActionValue& Value);
 	void ForwardInputReload(const FInputActionValue& Value);
 	UPROPERTY(EditAnywhere,Category = "Input")

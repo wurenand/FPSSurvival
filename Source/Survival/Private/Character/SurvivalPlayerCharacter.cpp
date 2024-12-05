@@ -10,7 +10,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SurvivalPlayerState.h"
@@ -40,6 +39,7 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 	DOREPLIFETIME(ASurvivalPlayerCharacter, Weapon);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, AimDirection);
+	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsReloading);
 }
 
 void ASurvivalPlayerCharacter::BeginPlay()
@@ -50,6 +50,12 @@ void ASurvivalPlayerCharacter::BeginPlay()
 	{
 		GetMesh()->HideBoneByName(FName(TEXT("head")), PBO_None);
 	}
+}
+
+void ASurvivalPlayerCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	HitTraceTick(DeltaSeconds);
 }
 
 void ASurvivalPlayerCharacter::PossessedBy(AController* NewController)
@@ -118,21 +124,22 @@ void ASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 	}
 }
 
-void ASurvivalPlayerCharacter::HandleInputShootStarted(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try Start SHOOT"));
-	if (bIsReloading || bIsShooting)
+	
+	if (bIsReloading)
 	{
 		return;
 	}
-	SRV_ShootWeapon(true);
+	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try Triggered SHOOT"));
+	SRV_ShootWeapon(true,AimTargetPoint);
 }
 
 
 void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try End SHOOT"));
-	SRV_ShootWeapon(false);
+	SRV_ShootWeapon(false,AimTargetPoint);
 }
 
 void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
@@ -143,16 +150,19 @@ void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 	}
 	if (bIsShooting)
 	{
-		SRV_ShootWeapon(false);
+		SRV_ShootWeapon(false,AimTargetPoint);
 	}
 	SRV_ReloadWeapon();
 }
 
 
-void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting)
+void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting,FVector LocalTargetPoint)
 {
 	if (bShouldShooting)
 	{
+		//接受从Client传递来的正确的瞄准位置
+		AimTargetPoint = LocalTargetPoint;
+		//如果启动了Timer就不要再次启动了，但是AimTargetPoint需要更新
 		if (bIsShooting || bIsReloading)
 		{
 			return;
@@ -203,15 +213,18 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 
 	TSubclassOf<AProjectileBase> BulletClass = Weapon->WeaponInfo.BulletClass;
 	checkf(BulletClass, TEXT("WeaponTable BulletClass is NULL"));
-	FTransform BulletTransform = GetActorTransform();
-	BulletTransform.SetLocation(BulletTransform.GetLocation() + GetActorForwardVector() * 20);
+	FTransform BulletTransform;
+	FVector SpawnLocation = Weapon->GetWeaponMesh()->GetSocketLocation(TEXT("S_Muzzle"));
+	FRotator SpawnRotator = (AimTargetPoint - SpawnLocation).Rotation();
+	BulletTransform.SetLocation(SpawnLocation);
+	BulletTransform.SetRotation(SpawnRotator.Quaternion());
 	//TODO:(后续，使用蒙太奇Event具体Spawn时机，Spawn的位置...)
 	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
 		BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
 		ESpawnActorScaleMethod::MultiplyWithRoot);
 	//TODO:这里可以配置数据
 	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
-	Projectile->SetInitialSpeed(500.f);
+	Projectile->SetInitialSpeed(1000.f);
 	Projectile->FinishSpawning(BulletTransform);
 }
 
@@ -237,6 +250,29 @@ void ASurvivalPlayerCharacter::SRV_ReloadWeapon_Implementation()
 	}
 }
 
+
+void ASurvivalPlayerCharacter::HitTraceTick(float DeltaSeconds)
+{
+	HitTickCount += DeltaSeconds;
+	FVector ViewLocation;
+	FRotator ViewRotation;
+	//只在本地获取AimDirection
+	if (!GetController() || !IsLocallyControlled())
+	{
+		return;
+	}
+	GetController()->GetPlayerViewPoint(ViewLocation, ViewRotation);
+	AimTargetPoint = ViewLocation + ViewRotation.Vector() * AimLength;
+	if (HitTickCount >= HitTickFrequency)
+	{
+		HitTickCount = 0;
+
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+		GetWorld()->LineTraceSingleByChannel(HitTraceResult, ViewLocation, AimTargetPoint, ECC_Pawn, CollisionParams);
+		//TODO:这里可以判断是否是敌军
+	}
+}
 
 void ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin(FName NotifyName)
 {
