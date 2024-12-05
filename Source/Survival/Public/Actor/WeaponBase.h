@@ -25,6 +25,8 @@ struct FWeaponInfo : public FTableRowBase
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectileBase> BulletClass;
 	UPROPERTY(EditAnywhere)
+	FName MagBoneName;
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> ShootMontage = nullptr;
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UAnimMontage> ReloadMontage = nullptr;
@@ -46,6 +48,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "WeaponInfo")
 	FName WeaponName;
 	FWeaponInfo WeaponInfo;
+
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMesh; };
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")

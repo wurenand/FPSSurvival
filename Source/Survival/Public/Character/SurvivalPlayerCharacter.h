@@ -82,5 +82,11 @@ protected:
 	void SRV_ReloadWeapon();
 	UFUNCTION(NetMulticast,Reliable,Category ="Reload")
 	void Mult_ReloadWeaponEffect();
+	
+	//~Begin Montage Callback
+	UFUNCTION()
+	void OnReceiveMontageNotifyBegin(FName NotifyName);
+	UFUNCTION()
+	void OnReceiveMontageCompleted(FName NotifyName);
 };
 
