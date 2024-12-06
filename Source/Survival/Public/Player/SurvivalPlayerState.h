@@ -17,10 +17,11 @@ class SURVIVAL_API ASurvivalPlayerState : public APlayerState
 public:
 	ASurvivalPlayerState();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-
 	
 	UAbilityComponent* GetAbilityComponent() const;
 	FORCEINLINE ETeam GetTeam() const { return Team; }
+	UFUNCTION(Server, Reliable,BlueprintCallable)
+	void SRV_SetTeam(ETeam NewTeam);
 
 protected:
 	UPROPERTY(VisibleAnywhere,Replicated ,Category = "Ability")

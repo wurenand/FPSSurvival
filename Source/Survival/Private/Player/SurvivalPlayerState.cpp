@@ -24,3 +24,9 @@ UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
 	return AbilityComponent;
 }
 
+void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)
+{
+	Team = NewTeam;
+	//TODO:通知GameState队伍人数变化了
+}
+
