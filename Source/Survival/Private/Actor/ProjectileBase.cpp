@@ -4,6 +4,8 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Interface/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AProjectileBase::AProjectileBase()
@@ -36,10 +38,17 @@ void AProjectileBase::BeginPlay()
 	ProjectileMovement->Velocity = GetActorRotation().Vector() * InitialSpeed;
 }
 
+void AProjectileBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AProjectileBase, InitialSpeed);
+}
+
 void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                             const FHitResult& SweepResult)
 {
+	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticle,ProjectileMesh->GetComponentLocation() );
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Display, TEXT("OnHit Server"));
@@ -47,5 +56,6 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		{
 			CombatInterface->CombatTakeDamage(Cast<ASurvivalCharacterBase>(GetInstigator()), Damage);
 		}
+		Destroy();
 	}
 }
