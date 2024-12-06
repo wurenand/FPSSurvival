@@ -10,7 +10,6 @@
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SurvivalPlayerState.h"
@@ -75,6 +74,7 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
 	{
 		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
+		Team = SurvivalPlayerState->GetTeam();
 		InitializeAbilityComponent();
 	}
 }
@@ -153,6 +153,18 @@ void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 		SRV_ShootWeapon(false, AimTargetPoint);
 	}
 	SRV_ReloadWeapon();
+}
+
+ETeam ASurvivalPlayerCharacter::GetCharacterTeam() 
+{
+	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
+	{
+		if (Team != SurvivalPlayerState->GetTeam())
+		{
+			Team = SurvivalPlayerState->GetTeam();
+		}
+	}
+	return Team;
 }
 
 

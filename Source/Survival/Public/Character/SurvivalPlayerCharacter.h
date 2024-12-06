@@ -31,6 +31,11 @@ public:
 	virtual void HandleInputReload(const FInputActionValue& Value) override;
 	//~End InputComponent
 
+
+	//~Begin ICombatInterface
+	virtual ETeam GetCharacterTeam() override;
+	//~End ICombatInterface
+	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	//TODO:

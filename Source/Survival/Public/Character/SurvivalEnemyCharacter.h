@@ -13,4 +13,5 @@ class SURVIVAL_API ASurvivalEnemyCharacter : public ASurvivalCharacterBase
 public:
 	ASurvivalEnemyCharacter();
 
+	virtual ETeam GetCharacterTeam() override;
 };

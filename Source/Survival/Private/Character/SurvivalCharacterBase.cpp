@@ -22,6 +22,11 @@ void ASurvivalCharacterBase::InitializeAttributes()
 	
 }
 
+ETeam ASurvivalCharacterBase::GetCharacterTeam()
+{
+	return Team;
+}
+
 void ASurvivalCharacterBase::OnRep_MaxHealth()
 {
 	//TODO:更新UI

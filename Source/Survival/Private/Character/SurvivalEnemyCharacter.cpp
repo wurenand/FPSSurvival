@@ -6,3 +6,8 @@ ASurvivalEnemyCharacter::ASurvivalEnemyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
+ETeam ASurvivalEnemyCharacter::GetCharacterTeam()
+{
+	return Team;
+}
+
