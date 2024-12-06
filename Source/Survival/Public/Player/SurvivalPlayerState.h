@@ -27,5 +27,5 @@ protected:
 	TObjectPtr<UAbilityComponent> AbilityComponent;
 
 	UPROPERTY(VisibleAnywhere, Replicated, Category = "Team")
-	ETeam Team = ETeam::ETeam_Red;
+	ETeam Team = ETeam::ETeam_NoTeam;
 };

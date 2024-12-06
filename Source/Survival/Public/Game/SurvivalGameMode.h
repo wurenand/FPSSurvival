@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
+#include "TotalGameModeBase.h"
 #include "SurvivalGameMode.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SURVIVAL_API ASurvivalGameMode : public AGameModeBase
+class SURVIVAL_API ASurvivalGameMode : public ATotalGameModeBase
 {
 	GENERATED_BODY()
 };
