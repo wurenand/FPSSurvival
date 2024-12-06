@@ -40,6 +40,7 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, AimDirection);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsReloading);
+	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsShooting);
 }
 
 void ASurvivalPlayerCharacter::BeginPlay()

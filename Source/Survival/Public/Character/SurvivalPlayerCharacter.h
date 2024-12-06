@@ -71,6 +71,7 @@ protected:
 	//~Begin Shoot相关逻辑
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="Shoot")
 	bool bIsReloading = false;
+	UPROPERTY(Replicated,BlueprintReadOnly,Category = "Shoot")
 	bool bIsShooting = false;
 	FTimerHandle ShootTimer;
 	
