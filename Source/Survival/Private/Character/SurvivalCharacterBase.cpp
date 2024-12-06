@@ -27,6 +27,11 @@ ETeam ASurvivalCharacterBase::GetCharacterTeam()
 	return Team;
 }
 
+void ASurvivalCharacterBase::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
+{
+	
+}
+
 void ASurvivalCharacterBase::OnRep_MaxHealth()
 {
 	//TODO:更新UI

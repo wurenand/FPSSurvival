@@ -34,6 +34,7 @@ public:
 
 	//~Begin ICombatInterface
 	virtual ETeam GetCharacterTeam() override;
+	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
 	//~End ICombatInterface
 	
 	virtual void BeginPlay() override;

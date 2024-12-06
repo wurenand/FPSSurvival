@@ -23,13 +23,14 @@ public:
 	//~Begin ICombatInterface
 	//交给子类来实现
 	virtual ETeam GetCharacterTeam() override;
+	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
 	//~End ICombatInterface
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_MaxHealth, Category="Health")
-	float MaxHealth;
+	float MaxHealth = 100.f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_Health, Category="Health")
-	float Health;
+	float Health = 100.f;
 	UFUNCTION()
 	void OnRep_MaxHealth();
 	UFUNCTION()

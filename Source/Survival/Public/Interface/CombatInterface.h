@@ -5,6 +5,7 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class ASurvivalCharacterBase;
 enum class ETeam : uint8;
 
 UINTERFACE()
@@ -23,4 +24,6 @@ class SURVIVAL_API ICombatInterface
 public:
 	//分别由Player和Enemy自己实现
 	virtual ETeam GetCharacterTeam() = 0;
+	//承受伤害 由造成伤害的人调用
+	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator,float DamageValue) = 0;
 };

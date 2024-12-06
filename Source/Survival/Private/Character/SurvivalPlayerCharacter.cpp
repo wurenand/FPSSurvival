@@ -155,7 +155,7 @@ void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 	SRV_ReloadWeapon();
 }
 
-ETeam ASurvivalPlayerCharacter::GetCharacterTeam() 
+ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 {
 	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
 	{
@@ -165,6 +165,16 @@ ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 		}
 	}
 	return Team;
+}
+
+void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
+{
+	Super::CombatTakeDamage(DamageInstigator, DamageValue);
+	Health -= DamageValue;
+	if (Health <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Die!!"));
+	}
 }
 
 
@@ -237,6 +247,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	//TODO:这里可以配置数据
 	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
 	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
+	Projectile->SetInstigator(this);
 	Projectile->FinishSpawning(BulletTransform);
 }
 

@@ -1,7 +1,9 @@
 #include "Actor/ProjectileBase.h"
 
+#include "Character/SurvivalCharacterBase.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Interface/CombatInterface.h"
 #include "Particles/ParticleSystemComponent.h"
 
 AProjectileBase::AProjectileBase()
@@ -28,19 +30,22 @@ void AProjectileBase::BeginPlay()
 {
 	Super::BeginPlay();
 	SetLifeSpan(LifeSpan);
-	SphereCollision->OnComponentBeginOverlap.AddDynamic(this,&AProjectileBase::OnHit);
-	
+	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AProjectileBase::OnHit);
+
 	//做一些速度初始化，为什么不在构造函数做？...
 	ProjectileMovement->Velocity = GetActorRotation().Vector() * InitialSpeed;
 }
 
 void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                            const FHitResult& SweepResult)
 {
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Display, TEXT("OnHit Server"));
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor))
+		{
+			CombatInterface->CombatTakeDamage(Cast<ASurvivalCharacterBase>(GetInstigator()), Damage);
+		}
 	}
-
 }
-
