@@ -6,6 +6,7 @@
 #include "GameFramework/HUD.h"
 #include "TotalHUD.generated.h"
 
+class ASurvivalPlayerCharacter;
 class UTotalWidgetController;
 struct FBaseWidgetControllerParams;
 class USurvivalUserWidget;
@@ -22,8 +23,13 @@ public:
 	//传入WidgetController可能需要的参数
 	virtual void InitializeOverlay(const FBaseWidgetControllerParams& Params);
 
+	//~Begin WidgetControllerParam
 	//在InitializeOverlay中调用，由子类重写，给WidgetController设置所需的Param
 	virtual void SetWidgetControllerParams(const FBaseWidgetControllerParams& Params);
+	//提供给外部调用，当Character发生变化时，会通知绑定的Overlay (Character生命周期管理)
+	void UpdateParamCharacter(ASurvivalPlayerCharacter* PlayerCharacter);
+	//~End WidgetControllerParam
+	
 	UPROPERTY()
 	TObjectPtr<USurvivalUserWidget> OverlayWidget;
 	UPROPERTY()

@@ -21,13 +21,16 @@ void ASurvivalPlayerController::BeginPlay()
 		EISubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 	//初始化UI
-	if (ATotalHUD* TotalHUD = Cast<ATotalHUD>(GetHUD()))
+	if (IsLocalController())
 	{
-		FBaseWidgetControllerParams Params;
-		Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
-		Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
-		Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
-		TotalHUD->InitializeOverlay(Params);
+		if (ATotalHUD* TotalHUD = Cast<ATotalHUD>(GetHUD()))
+		{
+			FBaseWidgetControllerParams Params;
+			Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
+			Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
+			Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
+			TotalHUD->InitializeOverlay(Params);
+		}
 	}
 }
 

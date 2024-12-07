@@ -13,6 +13,8 @@ class USpringArmComponent;
 class UCameraComponent;
 class AWeaponBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterValueChangedSignature,float,NewValue);
+
 UCLASS()
 class SURVIVAL_API ASurvivalPlayerCharacter : public ASurvivalCharacterBase, public IHandleInputInterface
 {
@@ -45,6 +47,11 @@ public:
 	//在Client端调用，用于获得PS中的Component
 	virtual void OnRep_PlayerState() override;
 
+	//~Begin Delegate
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterValueChangedSignature OnMagCountChanged;
+	//~End Delegate
+
 	//AnimInstance
 	UPROPERTY(Replicated)
 	float AimDirection;
@@ -68,6 +75,7 @@ protected:
 	TObjectPtr<AWeaponBase> Weapon;
 	UFUNCTION()
 	void OnRep_Weapon();
+	
 	//~Begin Shoot相关逻辑
 	UPROPERTY(Replicated,BlueprintReadOnly,Category="Shoot")
 	bool bIsReloading = false;
@@ -80,6 +88,7 @@ protected:
 	//用于更新UI
 	UFUNCTION()
 	void OnRep_CurrentMagCount();
+	
 	UFUNCTION(Server,Reliable,Category= "Shoot")
 	void SRV_ShootWeapon(bool bShouldShooting,FVector LocalAimTargetPoint);
 	//多播，负责处理蒙太奇，音效，特效
@@ -94,7 +103,7 @@ protected:
 	//加上UProperty用于GC
 	UPROPERTY()
 	TObjectPtr<UPlayMontageCallbackProxy> ReloadMontageProxy;
-	//~End
+	//~End Shoot
 
 	//~Begin Aim
 	//Tick检测是否瞄准了目标，用于Broadcast给UI变红

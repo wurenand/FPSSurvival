@@ -11,6 +11,8 @@ class ASurvivalCharacterBase;
 class ASurvivalPlayerState;
 class ATotalGameStateBase;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterUpdated, ASurvivalPlayerCharacter*, character);
+
 USTRUCT(BlueprintType)
 struct FBaseWidgetControllerParams
 {
@@ -24,11 +26,13 @@ public:
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class SURVIVAL_API UTotalWidgetController : public UObject
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterUpdated OnCharacterUpdatedDelegate;
 	UPROPERTY(BlueprintReadOnly, Category = "Info")
 	TObjectPtr<ASurvivalPlayerCharacter> Character;
 };

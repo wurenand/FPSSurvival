@@ -86,9 +86,15 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 {
 	if (Weapon)
 	{
+		//AttachWeapon到Character 并 获取配表中的信息
 		Weapon->EquipWeapon(this);
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
-		CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
+		//Server端负责同步子弹数量
+		if (HasAuthority())
+		{
+			CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
+			OnRep_CurrentMagCount();
+		}
 	}
 }
 
@@ -105,7 +111,16 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		OnRep_Weapon();
 		//TODO:在AbilityComponent中设置点委托，用于绑定来更新例如HP，射速等的数据
 	}
-	//TODO:更新UI中的Character
+	
+	//如果有HUD，则更新其WidgetController中的Character参数
+	if (IsLocallyControlled())
+	{
+		if (ASurvivalPlayerController* PlayerController = Cast<ASurvivalPlayerController>(GetController()))
+		{
+			ATotalHUD* TotalHUD = Cast<ATotalHUD>(PlayerController->GetHUD());
+			TotalHUD->UpdateParamCharacter(this);
+		}
+	}
 }
 
 
@@ -222,7 +237,7 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 
 void ASurvivalPlayerCharacter::OnRep_CurrentMagCount()
 {
-	//TODO:Delegate
+	OnMagCountChanged.Broadcast(CurrentMagCount);
 }
 
 void ASurvivalPlayerCharacter::ShootWeaponLoop()
@@ -233,6 +248,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 		return;
 	}
 	CurrentMagCount--;
+	OnRep_CurrentMagCount();
 	UE_LOG(LogTemp, Warning, TEXT("Shooing!!! MagLeft %d"), CurrentMagCount);
 	//Effect
 	Mult_ShootWeaponEffect(GetActorLocation());
@@ -319,6 +335,7 @@ void ASurvivalPlayerCharacter::OnReceiveMontageCompleted(FName NotifyName)
 	if (bIsReloading && HasAuthority())
 	{
 		CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
+		OnRep_CurrentMagCount();
 		bIsReloading = false;
 	}
 }

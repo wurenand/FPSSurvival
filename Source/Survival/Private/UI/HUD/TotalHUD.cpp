@@ -28,5 +28,15 @@ void ATotalHUD::InitializeOverlay(const FBaseWidgetControllerParams& Params)
 void ATotalHUD::SetWidgetControllerParams(const FBaseWidgetControllerParams& Params)
 {
 	//子类负责设置自己需要的信息来源
-	WidgetController->Character = Cast<ASurvivalPlayerCharacter>(Params.Character);
+	UpdateParamCharacter(Cast<ASurvivalPlayerCharacter>(Params.Character));
+}
+
+void ATotalHUD::UpdateParamCharacter(ASurvivalPlayerCharacter* PlayerCharacter)
+{
+	if (!IsValid(WidgetController))
+	{
+		return;
+	}
+	WidgetController->Character = PlayerCharacter;
+	WidgetController->OnCharacterUpdatedDelegate.Broadcast(WidgetController->Character);
 }
