@@ -12,7 +12,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/SurvivalPlayerController.h"
 #include "Player/SurvivalPlayerState.h"
+#include "UI/HUD/TotalHUD.h"
 
 ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
@@ -103,6 +105,7 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		OnRep_Weapon();
 		//TODO:在AbilityComponent中设置点委托，用于绑定来更新例如HP，射速等的数据
 	}
+	//TODO:更新UI中的Character
 }
 
 

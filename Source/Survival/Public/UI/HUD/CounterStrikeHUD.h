@@ -3,14 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "SurvivalUserWidgetBase.generated.h"
+#include "UI/HUD/TotalHUD.h"
+#include "CounterStrikeHUD.generated.h"
 
+class ASurvivalPlayerCharacter;
 /**
  * 
  */
 UCLASS()
-class SURVIVAL_API USurvivalUserWidgetBase : public UUserWidget
+class SURVIVAL_API ACounterStrikeHUD : public ATotalHUD
 {
 	GENERATED_BODY()
+
 };

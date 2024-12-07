@@ -5,16 +5,29 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Player/SurvivalPlayerState.h"
+#include "Game/SurvivalGameState.h"
 #include "Interface/HandleInputInterface.h"
+#include "UI/HUD/TotalHUD.h"
+#include "UI/WidgetController/TotalWidgetController.h"
 
 void ASurvivalPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	checkf(DefaultMappingContext,TEXT("DefaultMappingContext is NULL"));
+	checkf(DefaultMappingContext, TEXT("DefaultMappingContext is NULL"));
 	if (UEnhancedInputLocalPlayerSubsystem* EISubsystem = ULocalPlayer::GetSubsystem<
 		UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		EISubsystem->AddMappingContext(DefaultMappingContext, 0);
+	}
+	//初始化UI
+	if (ATotalHUD* TotalHUD = Cast<ATotalHUD>(GetHUD()))
+	{
+		FBaseWidgetControllerParams Params;
+		Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
+		Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
+		Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
+		TotalHUD->InitializeOverlay(Params);
 	}
 }
 
@@ -24,11 +37,16 @@ void ASurvivalPlayerController::SetupInputComponent()
 	//绑定IA
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
-		EnhancedInputComponent->BindAction(ActionMove,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputMove);
-		EnhancedInputComponent->BindAction(ActionLook,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputLook);
-		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Triggered,this,&ASurvivalPlayerController::ForwardInputShootTriggered);
-		EnhancedInputComponent->BindAction(ActionShoot,ETriggerEvent::Completed,this,&ASurvivalPlayerController::ForwardInputShootCompleted);
-		EnhancedInputComponent->BindAction(ActionReload,ETriggerEvent::Started,this,&ASurvivalPlayerController::ForwardInputReload);
+		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this,
+		                                   &ASurvivalPlayerController::ForwardInputMove);
+		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this,
+		                                   &ASurvivalPlayerController::ForwardInputLook);
+		EnhancedInputComponent->BindAction(ActionShoot, ETriggerEvent::Triggered, this,
+		                                   &ASurvivalPlayerController::ForwardInputShootTriggered);
+		EnhancedInputComponent->BindAction(ActionShoot, ETriggerEvent::Completed, this,
+		                                   &ASurvivalPlayerController::ForwardInputShootCompleted);
+		EnhancedInputComponent->BindAction(ActionReload, ETriggerEvent::Started, this,
+		                                   &ASurvivalPlayerController::ForwardInputReload);
 	}
 }
 
@@ -93,4 +111,3 @@ void ASurvivalPlayerController::ForwardInputReload(const FInputActionValue& Valu
 		Interface->HandleInputReload(Value);
 	}
 }
-
