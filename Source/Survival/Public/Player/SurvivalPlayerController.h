@@ -18,9 +18,13 @@ class SURVIVAL_API ASurvivalPlayerController : public APlayerController
 	GENERATED_BODY()
 public:
 	virtual void BeginPlay() override;
+	
+	//通知当前的HUD切换显示页面
+	UFUNCTION(Client, Reliable)
+	void ChangeOverlayPage(FName PageName);
 protected:
 	virtual void SetupInputComponent() override;
-
+	
 	UFUNCTION(Server,Unreliable)
 	void SRV_UpdateAimDirection();
 	

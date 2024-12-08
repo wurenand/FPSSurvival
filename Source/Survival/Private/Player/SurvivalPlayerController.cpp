@@ -53,6 +53,14 @@ void ASurvivalPlayerController::SetupInputComponent()
 	}
 }
 
+void ASurvivalPlayerController::ChangeOverlayPage_Implementation(FName PageName)
+{
+	if (ATotalHUD* HUD = Cast<ATotalHUD>(GetHUD()))
+	{
+		HUD->ChangeOverlayPage(PageName);
+	}
+}
+
 void ASurvivalPlayerController::SRV_UpdateAimDirection_Implementation()
 {
 	if (!IsValid(GetPawn()))

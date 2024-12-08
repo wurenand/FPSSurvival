@@ -6,6 +6,7 @@
 #include "Components/AbilityComponent.h"
 #include "Game/CounterStrikeGameState.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/SurvivalPlayerController.h"
 
 ASurvivalPlayerState::ASurvivalPlayerState()
 {
@@ -39,4 +40,8 @@ void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)
 	}
 	//Spawn Player
 	GetWorld()->GetAuthGameMode()->RestartPlayer(GetPlayerController());
+	if (ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(GetPlayerController()))
+	{
+		SurvivalPlayerController->ChangeOverlayPage(TEXT("PlayerUI"));
+	}
 }

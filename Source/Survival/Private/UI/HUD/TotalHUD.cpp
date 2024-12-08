@@ -12,16 +12,36 @@ void ATotalHUD::InitializeOverlay(const FBaseWidgetControllerParams& Params)
 	//只在本地SpawnUI
 	if (GetOwningPlayerController()->IsLocalController())
 	{
-		checkf(OverlayWidgetClass, TEXT("HUD:OverlayWidgetClass Is Null"));
+		//Spawn WidgetController
 		checkf(WidgetControllerClass, TEXT("HUD:OverlayWidgetClass Is Null"));
-		UUserWidget* Widget = CreateWidget<UUserWidget>(GetOwningPlayerController(), OverlayWidgetClass);
 		WidgetController = NewObject<UTotalWidgetController>(this, WidgetControllerClass);
-		OverlayWidget = CastChecked<USurvivalUserWidget>(Widget);
 		//设置参数
 		SetWidgetControllerParams(Params);
-		OverlayWidget->SetWidgetController(WidgetController);
-		//TODO:值可以在这里广播初始化？
-		OverlayWidget->AddToViewport(0);
+		//Spawn Overlays
+		for (auto OverlayClass : OverlayWidgetClasses)
+		{
+			checkf(OverlayClass, TEXT("HUD:OverlayWidgetClass Is Null"));
+			UUserWidget* Widget = CreateWidget<UUserWidget>(GetOwningPlayerController(), OverlayClass);
+			USurvivalUserWidget* SurvivalUserWidget = CastChecked<USurvivalUserWidget>(Widget);
+			NameToOverlayWidgets.Add(SurvivalUserWidget->PageName,SurvivalUserWidget);
+			SurvivalUserWidget->SetWidgetController(WidgetController);
+			if (SurvivalUserWidget->PageName == DefaultName)
+			{
+				SurvivalUserWidget->AddToViewport();
+			}
+		}
+	}
+}
+
+void ATotalHUD::ChangeOverlayPage(FName PageName)
+{
+	for (auto ItPair : NameToOverlayWidgets)
+	{
+		ItPair.Value->RemoveFromParent();
+	}
+	if (NameToOverlayWidgets.Contains(PageName))
+	{
+		NameToOverlayWidgets[PageName]->AddToViewport();
 	}
 }
 

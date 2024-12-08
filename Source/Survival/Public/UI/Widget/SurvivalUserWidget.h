@@ -18,7 +18,10 @@ public:
 	//提供给UI创建者（PC）用来设置WidgetController的函数
 	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UObject* InWidgetController);
-	
+
+	//提供给HUD进行切换使用的标识，注意不要重复。
+	UPROPERTY(EditAnywhere,Category = "PageInfo")
+	FName PageName = TEXT("");
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Controller")
 	TObjectPtr<UObject> WidgetController;
