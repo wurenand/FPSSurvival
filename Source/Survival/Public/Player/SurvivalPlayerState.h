@@ -20,6 +20,8 @@ public:
 	
 	UAbilityComponent* GetAbilityComponent() const;
 	FORCEINLINE ETeam GetTeam() const { return Team; }
+	
+	//Only Used In CS
 	UFUNCTION(Server, Reliable,BlueprintCallable)
 	void SRV_SetTeam(ETeam NewTeam);
 

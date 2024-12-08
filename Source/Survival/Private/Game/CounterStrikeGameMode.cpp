@@ -34,6 +34,7 @@ void ACounterStrikeGameMode::RestartPlayer(AController* NewPlayer)
 		}
 		//随机位置
 		AActor* SpawnStart = nullptr;
+		//注意地图要给所有阵营的PlayerStart，否则会卡死在这里无法Spawn
 		while (true)
 		{
 			SpawnStart = PlayerStarts[FMath::Rand() % PlayerStarts.Num()];

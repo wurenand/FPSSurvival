@@ -11,7 +11,7 @@ AWeaponBase::AWeaponBase()
 	WeaponMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMesh"));
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::Type::NoCollision);
 	SetRootComponent(WeaponMesh);
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void AWeaponBase::EquipWeapon(ASurvivalPlayerCharacter* InCharacter)

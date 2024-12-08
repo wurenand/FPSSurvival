@@ -14,5 +14,6 @@ class SURVIVAL_API ATeamPlayerStart : public APlayerStart
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere,Category="Team")
 	ETeam Team;
 };

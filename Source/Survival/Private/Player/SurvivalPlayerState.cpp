@@ -4,11 +4,12 @@
 #include "Survival/Public/Player/SurvivalPlayerState.h"
 
 #include "Components/AbilityComponent.h"
+#include "Game/CounterStrikeGameState.h"
 #include "Net/UnrealNetwork.h"
 
 ASurvivalPlayerState::ASurvivalPlayerState()
 {
-	AbilityComponent = CreateDefaultSubobject<UAbilityComponent	>(TEXT("AbilityComponent"));
+	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
 	AbilityComponent->SetIsReplicated(true);
 }
 
@@ -26,7 +27,16 @@ UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
 
 void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)
 {
+	if (Team == NewTeam)
+	{
+		return;
+	}
 	Team = NewTeam;
-	//TODO:通知GameState队伍人数变化了
+	//通知GameState队伍人数变化 On In CS Mode
+	if (ACounterStrikeGameState* CounterStrikeGameState = Cast<ACounterStrikeGameState>(GetWorld()->GetGameState()))
+	{
+		CounterStrikeGameState->UpdatePlayerTeam(this);
+	}
+	//Spawn Player
+	GetWorld()->GetAuthGameMode()->RestartPlayer(GetPlayerController());
 }
-

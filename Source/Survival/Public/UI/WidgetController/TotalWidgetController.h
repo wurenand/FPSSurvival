@@ -35,4 +35,6 @@ public:
 	FOnCharacterUpdated OnCharacterUpdatedDelegate;
 	UPROPERTY(BlueprintReadOnly, Category = "Info")
 	TObjectPtr<ASurvivalPlayerCharacter> Character;
+	UPROPERTY(BlueprintReadOnly, Category = "Info")
+	TObjectPtr<ASurvivalPlayerState> PlayerState;
 };

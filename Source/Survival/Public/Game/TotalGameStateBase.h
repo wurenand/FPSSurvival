@@ -7,6 +7,8 @@
 #include "Player/SurvivalPlayerState.h"
 #include "TotalGameStateBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameStateValueChangedSignature,float,value);
+
 USTRUCT(BlueprintType, Blueprintable)
 struct FDataStruct
 {

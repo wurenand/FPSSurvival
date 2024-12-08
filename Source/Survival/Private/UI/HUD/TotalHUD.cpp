@@ -29,6 +29,7 @@ void ATotalHUD::SetWidgetControllerParams(const FBaseWidgetControllerParams& Par
 {
 	//子类负责设置自己需要的信息来源
 	UpdateParamCharacter(Cast<ASurvivalPlayerCharacter>(Params.Character));
+	WidgetController->PlayerState = Params.PlayerState;
 }
 
 void ATotalHUD::UpdateParamCharacter(ASurvivalPlayerCharacter* PlayerCharacter)

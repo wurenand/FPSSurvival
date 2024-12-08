@@ -16,6 +16,7 @@ class SURVIVAL_API USurvivalUserWidget : public UUserWidget
 
 public:
 	//提供给UI创建者（PC）用来设置WidgetController的函数
+	UFUNCTION(BlueprintCallable)
 	void SetWidgetController(UObject* InWidgetController);
 	
 protected:
