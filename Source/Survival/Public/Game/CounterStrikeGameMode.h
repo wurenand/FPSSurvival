@@ -14,14 +14,18 @@ UCLASS()
 class SURVIVAL_API ACounterStrikeGameMode : public ATotalGameModeBase
 {
 	GENERATED_BODY()
+
 public:
 	virtual void PostLogin(APlayerController* NewPlayer) override;;
 	virtual void RestartPlayer(AController* NewPlayer) override;
 
-	protected:
-	UPROPERTY(EditDefaultsOnly,Category = "Team")
+	virtual void PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
+	                              ASurvivalPlayerController* VictimController,
+	                              ASurvivalPlayerController* AttackerController) override;
+
+protected:
+	UPROPERTY(EditDefaultsOnly, Category = "Team")
 	TSubclassOf<ASurvivalPlayerCharacter> RedTeamCharacterClass;
-	UPROPERTY(EditDefaultsOnly,Category = "Team")
+	UPROPERTY(EditDefaultsOnly, Category = "Team")
 	TSubclassOf<ASurvivalPlayerCharacter> BlueTeamCharacterClass;
 };
-

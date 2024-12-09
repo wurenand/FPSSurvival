@@ -25,11 +25,8 @@ void ATotalHUD::InitializeOverlay(const FBaseWidgetControllerParams& Params)
 			USurvivalUserWidget* SurvivalUserWidget = CastChecked<USurvivalUserWidget>(Widget);
 			NameToOverlayWidgets.Add(SurvivalUserWidget->PageName,SurvivalUserWidget);
 			SurvivalUserWidget->SetWidgetController(WidgetController);
-			if (SurvivalUserWidget->PageName == DefaultName)
-			{
-				SurvivalUserWidget->AddToViewport();
-			}
 		}
+		ChangeOverlayPage(DefaultName);
 	}
 }
 
@@ -42,6 +39,7 @@ void ATotalHUD::ChangeOverlayPage(FName PageName)
 	if (NameToOverlayWidgets.Contains(PageName))
 	{
 		NameToOverlayWidgets[PageName]->AddToViewport();
+		NameToOverlayWidgets[PageName]->AfterChooseThisPage();
 	}
 }
 

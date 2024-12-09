@@ -9,6 +9,7 @@
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
+#include "Game/TotalGameModeBase.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -188,11 +189,18 @@ ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 
 void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
 {
+	//因为伤害只在Server处理。这个函数只在Server调用
 	Super::CombatTakeDamage(DamageInstigator, DamageValue);
 	Health -= DamageValue;
 	if (Health <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Die!!"));
+		if (ATotalGameModeBase* TotalGameMode = Cast<ATotalGameModeBase>(GetWorld()->GetAuthGameMode()))
+		{
+			ASurvivalPlayerController* Victim = Cast<ASurvivalPlayerController>(GetController());
+			ASurvivalPlayerController* Attacker = Cast<ASurvivalPlayerController>(DamageInstigator->GetController());
+			TotalGameMode->PlayerEliminated(this,Victim,Attacker);
+		}
 	}
 }
 

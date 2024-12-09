@@ -22,6 +22,9 @@ public:
 	//提供给HUD进行切换使用的标识，注意不要重复。
 	UPROPERTY(EditAnywhere,Category = "PageInfo")
 	FName PageName = TEXT("");
+	//由HUD负责调用，当切换到当前页面时调用，蓝图中用来设置InputMode等..
+	UFUNCTION(BlueprintImplementableEvent)
+	void AfterChooseThisPage();
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Controller")
 	TObjectPtr<UObject> WidgetController;

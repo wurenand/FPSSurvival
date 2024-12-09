@@ -61,3 +61,10 @@ void ACounterStrikeGameMode::RestartPlayer(AController* NewPlayer)
 		}
 	}
 }
+
+void ACounterStrikeGameMode::PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
+	ASurvivalPlayerController* VictimController, ASurvivalPlayerController* AttackerController)
+{
+	Super::PlayerEliminated(EliminatedCharacter, VictimController, AttackerController);
+	EliminatedCharacter->Destroy();
+}
