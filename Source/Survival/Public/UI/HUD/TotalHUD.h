@@ -25,8 +25,10 @@ public:
 	//传入WidgetController可能需要的参数
 	virtual void InitializeOverlay(const FBaseWidgetControllerParams& Params);
 
+	//~Begin PC Control
 	//由PC调用，切换当前Overlay显示的界面
 	void ChangeOverlayPage(FName PageName);
+	//~End PC Control
 
 	//~Begin WidgetControllerParam
 	//在InitializeOverlay中调用，由子类重写，给WidgetController设置所需的Param

@@ -29,9 +29,16 @@ void ASurvivalPlayerController::BeginPlay()
 			Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
 			Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
 			Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
+			Params.PlayerController = this;
 			TotalHUD->InitializeOverlay(Params);
 		}
 	}
+}
+
+void ASurvivalPlayerController::CL_AttackHit_Implementation()
+{
+	OnAttackHitDelegate.Broadcast(0);
+	//TODO:后续还可以添加音效等...
 }
 
 void ASurvivalPlayerController::SetupInputComponent()

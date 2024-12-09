@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "TotalWidgetController.generated.h"
 
+class ASurvivalPlayerController;
 class ASurvivalPlayerCharacter;
 class ASurvivalCharacterBase;
 class ASurvivalPlayerState;
@@ -20,6 +21,7 @@ struct FBaseWidgetControllerParams
 public:
 	TObjectPtr<ATotalGameStateBase> TotalGameState;
 	TObjectPtr<ASurvivalPlayerState> PlayerState;
+	TObjectPtr<ASurvivalPlayerController> PlayerController;
 	TObjectPtr<ASurvivalCharacterBase> Character;
 };
 
@@ -33,8 +35,11 @@ class SURVIVAL_API UTotalWidgetController : public UObject
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterUpdated OnCharacterUpdatedDelegate;
+	
 	UPROPERTY(BlueprintReadOnly, Category = "Info")
 	TObjectPtr<ASurvivalPlayerCharacter> Character;
 	UPROPERTY(BlueprintReadOnly, Category = "Info")
 	TObjectPtr<ASurvivalPlayerState> PlayerState;
+	UPROPERTY(BlueprintReadOnly, Category = "Info")
+	TObjectPtr<ASurvivalPlayerController> PlayerController;
 };

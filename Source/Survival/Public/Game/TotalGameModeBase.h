@@ -25,7 +25,6 @@ public:
 	virtual void PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
 	                              ASurvivalPlayerController* VictimController,
 	                              ASurvivalPlayerController* AttackerController);
-	virtual void RestartPlayer(AController* NewPlayer) override;
 
 protected:
 	//在PostLogin之后就更新一次，这时候在RestartPlayer调用之前 当然是按需的(为什么Server端Post)

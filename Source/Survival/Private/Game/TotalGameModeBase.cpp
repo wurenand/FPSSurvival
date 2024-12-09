@@ -37,9 +37,5 @@ void ATotalGameModeBase::PlayerEliminated(ASurvivalCharacterBase* EliminatedChar
                                           ASurvivalPlayerController* VictimController,
                                           ASurvivalPlayerController* AttackerController)
 {
-}
-
-void ATotalGameModeBase::RestartPlayer(AController* NewPlayer)
-{
-	Super::RestartPlayer(NewPlayer);
+	//子类去实现..
 }

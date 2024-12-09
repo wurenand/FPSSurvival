@@ -9,6 +9,9 @@
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInformHUDSignature,float, Value);
+
 /**
  * 
  */
@@ -22,6 +25,14 @@ public:
 	//通知当前的HUD切换显示页面
 	UFUNCTION(Client, Reliable)
 	void ChangeOverlayPage(FName PageName);
+	UFUNCTION(Client,Unreliable)
+	void CL_AttackHit();
+
+	//~Begin HUD Delegates
+	UPROPERTY(BlueprintAssignable)
+	FInformHUDSignature OnAttackHitDelegate;//攻击成功命中 Value无意义
+	//~End HUD Delegates
+
 protected:
 	virtual void SetupInputComponent() override;
 	

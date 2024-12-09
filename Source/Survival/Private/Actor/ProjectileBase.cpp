@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Player/SurvivalPlayerController.h"
 
 AProjectileBase::AProjectileBase()
 {
@@ -48,7 +49,14 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                             const FHitResult& SweepResult)
 {
+	//Spawn命中特效
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticle,ProjectileMesh->GetComponentLocation() );
+	//通知开火者成功命中
+	if(ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(GetInstigator()->GetController()))
+	{
+		SurvivalPlayerController->CL_AttackHit();
+	}
+	//造成伤害
 	if (HasAuthority())
 	{
 		UE_LOG(LogTemp, Display, TEXT("OnHit Server"));
