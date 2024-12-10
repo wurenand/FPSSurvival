@@ -8,9 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Player/SurvivalPlayerState.h"
 
-
-//TODO:提供玩家选择的功能 UI
-
 void ACounterStrikeGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	//这里要在PostLogin之前调用，确保在RestartPlayer之前就找到所有的PlayerStart
@@ -66,5 +63,5 @@ void ACounterStrikeGameMode::PlayerEliminated(ASurvivalCharacterBase* Eliminated
 	ASurvivalPlayerController* VictimController, ASurvivalPlayerController* AttackerController)
 {
 	Super::PlayerEliminated(EliminatedCharacter, VictimController, AttackerController);
-	EliminatedCharacter->Destroy();
+	EliminatedCharacter->SetPendingDeath();
 }

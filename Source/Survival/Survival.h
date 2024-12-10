@@ -12,3 +12,5 @@ enum class ETeam : uint8
 	ETeam_Blue UMETA(DisplayName = "Blue"),
 	ETeam_NoTeam UMETA(DisplayName = "NoTeam"),
 };
+
+#define ECC_Ability ECollisionChannel::ECC_GameTraceChannel1

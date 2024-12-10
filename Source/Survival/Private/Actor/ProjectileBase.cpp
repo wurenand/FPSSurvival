@@ -18,7 +18,9 @@ AProjectileBase::AProjectileBase()
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ProjectileMesh->SetupAttachment(Root);
 	SphereCollision = CreateDefaultSubobject<USphereComponent>("SphereCollision");
-	SphereCollision->SetCollisionProfileName("OverlapAllDynamic");
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
+	SphereCollision->SetCollisionObjectType(ECC_Ability);//设置为ECC_Ability
 	SphereCollision->SetupAttachment(RootComponent);
 
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));

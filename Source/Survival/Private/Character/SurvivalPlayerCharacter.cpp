@@ -112,7 +112,7 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		OnRep_Weapon();
 		//TODO:在AbilityComponent中设置点委托，用于绑定来更新例如HP，射速等的数据
 	}
-	
+
 	//如果有HUD，则更新其WidgetController中的Character参数
 	if (IsLocallyControlled())
 	{
@@ -199,9 +199,28 @@ void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIn
 		{
 			ASurvivalPlayerController* Victim = Cast<ASurvivalPlayerController>(GetController());
 			ASurvivalPlayerController* Attacker = Cast<ASurvivalPlayerController>(DamageInstigator->GetController());
-			TotalGameMode->PlayerEliminated(this,Victim,Attacker);
+			TotalGameMode->PlayerEliminated(this, Victim, Attacker);
 		}
 	}
+}
+
+void ASurvivalPlayerCharacter::SetPendingDeath()
+{
+	//Super负责多播特效
+	Super::SetPendingDeath();
+	FTimerDelegate DestroyDelegate;
+	DestroyDelegate.BindLambda([this]()-> void
+	{
+		if (Weapon)
+		{
+			Weapon->Destroy();
+		}
+		//TODO:Temp测试使用
+		GetWorld()->GetAuthGameMode()->RestartPlayer(GetController());
+		Destroy();
+	});
+	FTimerHandle DestroyTimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(DestroyTimerHandle, DestroyDelegate, 3.0f, false);
 }
 
 

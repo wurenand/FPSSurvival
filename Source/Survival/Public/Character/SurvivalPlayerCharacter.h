@@ -38,6 +38,8 @@ public:
 	virtual ETeam GetCharacterTeam() override;
 	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
 	//~End ICombatInterface
+
+	virtual void SetPendingDeath() override;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

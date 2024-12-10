@@ -25,6 +25,14 @@ public:
 	virtual ETeam GetCharacterTeam() override;
 	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
 	//~End ICombatInterface
+
+	//~Begin Death
+	//只在Server上调用，用于处理Character死后的逻辑，例如Weapon的Destroy
+	virtual void SetPendingDeath();
+	//多播 播放蒙太奇等 死亡相关动画特效 以及设置 例如关闭碰撞
+	UFUNCTION(NetMulticast,Reliable)
+	virtual void Mult_DeathEffect();
+	//~End Death
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_MaxHealth, Category="Health")
