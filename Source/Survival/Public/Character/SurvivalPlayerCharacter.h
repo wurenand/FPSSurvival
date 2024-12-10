@@ -118,6 +118,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float AimLength = 3000.f;
 	//~End
+
+	//~Begin Death
+	//这里重写只是为了隐藏掉第三人称Mesh的模型
+	virtual void Mult_DeathEffect_Implementation() override;
+	//~End Death
 	
 	//~Begin Montage Callback
 	UFUNCTION()

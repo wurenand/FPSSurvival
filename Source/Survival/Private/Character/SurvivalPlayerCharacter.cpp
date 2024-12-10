@@ -345,6 +345,12 @@ void ASurvivalPlayerCharacter::HitTraceTick(float DeltaSeconds)
 	}
 }
 
+void ASurvivalPlayerCharacter::Mult_DeathEffect_Implementation()
+{
+	Super::Mult_DeathEffect_Implementation();
+	ThirdPersonMesh->SetCastHiddenShadow(false);
+}
+
 void ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin(FName NotifyName)
 {
 	if (NotifyName.IsEqual(TEXT("ClipOut")))

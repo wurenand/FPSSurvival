@@ -4,6 +4,7 @@
 #include "Survival/Public/Character/SurvivalCharacterBase.h"
 
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Net/UnrealNetwork.h"
 
 ASurvivalCharacterBase::ASurvivalCharacterBase()
@@ -40,9 +41,11 @@ void ASurvivalCharacterBase::SetPendingDeath()
 
 void ASurvivalCharacterBase::Mult_DeathEffect_Implementation()
 {
-	//关闭碰撞响应Ability(Projectile)
-	GetMesh()->SetCollisionResponseToChannel(ECC_Ability,ECR_Ignore);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Ability,ECR_Ignore);
+	//实现类似布娃娃系统的效果
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetMesh()->SetCollisionEnabled(ECollisionEnabled::Type::PhysicsOnly);
+	GetMesh()->SetSimulatePhysics(true);
+	GetMovementComponent()->StopMovementImmediately();
 }
 
 void ASurvivalCharacterBase::OnRep_MaxHealth()
