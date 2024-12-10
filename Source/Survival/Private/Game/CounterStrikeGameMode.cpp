@@ -5,6 +5,7 @@
 
 #include "Actor/TeamPlayerStart.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Game/CounterStrikeGameState.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/SurvivalPlayerState.h"
 
@@ -20,6 +21,11 @@ void ACounterStrikeGameMode::RestartPlayer(AController* NewPlayer)
 	if (PlayerStarts.Num() == 0)
 	{
 		return;
+	}
+	//此处为存活玩家的ReSpawn
+	if (ASurvivalPlayerCharacter* Character = Cast<ASurvivalPlayerCharacter>(NewPlayer->GetPawn()))
+	{
+		Character->SetPendingDeath(true);
 	}
 	if (ASurvivalPlayerState* SurvivalPlayerState = NewPlayer->GetPlayerState<ASurvivalPlayerState>())
 	{
@@ -64,4 +70,34 @@ void ACounterStrikeGameMode::PlayerEliminated(ASurvivalCharacterBase* Eliminated
 {
 	Super::PlayerEliminated(EliminatedCharacter, VictimController, AttackerController);
 	EliminatedCharacter->SetPendingDeath();
+	if (GetCSGameState()->IsRoundOver(VictimController))
+	{
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUObject(this,&ACounterStrikeGameMode::StartNewRound);
+		GetWorld()->GetTimerManager().SetTimer(NewRoundTimerHandle,TimerDelegate,5.0f,false);	
+	}
+}
+
+void ACounterStrikeGameMode::StartNewRound()
+{
+	//TODO:这里处理一轮结束的情况
+	GetCSGameState()->RedDeadPlayers.Empty();
+	GetCSGameState()->BlueDeadPlayers.Empty();
+	for (auto PS : GetCSGameState()->RedPlayers)
+	{
+		RestartPlayer(PS->GetPlayerController());
+	}
+	for (auto PS : GetCSGameState()->BluePlayers)
+	{
+		RestartPlayer(PS->GetPlayerController());
+	}
+}
+
+ACounterStrikeGameState* ACounterStrikeGameMode::GetCSGameState()
+{
+	if (!CounterStrikeGameState)
+	{
+		CounterStrikeGameState = GetGameState<ACounterStrikeGameState>();
+	}
+	return CounterStrikeGameState;
 }

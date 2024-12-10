@@ -6,6 +6,7 @@
 #include "TotalGameModeBase.h"
 #include "CounterStrikeGameMode.generated.h"
 
+class ACounterStrikeGameState;
 class ASurvivalPlayerCharacter;
 /**
  * 传统CS游戏模式
@@ -22,10 +23,16 @@ public:
 	virtual void PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
 	                              ASurvivalPlayerController* VictimController,
 	                              ASurvivalPlayerController* AttackerController) override;
+	void StartNewRound();
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Team")
 	TSubclassOf<ASurvivalPlayerCharacter> RedTeamCharacterClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Team")
 	TSubclassOf<ASurvivalPlayerCharacter> BlueTeamCharacterClass;
+
+	ACounterStrikeGameState* GetCSGameState();
+	TObjectPtr<ACounterStrikeGameState> CounterStrikeGameState;
+
+	FTimerHandle NewRoundTimerHandle;
 };

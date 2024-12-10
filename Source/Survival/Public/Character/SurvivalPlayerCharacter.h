@@ -39,7 +39,7 @@ public:
 	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
 	//~End ICombatInterface
 
-	virtual void SetPendingDeath() override;
+	virtual void SetPendingDeath(bool bQuickDestroy = false) override;
 	
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;

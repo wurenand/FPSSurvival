@@ -31,6 +31,11 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	//~Begin HandlePlayer
+	virtual void OnPlayerPostLogin(APlayerController* NewPlayer);
+	virtual void OnPlayerLogout(AController* Exiting);
+	//~End HandlePlayer
+	
 	//记录当前链接到的所有的PlayerState 用于同步信息给Client  由GameMode负责管理
 	UPROPERTY(Replicated , BlueprintReadOnly, Category = "Player")
 	TArray<ASurvivalPlayerState*> ConnectedPlayerStates;

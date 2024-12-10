@@ -11,10 +11,10 @@ void ATotalGameModeBase::PostLogin(APlayerController* NewPlayer)
 	if (!ConnectedPlayers.Contains(NewPlayer))
 	{
 		ConnectedPlayers.Add(NewPlayer);
-		//Async GameState
+		//同步一下 GameState
 		if (ATotalGameStateBase* GameStateBase = (GetGameState<ATotalGameStateBase>()))
 		{
-			GameStateBase->ConnectedPlayerStates.Add(NewPlayer->GetPlayerState<ASurvivalPlayerState>());
+			GameStateBase->OnPlayerPostLogin(NewPlayer);
 		}
 	}
 }
@@ -25,10 +25,10 @@ void ATotalGameModeBase::Logout(AController* Exiting)
 	if (ConnectedPlayers.Contains(Exiting))
 	{
 		ConnectedPlayers.Remove(Cast<APlayerController>(Exiting));
-		//Async GameState
+		//同步一下 GameState
 		if (ATotalGameStateBase* GameStateBase = (GetGameState<ATotalGameStateBase>()))
 		{
-			GameStateBase->ConnectedPlayerStates.Remove(Exiting->GetPlayerState<ASurvivalPlayerState>());
+			GameStateBase->OnPlayerLogout(Exiting);
 		}
 	}
 }

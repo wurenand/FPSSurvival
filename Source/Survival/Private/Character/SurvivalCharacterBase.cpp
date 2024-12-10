@@ -34,7 +34,7 @@ void ASurvivalCharacterBase::CombatTakeDamage(ASurvivalCharacterBase* DamageInst
 	
 }
 
-void ASurvivalCharacterBase::SetPendingDeath()
+void ASurvivalCharacterBase::SetPendingDeath(bool bQuickDestroy)
 {
 	Mult_DeathEffect();
 }

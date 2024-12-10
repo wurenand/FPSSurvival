@@ -204,8 +204,17 @@ void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIn
 	}
 }
 
-void ASurvivalPlayerCharacter::SetPendingDeath()
+void ASurvivalPlayerCharacter::SetPendingDeath(bool bQuickDestroy)
 {
+	if (bQuickDestroy)
+	{
+		if (Weapon)
+		{
+			Weapon->Destroy();
+		}
+		Destroy();
+		return;
+	}
 	//Super负责多播特效
 	Super::SetPendingDeath();
 	FTimerDelegate DestroyDelegate;
@@ -215,8 +224,6 @@ void ASurvivalPlayerCharacter::SetPendingDeath()
 		{
 			Weapon->Destroy();
 		}
-		//TODO:Temp测试使用
-		GetWorld()->GetAuthGameMode()->RestartPlayer(GetController());
 		Destroy();
 	});
 	FTimerHandle DestroyTimerHandle;

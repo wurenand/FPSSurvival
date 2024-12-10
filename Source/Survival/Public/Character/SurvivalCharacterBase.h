@@ -27,8 +27,8 @@ public:
 	//~End ICombatInterface
 
 	//~Begin Death
-	//只在Server上调用，用于处理Character死后的逻辑，例如Weapon的Destroy
-	virtual void SetPendingDeath();
+	//只在Server上调用，用于处理Character死后的逻辑，例如Weapon的Destroy bQuickDestroy == true直接Destroy
+	virtual void SetPendingDeath(bool bQuickDestroy = false);
 	//多播 播放蒙太奇等 死亡相关动画特效 以及设置 例如关闭碰撞
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void Mult_DeathEffect();
