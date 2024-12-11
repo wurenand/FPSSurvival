@@ -13,8 +13,6 @@ class USpringArmComponent;
 class UCameraComponent;
 class AWeaponBase;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterValueChangedSignature,float,NewValue);
-
 UCLASS()
 class SURVIVAL_API ASurvivalPlayerCharacter : public ASurvivalCharacterBase, public IHandleInputInterface
 {
@@ -52,6 +50,8 @@ public:
 	//~Begin Delegate
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterValueChangedSignature OnMagCountChanged;
+	//用于广播所有初始值(一般在UI中设置参数之后由UI调用)
+	void InitUIValues();
 	//~End Delegate
 
 	//AnimInstance

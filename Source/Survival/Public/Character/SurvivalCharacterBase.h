@@ -8,6 +8,8 @@
 #include "Survival/Survival.h"
 #include "SurvivalCharacterBase.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterValueChangedSignature,float,NewValue);
+
 UCLASS()
 class SURVIVAL_API ASurvivalCharacterBase : public ACharacter, public ICombatInterface
 {
@@ -33,6 +35,11 @@ public:
 	UFUNCTION(NetMulticast,Reliable)
 	virtual void Mult_DeathEffect();
 	//~End Death
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterValueChangedSignature OnHPChanged;
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterValueChangedSignature OnMaxHPChanged;
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_MaxHealth, Category="Health")

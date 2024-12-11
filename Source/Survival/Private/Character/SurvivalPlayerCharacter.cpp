@@ -83,6 +83,13 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 	}
 }
 
+void ASurvivalPlayerCharacter::InitUIValues()
+{
+	OnMagCountChanged.Broadcast(CurrentMagCount);
+	OnMaxHPChanged.Broadcast(MaxHealth);
+	OnHPChanged.Broadcast(Health);
+}
+
 void ASurvivalPlayerCharacter::OnRep_Weapon()
 {
 	if (Weapon)
@@ -122,6 +129,8 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 			TotalHUD->UpdateParamCharacter(this);
 		}
 	}
+	//设置完UI之后广播初始值
+	InitUIValues();
 }
 
 
@@ -190,7 +199,6 @@ ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
 {
 	//因为伤害只在Server处理。这个函数只在Server调用
-	Super::CombatTakeDamage(DamageInstigator, DamageValue);
 	Health -= DamageValue;
 	if (Health <= 0)
 	{
@@ -202,6 +210,9 @@ void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIn
 			TotalGameMode->PlayerEliminated(this, Victim, Attacker);
 		}
 	}
+	//Server端BoardCast HP
+	OnRep_Health();
+	OnRep_MaxHealth();
 }
 
 void ASurvivalPlayerCharacter::SetPendingDeath(bool bQuickDestroy)

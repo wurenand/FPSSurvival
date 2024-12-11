@@ -51,9 +51,11 @@ void ASurvivalCharacterBase::Mult_DeathEffect_Implementation()
 void ASurvivalCharacterBase::OnRep_MaxHealth()
 {
 	//TODO:更新UI
+	OnMaxHPChanged.Broadcast(MaxHealth);
 }
 
 void ASurvivalCharacterBase::OnRep_Health()
 {
 	//TODO:更新UI
+	OnHPChanged.Broadcast(Health);
 }
