@@ -88,8 +88,8 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	if (Weapon)
 	{
 		//AttachWeapon到Character 并 获取配表中的信息
-		Weapon->EquipWeapon(this);
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
+		Weapon->EquipWeapon(this);
 		//Server端负责同步子弹数量
 		if (HasAuthority())
 		{

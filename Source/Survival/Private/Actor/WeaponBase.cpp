@@ -18,6 +18,10 @@ void AWeaponBase::EquipWeapon(ASurvivalPlayerCharacter* InCharacter)
 {
 	RootComponent->AttachToComponent(InCharacter->GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale,
 	                                 SnapSocketName);
+	if (WeaponInfo.ReloadMontage)
+	{
+		InCharacter->PlayAnimMontage(WeaponInfo.ReloadMontage,1,TEXT("EquipStart"));
+	}
 }
 
 void AWeaponBase::HandleShootEffect()
