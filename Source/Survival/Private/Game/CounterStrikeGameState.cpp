@@ -14,6 +14,8 @@ void ACounterStrikeGameState::GetLifetimeReplicatedProps(TArray<FLifetimePropert
 	DOREPLIFETIME(ACounterStrikeGameState, RedDeadPlayers);
 	DOREPLIFETIME(ACounterStrikeGameState, BluePlayers);
 	DOREPLIFETIME(ACounterStrikeGameState, BlueDeadPlayers);
+	DOREPLIFETIME(ACounterStrikeGameState, RedScore);
+	DOREPLIFETIME(ACounterStrikeGameState, BlueScore);
 }
 
 void ACounterStrikeGameState::UpdatePlayerTeam(ASurvivalPlayerState* Player)
@@ -48,11 +50,30 @@ bool ACounterStrikeGameState::IsRoundOver(ASurvivalPlayerController* DeadPC)
 		//Check Is Round Over?
 		if (AllTeam.Num() == DeadTeam.Num())
 		{
-			//TODO：这里记录分数变化
+			if (PlayerState->GetTeam() == ETeam::ETeam_Blue)
+			{
+				RedScore++;
+				OnRep_RedScore();
+			}
+			else
+			{
+				BlueScore++;
+				OnRep_BlueScore();
+			}
 			return true;
 		}
 	}
 	return false;
+}
+
+void ACounterStrikeGameState::OnRep_RedScore()
+{
+	OnRedScoreChangedDelegate.Broadcast(RedScore);
+}
+
+void ACounterStrikeGameState::OnRep_BlueScore()
+{
+	OnBlueScoreChangedDelegate.Broadcast(BlueScore);
 }
 
 void ACounterStrikeGameState::OnRep_RedPlayers()

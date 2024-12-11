@@ -51,6 +51,14 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
                             UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                             const FHitResult& SweepResult)
 {
+	if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor))
+	{
+		///同队伍的不作处理
+		if (CombatInterface->GetCharacterTeam() == Cast<ASurvivalCharacterBase>(GetInstigator())->GetCharacterTeam())
+		{
+			return;
+		}
+	}
 	//Spawn命中特效
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticle,ProjectileMesh->GetComponentLocation() );
 	//通知开火者成功命中

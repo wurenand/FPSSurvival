@@ -7,6 +7,7 @@
 #include "Character/SurvivalPlayerCharacter.h"
 #include "Game/CounterStrikeGameState.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/SurvivalPlayerController.h"
 #include "Player/SurvivalPlayerState.h"
 
 void ACounterStrikeGameMode::PostLogin(APlayerController* NewPlayer)
@@ -69,7 +70,9 @@ void ACounterStrikeGameMode::PlayerEliminated(ASurvivalCharacterBase* Eliminated
 	ASurvivalPlayerController* VictimController, ASurvivalPlayerController* AttackerController)
 {
 	Super::PlayerEliminated(EliminatedCharacter, VictimController, AttackerController);
+	//处理死亡玩家相关逻辑
 	EliminatedCharacter->SetPendingDeath();
+	//检测当前一轮是否结束？如果是，负责重生玩家
 	if (GetCSGameState()->IsRoundOver(VictimController))
 	{
 		FTimerDelegate TimerDelegate;

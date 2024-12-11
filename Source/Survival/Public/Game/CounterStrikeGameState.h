@@ -23,9 +23,9 @@ public:
 
 
 	/**
-	 * 由GM调用，当角色死亡时调用
+	 * 由GM调用，当角色死亡时调用 处理当前一轮结束的相关逻辑
 	 * @param DeadPC 传入死亡的PlayerController
-	 * @return 此轮游戏是否已经结束
+	 * @return 此轮游戏是否已经结束 若为true，GM需要负责Respawn所有玩家
 	 */
 	bool IsRoundOver(ASurvivalPlayerController* DeadPC);
 
@@ -33,7 +33,20 @@ public:
 	FOnGameStateValueChangedSignature OnRedTeamCountChangedDelegate;
 	UPROPERTY(BlueprintAssignable, Category = "Info")
 	FOnGameStateValueChangedSignature OnBlueTeamCountChangedDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "Info")
+	FOnGameStateValueChangedSignature OnRedScoreChangedDelegate;
+	UPROPERTY(BlueprintAssignable, Category = "Info")
+	FOnGameStateValueChangedSignature OnBlueScoreChangedDelegate;
 
+	UPROPERTY(ReplicatedUsing = OnRep_RedScore)
+	int32 RedScore = 0;
+	UFUNCTION()
+	void OnRep_RedScore();
+	UPROPERTY(ReplicatedUsing = OnRep_BlueScore)
+	int32 BlueScore = 0;
+	UFUNCTION()
+	void OnRep_BlueScore();
+	
 	//RedPlayers记录当前阵营的所有人，不管存活与否 RedDeadPlayers只记录已经死亡的
 	UPROPERTY(ReplicatedUsing = OnRep_RedPlayers)
 	TArray<ASurvivalPlayerState*> RedPlayers;
