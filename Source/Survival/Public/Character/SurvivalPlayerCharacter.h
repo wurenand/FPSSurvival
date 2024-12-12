@@ -18,6 +18,8 @@ class SURVIVAL_API ASurvivalPlayerCharacter : public ASurvivalCharacterBase, pub
 {
 	GENERATED_BODY()
 
+friend class UAbilityComponent;
+	
 public:
 	ASurvivalPlayerCharacter();
 
@@ -50,6 +52,8 @@ public:
 	//~Begin Delegate
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterValueChangedSignature OnMagCountChanged;
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterValueChangedSignature OnMaxMagCountChanged;
 	//用于广播所有初始值(一般在UI中设置参数之后由UI调用)
 	void InitUIValues();
 	//~End Delegate
@@ -58,6 +62,9 @@ public:
 	UPROPERTY(Replicated)
 	float AimDirection;
 
+	//TODO:Temp
+	UAbilityComponent* GetAbilityComponent() {return AbilityComponent;};
+	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
 	TObjectPtr<UCameraComponent> Camera;
@@ -87,9 +94,13 @@ protected:
 	
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentMagCount,BlueprintReadOnly,Category = "ShootData")
 	int32 CurrentMagCount = 0;
-	//用于更新UI
 	UFUNCTION()
 	void OnRep_CurrentMagCount();
+	UPROPERTY(ReplicatedUsing = OnRep_MaxMagCount,BlueprintReadOnly,Category = "ShootData")
+	int32 MaxMagCount = 0;
+	//用于更新UI
+	UFUNCTION()
+	void OnRep_MaxMagCount();
 	
 	UFUNCTION(Server,Reliable,Category= "Shoot")
 	void SRV_ShootWeapon(bool bShouldShooting,FVector LocalAimTargetPoint);

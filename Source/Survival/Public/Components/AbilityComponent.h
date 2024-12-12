@@ -2,10 +2,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actor/WeaponBase.h"
 #include "Components/ActorComponent.h"
 #include "AbilityComponent.generated.h"
 
-
+class ASurvivalPlayerCharacter;
+class UWeaponAbility;
 class AWeaponBase;
 class UAbilityBase;
 
@@ -16,12 +18,32 @@ class SURVIVAL_API UAbilityComponent : public UActorComponent
 
 public:
 	UAbilityComponent();
-
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	TObjectPtr<ASurvivalPlayerCharacter> SurvivalPlayerCharacter;
+	
+	//~Begin ShootLogic
+	float GetShootFrequency();
+	float GetShootDamage();
+	//~End ShootLogic
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category="Weapon")
 	TSubclassOf<AWeaponBase> WeaponClass;
+	FWeaponInfo WeaponInfo;
+
+	//给技能升级，如果没有这个技能，则给予
+	void TryLevelUpAbility(FName AbilityName);
+
+	//发生在OnRep_Weapon之后
+	//使得Character能够拿到收到所有数值变化 并获取初始值并广播
+	void BindAllValueDelegatesAndInit();
+
+	UWeaponAbility* GetWeaponAbility();
 	
 protected:
+	UPROPERTY(Replicated)
+	TObjectPtr<UWeaponAbility> WeaponAbility;
 	//为什么UObject类型必须要用TObjectPtr才能放在TArray中
 	TArray<TObjectPtr<UAbilityBase>> ActiveAbilities;
-
 };
+
+

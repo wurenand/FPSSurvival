@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Ability/AbilityBase.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DataHelperLibrary.generated.h"
 
@@ -20,5 +21,7 @@ class SURVIVAL_API UDataHelperLibrary : public UBlueprintFunctionLibrary
 public:
 	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
 	static FWeaponInfo GetWeaponInfoFromName(const UObject* WorldContentObject,const FName& WeaponName);
+	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
+	static FAbilityDataTableRow GetAbilityDataFromName(const UObject* WorldContentObject,const FName& AbilityName);
 
 };

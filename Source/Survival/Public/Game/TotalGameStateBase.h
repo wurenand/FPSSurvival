@@ -16,6 +16,8 @@ struct FDataStruct
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	TObjectPtr<UDataTable> WeaponDataTable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	TObjectPtr<UDataTable> AbilityDataTable;
 };
 
 /**

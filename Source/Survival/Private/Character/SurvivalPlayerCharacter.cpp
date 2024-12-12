@@ -5,6 +5,7 @@
 
 #include "InputActionValue.h"
 #include "PlayMontageCallbackProxy.h"
+#include "Ability/WeaponAbility.h"
 #include "Actor/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
@@ -85,6 +86,7 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 
 void ASurvivalPlayerCharacter::InitUIValues()
 {
+	OnMaxMagCountChanged.Broadcast(MaxMagCount);
 	OnMagCountChanged.Broadcast(CurrentMagCount);
 	OnMaxHPChanged.Broadcast(MaxHealth);
 	OnHPChanged.Broadcast(Health);
@@ -96,18 +98,14 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	{
 		//AttachWeapon到Character 并 获取配表中的信息
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
+		AbilityComponent->WeaponInfo = Weapon->WeaponInfo;
 		Weapon->EquipWeapon(this);
-		//Server端负责同步子弹数量
-		if (HasAuthority())
-		{
-			CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
-			OnRep_CurrentMagCount();
-		}
 	}
 }
 
 void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 {
+	AbilityComponent->SurvivalPlayerCharacter = this;
 	if (HasAuthority())
 	{
 		checkf(AbilityComponent->WeaponClass, TEXT("AbilityComponent::WeaponClass is NULL"))
@@ -117,7 +115,15 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		Weapon = Cast<AWeaponBase>(
 			GetWorld()->SpawnActor(AbilityComponent->WeaponClass, nullptr, nullptr, SpawnParameters));
 		OnRep_Weapon();
-		//TODO:在AbilityComponent中设置点委托，用于绑定来更新例如HP，射速等的数据
+		//TODO:AC这里会读表，并绑定回调用于更新Character的数值
+		/**为什么这里只在Server端绑定呢？首先伤害计算是通过直接Get函数来获取的，而伤害只在Server计算，所以无所谓。
+		 * 对于回调函数，流程是，当Ac中的Ability等级变化时，会广播，Server端的数值收到后，更新再复制给Client。
+		 * 也就是说，可以直接使用Character里面的例如MaxMagCount的值，因为它已经与AC中的值同步了
+		*/
+		AbilityComponent->BindAllValueDelegatesAndInit();
+		//初始化子弹值
+		CurrentMagCount = MaxMagCount;
+		OnRep_CurrentMagCount();
 	}
 
 	//如果有HUD，则更新其WidgetController中的Character参数
@@ -132,7 +138,6 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 	//设置完UI之后广播初始值
 	InitUIValues();
 }
-
 
 void ASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
 {
@@ -256,7 +261,7 @@ void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooti
 		//手动调用一次解决 玩家只按一次使得定时器迅速被清除导致的不能射击问题
 		ShootWeaponLoop();
 		GetWorld()->GetTimerManager().SetTimer(ShootTimer, this, &ASurvivalPlayerCharacter::ShootWeaponLoop,
-		                                       Weapon->WeaponInfo.BaseShootingSpeed, true);
+		                                       AbilityComponent->GetShootFrequency(), true);
 		bIsShooting = true;
 	}
 	else
@@ -276,6 +281,7 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 	{
 		return;
 	}
+	//这里可以用真实的射击速度来播放，但是没必要
 	PlayAnimMontage(Weapon->WeaponInfo.ShootMontage, 1);
 	Weapon->HandleShootEffect();
 }
@@ -283,6 +289,11 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 void ASurvivalPlayerCharacter::OnRep_CurrentMagCount()
 {
 	OnMagCountChanged.Broadcast(CurrentMagCount);
+}
+
+void ASurvivalPlayerCharacter::OnRep_MaxMagCount()
+{
+	OnMaxMagCountChanged.Broadcast(MaxMagCount);
 }
 
 void ASurvivalPlayerCharacter::ShootWeaponLoop()
@@ -305,12 +316,11 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	FRotator SpawnRotator = (AimTargetPoint - SpawnLocation).Rotation();
 	BulletTransform.SetLocation(SpawnLocation);
 	BulletTransform.SetRotation(SpawnRotator.Quaternion());
-	//TODO:(后续，使用蒙太奇Event具体Spawn时机，Spawn的位置...)
 	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
 		BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
 		ESpawnActorScaleMethod::MultiplyWithRoot);
 	//TODO:这里可以配置数据
-	Projectile->SetDamage(Weapon->WeaponInfo.BaseDamage);
+	Projectile->SetDamage(AbilityComponent->GetShootDamage());
 	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
 	Projectile->SetInstigator(this);
 	Projectile->FinishSpawning(BulletTransform);
@@ -385,7 +395,7 @@ void ASurvivalPlayerCharacter::OnReceiveMontageCompleted(FName NotifyName)
 {
 	if (bIsReloading && HasAuthority())
 	{
-		CurrentMagCount = Weapon->WeaponInfo.BaseMagCount;
+		CurrentMagCount = MaxMagCount;
 		OnRep_CurrentMagCount();
 		bIsReloading = false;
 	}
