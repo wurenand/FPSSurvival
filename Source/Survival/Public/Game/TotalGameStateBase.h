@@ -18,6 +18,8 @@ struct FDataStruct
 	TObjectPtr<UDataTable> WeaponDataTable;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	TObjectPtr<UDataTable> AbilityDataTable;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	TObjectPtr<UCurveTable> XPToLevelCurve;
 };
 
 /**

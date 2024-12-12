@@ -29,3 +29,14 @@ FAbilityDataTableRow UDataHelperLibrary::GetAbilityDataFromName(const UObject* W
 	return FAbilityDataTableRow();
 }
 
+int32 UDataHelperLibrary::GetLevelFromXP(const UObject* WorldContentObject, int32 XP)
+{
+	if (ATotalGameStateBase* GameState = Cast<ATotalGameStateBase>(WorldContentObject->GetWorld()->GetGameState()))
+	{
+		FString ContextString = "";//TODO:这里的check好像没用？
+		checkf(GameState->GetDataStruct().XPToLevelCurve,TEXT("GameState->XPToLevelCurve Is Null"))
+		return GameState->GetDataStruct().XPToLevelCurve->FindCurve(TEXT("XPToLevel"),ContextString)->Eval(XP);
+	}
+	return 1;
+}
+
