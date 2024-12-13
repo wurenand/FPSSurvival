@@ -2,6 +2,7 @@
 
 #include "Ability/WeaponAbility.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 
 UAbilityComponent::UAbilityComponent()
@@ -13,7 +14,6 @@ void UAbilityComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UAbilityComponent, WeaponAbility);
-	DOREPLIFETIME(UAbilityComponent, OwnerPlayerState);
 	DOREPLIFETIME(UAbilityComponent, ActiveAbilities);
 }
 
@@ -39,38 +39,58 @@ void UAbilityComponent::TryLevelUpAbility(FName AbilityName)
 {
 	if (AbilityName == TEXT("Weapon"))
 	{
-		if (WeaponAbility == nullptr)
-		{
-			Mult_GiveAbility(TEXT("Weapon"), nullptr);
-			return;
-		}
 		WeaponAbility->AddLevel();
 	}
 	else
 	{
+		for (AAbilityBase* Ability : ActiveAbilities)
+		{
+			if (Ability->GetAbilityName() == AbilityName)
+			{
+				Ability->AddLevel();
+				return;
+			}
+		}
+		//没有这个技能
+		GiveAbility(AbilityName);
 	}
 }
 
-void UAbilityComponent::Mult_GiveAbility_Implementation(FName AbilityName, TSubclassOf<UAbilityBase> AbilityClass)
+AAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 {
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.Owner = GetOwner();
+	AAbilityBase* NewAbility = nullptr;
 	if (AbilityName == TEXT("Weapon"))
 	{
-		WeaponAbility = NewObject<UWeaponAbility>();
-		WeaponAbility->AbilityComponent = this;
+		WeaponAbility = GetWorld()->SpawnActor<AWeaponAbility>(SpawnParameters);
+		NewAbility = WeaponAbility;
 	}
 	else
 	{
-		UAbilityBase* NewAbility = NewObject<UAbilityBase>(GetTransientPackage(),AbilityClass);
-		NewAbility->AbilityComponent = this;
-		ActiveAbilities.Add(NewAbility);
+		FAbilityDataTableRow AbilityInfo = UDataHelperLibrary::GetAbilityDataFromName(GetWorld(), AbilityName);
+		if (AbilityInfo.AbilityClass)
+		{
+			NewAbility = GetWorld()->SpawnActor<AAbilityBase>(AbilityInfo.AbilityClass, SpawnParameters);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s : Ability Class not found"), *AbilityName.ToString());
+		}
 	}
+	NewAbility->AbilityComponent = this;
+	//初始化数值
+	NewAbility->UpdateValues();
+	return NewAbility;
 }
+
 
 void UAbilityComponent::BindAllValueDelegatesAndInit()
 {
 	if (WeaponAbility == nullptr)
 	{
-		return;
+		//说明AC第一次使用，GiveWeaponAbility
+		GiveAbility(TEXT("Weapon"));
 	}
 	//需要UI显示的就在这里绑定，不需要的就直接用函数返回
 	//1. 绑定

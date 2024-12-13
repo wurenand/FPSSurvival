@@ -117,7 +117,7 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		OnRep_Weapon();
 		//TODO:AC这里会读表，并绑定回调用于更新Character的数值
 		/**为什么这里只在Server端绑定呢？首先伤害计算是通过直接Get函数来获取的，而伤害只在Server计算，所以无所谓。
-		 * 对于回调函数，流程是，当Ac中的Ability等级变化时，会广播，Server端的数值收到后，更新再复制给Client。
+		 * 对于需要同步到客户端UI显示的：流程是，当Ac中的Ability等级变化时，会广播使得Character中的值变化，Server端的数值收到后，更新再复制给Client。
 		 * 也就是说，可以直接使用Character里面的例如MaxMagCount的值，因为它已经与AC中的值同步了
 		*/
 		AbilityComponent->BindAllValueDelegatesAndInit();

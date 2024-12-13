@@ -11,13 +11,13 @@ class AWeaponBase;
  * 
  */
 UCLASS()
-class SURVIVAL_API UWeaponAbility : public UAbilityBase
+class SURVIVAL_API AWeaponAbility : public AAbilityBase
 {
 	GENERATED_BODY()
 public:
 	FORCEINLINE float GetBaseMag() const{return BaseMag;}
 	FORCEINLINE float GetMagMult() const{return MagMult;}
-	UWeaponAbility();
+	AWeaponAbility();
 
 	FOnAbilityValueChangedSignature OnMaxMagChanged;
 

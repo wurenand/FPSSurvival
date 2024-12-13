@@ -6,14 +6,32 @@
 #include "Character/SurvivalPlayerCharacter.h"
 #include "Components/AbilityComponent.h"
 #include "Library/DataHelperLibrary.h"
+#include "Net/UnrealNetwork.h"
 
-void UAbilityBase::AddLevel()
+void AAbilityBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(AAbilityBase,Level);
+}
+
+void AAbilityBase::AddLevel()
 {
 	Level++;
+	OnRep_Level();
 	UpdateValues();
 }
 
-void UAbilityBase::UpdateValues()
+void AAbilityBase::UpdateValues()
 {
 	DataTableRow = UDataHelperLibrary::GetAbilityDataFromName(AbilityComponent->SurvivalPlayerCharacter,AbilityName);
+}
+
+void AAbilityBase::OnRep_Level()
+{
+	
+}
+
+AAbilityBase::AAbilityBase()
+{
+	bReplicates = true;
 }

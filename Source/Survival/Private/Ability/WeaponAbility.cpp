@@ -7,12 +7,12 @@
 #include "Components/AbilityComponent.h"
 #include "Library/DataHelperLibrary.h"
 
-UWeaponAbility::UWeaponAbility()
+AWeaponAbility::AWeaponAbility()
 {
-	AbilityName = TEXT("Weapon");
+	AbilityName =  TEXT("Weapon");
 }
 
-void UWeaponAbility::UpdateValues()
+void AWeaponAbility::UpdateValues()
 {
 	Super::UpdateValues();
 	//WeaponBase

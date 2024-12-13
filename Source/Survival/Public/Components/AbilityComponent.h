@@ -8,9 +8,9 @@
 
 class ASurvivalPlayerCharacter;
 class ASurvivalPlayerState;
-class UWeaponAbility;
+class AWeaponAbility;
 class AWeaponBase;
-class UAbilityBase;
+class AAbilityBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SURVIVAL_API UAbilityComponent : public UActorComponent
@@ -23,8 +23,6 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<ASurvivalPlayerCharacter> SurvivalPlayerCharacter;
-	UPROPERTY(Replicated)
-	TObjectPtr<ASurvivalPlayerState> OwnerPlayerState;
 	
 	//~Begin ShootLogic
 	float GetShootFrequency();
@@ -37,9 +35,7 @@ public:
 
 	//给技能升级，如果没有这个技能，则给予 On Server
 	void TryLevelUpAbility(FName AbilityName);
-
-	UFUNCTION(NetMulticast,Reliable)
-	void Mult_GiveAbility(FName AbilityName,TSubclassOf<UAbilityBase> AbilityClass);
+	AAbilityBase* GiveAbility(FName AbilityName);
 	
 	//发生在OnRep_Weapon之后
 	//使得Character能够拿到收到所有数值变化 并获取初始值并广播 OnServer
@@ -48,10 +44,11 @@ public:
 	
 protected:
 	UPROPERTY(Replicated)
-	TObjectPtr<UWeaponAbility> WeaponAbility;
+	TObjectPtr<AWeaponAbility> WeaponAbility;
 	//为什么UObject类型必须要用TObjectPtr才能放在TArray中
 	UPROPERTY(Replicated)
-	TArray<TObjectPtr<UAbilityBase>> ActiveAbilities;
+	TArray<TObjectPtr<AAbilityBase>> ActiveAbilities;
 };
+
 
 
