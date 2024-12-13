@@ -24,10 +24,14 @@ public:
 	
 	//通知当前的HUD切换显示页面
 	UFUNCTION(Client, Reliable)
-	void ChangeOverlayPage(FName PageName);
+	void CL_ChangeOverlayPage(FName PageName);
 	UFUNCTION(Client,Unreliable)
 	void CL_AttackHit();
 
+	UFUNCTION(BlueprintCallable,Server, Reliable)
+	void SRV_ResumePause();
+	
+	
 	//~Begin HUD Delegates
 	UPROPERTY(BlueprintAssignable)
 	FInformHUDSignature OnAttackHitDelegate;//攻击成功命中 Value无意义

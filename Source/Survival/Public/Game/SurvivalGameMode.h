@@ -21,7 +21,11 @@ public:
 	                              ASurvivalPlayerController* AttackerController) override;
 
 	void EnemyEliminated(ASurvivalCharacterBase* EliminatedCharacter, ASurvivalPlayerController* AttackerController);
+	void LevelUp();
+	void PlayerResume(ASurvivalPlayerController* Player);
 protected:
-	ASurvivalGameState* GetGameState();
+	ASurvivalGameState* GetSurvivalGameState();
 	TObjectPtr<ASurvivalGameState> SurvivalGameState;
+	//记录选择完成的所有玩家
+	TArray<ASurvivalPlayerController*> ReadyPlayers;
 };

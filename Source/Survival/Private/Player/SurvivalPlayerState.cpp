@@ -42,6 +42,6 @@ void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)
 	GetWorld()->GetAuthGameMode()->RestartPlayer(GetPlayerController());
 	if (ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(GetPlayerController()))
 	{
-		SurvivalPlayerController->ChangeOverlayPage(TEXT("PlayerUI"));
+		SurvivalPlayerController->CL_ChangeOverlayPage(TEXT("PlayerUI"));
 	}
 }

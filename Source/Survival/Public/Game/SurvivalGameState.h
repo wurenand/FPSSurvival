@@ -20,7 +20,8 @@ public:
 	//Callable Test
 	UFUNCTION(BlueprintCallable, Category = "Survival")
 	void AddXP(int32 XPToAdd);
-
+	void SetAllGamePause(bool Pause);
+	
 	UPROPERTY(BlueprintAssignable)
 	FOnGameStateValueChangedSignature OnXPPercentChanged;
 	UPROPERTY(BlueprintAssignable)
@@ -34,4 +35,9 @@ protected:
 	int32 Level = 1;
 	UFUNCTION()
 	void OnRep_Level();
+
+	UPROPERTY(ReplicatedUsing = OnRep_bIsPaused)
+	bool bIsPaused = false;
+	UFUNCTION()
+	void OnRep_bIsPaused();
 };

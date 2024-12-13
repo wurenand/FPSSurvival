@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Game/SurvivalGameMode.h"
 #include "Player/SurvivalPlayerState.h"
 #include "Game/SurvivalGameState.h"
 #include "Interface/HandleInputInterface.h"
@@ -35,10 +36,27 @@ void ASurvivalPlayerController::BeginPlay()
 	}
 }
 
+void ASurvivalPlayerController::CL_ChangeOverlayPage_Implementation(FName PageName)
+{
+	if (ATotalHUD* HUD = Cast<ATotalHUD>(GetHUD()))
+	{
+		HUD->ChangeOverlayPage(PageName);
+	}
+}
+
 void ASurvivalPlayerController::CL_AttackHit_Implementation()
 {
 	OnAttackHitDelegate.Broadcast(0);
 	//TODO:后续还可以添加音效等...
+}
+
+void ASurvivalPlayerController::SRV_ResumePause_Implementation()
+{
+	if (ASurvivalGameMode* SurvivalGameMode = Cast<ASurvivalGameMode>(GetWorld()->GetAuthGameMode()))
+	{
+		//TODO:Every Player Should Resume Game Here
+		SurvivalGameMode->PlayerResume(this);
+	}
 }
 
 void ASurvivalPlayerController::SetupInputComponent()
@@ -57,14 +75,6 @@ void ASurvivalPlayerController::SetupInputComponent()
 		                                   &ASurvivalPlayerController::ForwardInputShootCompleted);
 		EnhancedInputComponent->BindAction(ActionReload, ETriggerEvent::Started, this,
 		                                   &ASurvivalPlayerController::ForwardInputReload);
-	}
-}
-
-void ASurvivalPlayerController::ChangeOverlayPage_Implementation(FName PageName)
-{
-	if (ATotalHUD* HUD = Cast<ATotalHUD>(GetHUD()))
-	{
-		HUD->ChangeOverlayPage(PageName);
 	}
 }
 
