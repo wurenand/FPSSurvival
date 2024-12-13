@@ -39,11 +39,7 @@ int32 UDataHelperLibrary::GetLevelFromXP(const UObject* WorldContentObject, int3
 		FRealCurve* XPCurve = GameState->GetDataStruct().XPToLevelCurve->FindCurve(TEXT("XPToLevel"), ContextString);
 		int32 Level = 1;
 		int32 MaxLevel = XPCurve->GetNumKeys();
-		if (MaxLevel <= Level)
-		{
-			return Level;
-		}
-		while (XP >= XPCurve->Eval(Level + 1))
+		while (MaxLevel > Level && XP >= XPCurve->Eval(Level + 1))
 		{
 			Level++;
 		}
