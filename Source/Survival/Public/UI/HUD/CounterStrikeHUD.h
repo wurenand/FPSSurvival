@@ -14,7 +14,7 @@ UCLASS()
 class SURVIVAL_API ACounterStrikeHUD : public ATotalHUD
 {
 	GENERATED_BODY()
-	public:
-	virtual void SetWidgetControllerParams(const FBaseWidgetControllerParams& Params) override;
 
+public:
+	virtual void SetWidgetControllerParams(const FBaseWidgetControllerParams& Params) override;
 };

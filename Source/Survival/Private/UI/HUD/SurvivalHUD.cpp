@@ -2,3 +2,13 @@
 
 
 #include "UI/HUD/SurvivalHUD.h"
+
+#include "Game/SurvivalGameState.h"
+#include "UI/WidgetController/SurvivalWidgetController.h"
+
+void ASurvivalHUD::SetWidgetControllerParams(const FBaseWidgetControllerParams& Params)
+{
+	Super::SetWidgetControllerParams(Params);
+	USurvivalWidgetController* SurvivalWidgetController = Cast<USurvivalWidgetController>(WidgetController);
+	SurvivalWidgetController->SurvivalGameState = Cast<ASurvivalGameState>(Params.TotalGameState);
+}

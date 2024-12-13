@@ -21,10 +21,19 @@ void ASurvivalGameState::AddXP(int32 XPToAdd)
 	{
 		//TODO:AddLevel 执行升级逻辑
 		Level++;
+		OnRep_Level();
 	}
 	XP += XPToAdd;
+	OnRep_XP();
 }
 
 void ASurvivalGameState::OnRep_XP()
 {
+	//计算当前百分比
+	OnXPPercentChanged.Broadcast(UDataHelperLibrary::GetPercentToNextLevelFromXP(this, XP));
+}
+
+void ASurvivalGameState::OnRep_Level()
+{
+	OnLevelChanged.Broadcast(Level);
 }

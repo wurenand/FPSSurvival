@@ -17,12 +17,21 @@ class SURVIVAL_API ASurvivalGameState : public ATotalGameStateBase
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	//Callable Test
+	UFUNCTION(BlueprintCallable, Category = "Survival")
 	void AddXP(int32 XPToAdd);
+
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateValueChangedSignature OnXPPercentChanged;
+	UPROPERTY(BlueprintAssignable)
+	FOnGameStateValueChangedSignature OnLevelChanged;
 protected:
 	UPROPERTY(ReplicatedUsing = OnRep_XP)
 	int32 XP = 0;
 	UFUNCTION()
 	void OnRep_XP();
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_Level)
 	int32 Level = 1;
+	UFUNCTION()
+	void OnRep_Level();
 };
