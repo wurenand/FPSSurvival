@@ -17,6 +17,18 @@ void UAbilityComponent::GetLifetimeReplicatedProps(TArray<class FLifetimePropert
 	DOREPLIFETIME(UAbilityComponent, AbilityHandles)
 }
 
+const FAbilityHandle* UAbilityComponent::IsOwningAbility(FName AbilityName) const
+{
+	for (auto& Handle : AbilityHandles)
+	{
+		if (Handle.AbilityName == AbilityName)
+		{
+			return &Handle;
+		}
+	}
+	return nullptr;
+}
+
 float UAbilityComponent::GetShootFrequency()
 {
 	if (WeaponAbility == nullptr)
@@ -143,6 +155,6 @@ void UAbilityComponent::OnRep_AbilityHandles()
 	for (auto& Handle : AbilityHandles)
 	{
 		UKismetSystemLibrary::PrintString(
-			this,("Ability" + Handle.AbilityName.ToString() + "Level : " + FString::FromInt(Handle.Level)));
+			this, ("Ability" + Handle.AbilityName.ToString() + "Level : " + FString::FromInt(Handle.Level)));
 	}
 }

@@ -27,10 +27,14 @@ public:
 	void CL_ChangeOverlayPage(FName PageName);
 	UFUNCTION(Client,Unreliable)
 	void CL_AttackHit();
+	UFUNCTION(Client, Reliable)
+	void CL_HandleLevelUp();
 
-	UFUNCTION(BlueprintCallable,Server, Reliable)
-	void SRV_ResumePause();
+	//On Server
+	void ResumePause();
 	
+	UFUNCTION(Server, Reliable)
+	void SRV_SelectAbility(FName AbilityName);
 	
 	//~Begin HUD Delegates
 	UPROPERTY(BlueprintAssignable)

@@ -23,12 +23,12 @@ public:
 	UPROPERTY(EditAnywhere,Category = "PageInfo")
 	FName PageName = TEXT("");
 	//由HUD负责调用，当切换到当前页面时调用，蓝图中用来设置InputMode等..
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)//默认会提供一个_Implementation的virtual函数
 	void AfterChooseThisPage();
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Controller")
 	TObjectPtr<UObject> WidgetController;
 	//在蓝图中实现，在WidgetController被设置后调用，绑定函数到WidgetController中的Delegate来更新数据等
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 	void AfterWidgetControllerSet();
 };

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SurvivalUserWidget.h"
+#include "UI/Widget/SurvivalUserWidget.h"
 #include "AbilityDataBoxWidget.generated.h"
 
 class UTextBlock;

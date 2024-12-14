@@ -8,3 +8,13 @@ void USurvivalUserWidget::SetWidgetController(UObject* InWidgetController)
 	WidgetController = InWidgetController;
 	AfterWidgetControllerSet();
 }
+
+void USurvivalUserWidget::AfterChooseThisPage_Implementation()
+{
+	
+}
+
+void USurvivalUserWidget::AfterWidgetControllerSet_Implementation()
+{
+	
+}

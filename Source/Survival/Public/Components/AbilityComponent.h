@@ -22,6 +22,8 @@ public:
 	UAbilityComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	const FAbilityHandle* IsOwningAbility(FName AbilityName) const;
+	
 	UPROPERTY()
 	TObjectPtr<ASurvivalPlayerCharacter> SurvivalPlayerCharacter;
 	

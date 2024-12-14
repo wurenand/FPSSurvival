@@ -5,10 +5,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Components/AbilityComponent.h"
 #include "Game/SurvivalGameMode.h"
 #include "Player/SurvivalPlayerState.h"
 #include "Game/SurvivalGameState.h"
 #include "Interface/HandleInputInterface.h"
+#include "UI/HUD/SurvivalHUD.h"
 #include "UI/HUD/TotalHUD.h"
 #include "UI/WidgetController/TotalWidgetController.h"
 
@@ -50,12 +52,32 @@ void ASurvivalPlayerController::CL_AttackHit_Implementation()
 	//TODO:后续还可以添加音效等...
 }
 
-void ASurvivalPlayerController::SRV_ResumePause_Implementation()
+void ASurvivalPlayerController::CL_HandleLevelUp_Implementation()
+{
+	if (ASurvivalHUD* SurvivalHUD = Cast<ASurvivalHUD>(GetHUD()))
+	{
+		SurvivalHUD->GetOptions(GetPlayerState<ASurvivalPlayerState>()->GetAbilityComponent());
+	}
+	CL_ChangeOverlayPage(TEXT("LevelUp"));
+}
+
+void ASurvivalPlayerController::ResumePause()
 {
 	if (ASurvivalGameMode* SurvivalGameMode = Cast<ASurvivalGameMode>(GetWorld()->GetAuthGameMode()))
 	{
 		//TODO:Every Player Should Resume Game Here
 		SurvivalGameMode->PlayerResume(this);
+	}
+}
+
+void ASurvivalPlayerController::SRV_SelectAbility_Implementation(FName AbilityName)
+{
+	if (ASurvivalPlayerState* SurvivalPlayerState = GetPlayerState<ASurvivalPlayerState>())
+	{
+		//升级
+		SurvivalPlayerState->GetAbilityComponent()->TryLevelUpAbility(AbilityName);
+		//申请继续
+		ResumePause();
 	}
 }
 

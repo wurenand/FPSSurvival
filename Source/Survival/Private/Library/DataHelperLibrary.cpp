@@ -30,6 +30,17 @@ FAbilityDataTableRow UDataHelperLibrary::GetAbilityDataFromName(const UObject* W
 	return FAbilityDataTableRow();
 }
 
+UDataTable* UDataHelperLibrary::GetAbilityDataTable(const UObject* WorldContentObject)
+{
+	if (ATotalGameStateBase* GameState = Cast<ATotalGameStateBase>(WorldContentObject->GetWorld()->GetGameState()))
+	{
+		FString ContextString = "";
+		checkf(GameState->GetDataStruct().AbilityDataTable, TEXT("GameState->AbilityDataTable Is Null"))
+		return GameState->GetDataStruct().AbilityDataTable;
+	}
+	return nullptr;
+}
+
 int32 UDataHelperLibrary::GetLevelFromXP(const UObject* WorldContentObject, int32 XP)
 {
 	if (ATotalGameStateBase* GameState = Cast<ATotalGameStateBase>(WorldContentObject->GetWorld()->GetGameState()))

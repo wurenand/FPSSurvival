@@ -25,8 +25,7 @@ void ASurvivalGameMode::LevelUp()
 	{
 		if (ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(Player))
 		{
-			//TODO:这里后续增加更多升级的逻辑，目前先切换UI
-			SurvivalPlayerController->CL_ChangeOverlayPage(TEXT("LevelUp"));
+			SurvivalPlayerController->CL_HandleLevelUp();
 		}
 	}
 }

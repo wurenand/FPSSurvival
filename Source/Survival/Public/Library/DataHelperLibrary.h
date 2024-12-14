@@ -24,6 +24,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
 	static FAbilityDataTableRow GetAbilityDataFromName(const UObject* WorldContentObject,const FName& AbilityName);
 	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
+	static UDataTable* GetAbilityDataTable(const UObject* WorldContentObject);
+	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
 	static int32 GetLevelFromXP(const UObject* WorldContentObject,int32 XP);
 	UFUNCTION(BlueprintCallable, Category = "DataHelperLibrary")
 	static float GetPercentToNextLevelFromXP(const UObject* WorldContentObject,int32 XP);

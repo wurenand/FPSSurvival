@@ -20,7 +20,7 @@ class SURVIVAL_API UAbilityWidget : public USurvivalUserWidget
 public:
 	virtual void NativeConstruct() override;
 	//用于装入信息
-	void SetInfo();
+	void SetInfo(FName AbilityName,int32 CurrentLevel);
 	
 protected:
 	UFUNCTION()
