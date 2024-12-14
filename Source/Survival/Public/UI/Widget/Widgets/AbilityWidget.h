@@ -6,6 +6,7 @@
 #include "UI/Widget/SurvivalUserWidget.h"
 #include "AbilityWidget.generated.h"
 
+class USurvivalLevelUpPage;
 class UButton;
 class UVerticalBox;
 class UTextBlock;
@@ -21,6 +22,8 @@ public:
 	virtual void NativeConstruct() override;
 	//用于装入信息
 	void SetInfo(FName AbilityName,int32 CurrentLevel);
+	
+	TObjectPtr<USurvivalLevelUpPage> SurvivalLevelUpPage;
 	
 protected:
 	UFUNCTION()

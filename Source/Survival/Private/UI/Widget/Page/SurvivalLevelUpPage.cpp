@@ -4,6 +4,7 @@
 #include "UI/Widget/Page/SurvivalLevelUpPage.h"
 
 #include "Components/AbilityComponent.h"
+#include "Components/TextBlock.h"
 #include "Components/VerticalBox.h"
 #include "Library/DataHelperLibrary.h"
 #include "UI/Widget/Widgets/AbilityWidget.h"
@@ -16,6 +17,9 @@ USurvivalLevelUpPage::USurvivalLevelUpPage()
 
 void USurvivalLevelUpPage::ReFreshOptions(UAbilityComponent* AbilityComponent, int32 OptionCount)
 {
+	Text_Wait->SetVisibility(ESlateVisibility::Hidden);
+	VB_Options->SetVisibility(ESlateVisibility::Visible);
+	
 	//清除之前的选项
 	for (UWidget* Child : VB_Options->GetAllChildren())
 	{
@@ -31,6 +35,7 @@ void USurvivalLevelUpPage::ReFreshOptions(UAbilityComponent* AbilityComponent, i
 		const FAbilityDataTableRow* Row = AbilityDataRows[RandomIndex];
 		checkf(AbilityWidgetClass,TEXT("AbilityWidgetClass Is NULL"))
 		UAbilityWidget* NewAbilityWidget = CreateWidget<UAbilityWidget>(GetOwningPlayer(), AbilityWidgetClass);
+		NewAbilityWidget->SurvivalLevelUpPage = this;
 		//判断是否已经拥有技能
 		const FAbilityHandle* Handle = AbilityComponent->IsOwningAbility(Row->AbilityName);
 		if (Handle)
@@ -49,4 +54,10 @@ void USurvivalLevelUpPage::ReFreshOptions(UAbilityComponent* AbilityComponent, i
 void USurvivalLevelUpPage::AfterChooseThisPage_Implementation()
 {
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+}
+
+void USurvivalLevelUpPage::AfterSelectAbility()
+{
+	VB_Options->SetVisibility(ESlateVisibility::Hidden);
+	Text_Wait->SetVisibility(ESlateVisibility::Visible);
 }

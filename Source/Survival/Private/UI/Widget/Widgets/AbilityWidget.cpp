@@ -8,6 +8,7 @@
 #include "Components/TextBlock.h"
 #include "Library/DataHelperLibrary.h"
 #include "Player/SurvivalPlayerController.h"
+#include "UI/Widget/Page/SurvivalLevelUpPage.h"
 
 void UAbilityWidget::NativeConstruct()
 {
@@ -37,5 +38,6 @@ void UAbilityWidget::SelectAbility()
 		GetWorld()->GetFirstPlayerController()))
 	{
 		SurvivalPlayerController->SRV_SelectAbility(FName(Text_AbilityName->GetText().ToString()));
+		SurvivalLevelUpPage->AfterSelectAbility();
 	}
 }

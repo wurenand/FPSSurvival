@@ -6,6 +6,7 @@
 #include "UI/Widget/SurvivalUserWidget.h"
 #include "SurvivalLevelUpPage.generated.h"
 
+class UTextBlock;
 class UAbilityWidget;
 struct FAbilityDataTableRow;
 class UAbilityComponent;
@@ -26,9 +27,13 @@ public:
 	void ReFreshOptions(UAbilityComponent* AbilityComponent, int32 OptionCount = 2);
 	virtual void AfterChooseThisPage_Implementation() override;
 
+	void AfterSelectAbility();
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* VB_Options;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Text_Wait;
 
 	TArray<FAbilityDataTableRow*> AbilityDataRows;
 
