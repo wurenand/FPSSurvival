@@ -7,9 +7,21 @@
 #include "AbilityBase.generated.h"
 
 class ASurvivalPlayerCharacter;
-class AAbilityBase;
 class UAbilityComponent;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAbilityValueChangedSignature, FName AbilityName, float NewValue);
+
+/**
+ * Ability同步给其他人的结构体，Ability只在Server出现
+ */
+USTRUCT(BlueprintType)
+struct FAbilityHandle
+{
+	GENERATED_BODY()
+	UPROPERTY(BlueprintReadOnly, Category="Ability")
+	FName AbilityName;
+	UPROPERTY(BlueprintReadOnly, Category="Ability")
+	int32 Level = 1;
+};
 
 USTRUCT(BlueprintType)
 struct FAbilityDataTableRow : public FTableRowBase
@@ -18,7 +30,7 @@ struct FAbilityDataTableRow : public FTableRowBase
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
 	TObjectPtr<UCurveTable> AbilityCurveTable;
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
-	TSubclassOf<AAbilityBase> AbilityClass;
+	TSubclassOf<UAbilityBase> AbilityClass;
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
 	FName AbilityName;
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
@@ -37,25 +49,21 @@ UPROPERTY(VisibleAnywhere, Category = "Values")\
 float ValueName##Mult = 1.0f;
 
 /**
- * 修改为AActor的子类，使用网络复制功能
- * 同步一下Level其实就够
  * 其他属性在Server端做修改，而发生变化时，会改动Character中对应的变量，那个会做同步 以后可以改掉
  */
 UCLASS()
-class SURVIVAL_API AAbilityBase : public AActor
+class SURVIVAL_API UAbilityBase : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	AAbilityBase();
-	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseGeneral,GeneralMult)
-	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseDamage,DamageMult)
-	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseFrequency,FrequencyMult)
-	
-	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseGeneral, GeneralMult)
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseDamage, DamageMult)
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseFrequency, FrequencyMult)
 
-	FOnAbilityValueChangedSignature OnGeneralValueChanged;//广播最终结果 Base * Mult
-	
+	FORCEINLINE int32 GetLevel() const { return Level; }
+	FOnAbilityValueChangedSignature OnGeneralValueChanged; //广播最终结果 Base * Mult
+
 	void AddLevel();
 	//会根据当前Level来读取值 并且广播
 	virtual void UpdateValues();
@@ -63,16 +71,15 @@ public:
 	TObjectPtr<UAbilityComponent> AbilityComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ability")
 	FName AbilityName;
+
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_Level, Category="Ability")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Ability")
 	int32 Level = 1;
-	UFUNCTION()
-	void OnRep_Level();
 
 	FAbilityDataTableRow DataTableRow;
 
 	//通用数据，例如HP，移速等。避免创建新的子类
 	MAKE_VALUE(General)
-	MAKE_VALUE(Damage)//伤害
-	MAKE_VALUE(Frequency)//攻击速度/频率
+	MAKE_VALUE(Damage) //伤害
+	MAKE_VALUE(Frequency) //攻击速度/频率
 };

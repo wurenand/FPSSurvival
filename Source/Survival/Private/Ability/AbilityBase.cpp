@@ -6,23 +6,15 @@
 #include "Character/SurvivalPlayerCharacter.h"
 #include "Components/AbilityComponent.h"
 #include "Library/DataHelperLibrary.h"
-#include "Net/UnrealNetwork.h"
 
-void AAbilityBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AAbilityBase, Level);
-}
-
-void AAbilityBase::AddLevel()
+void UAbilityBase::AddLevel()
 {
 	Level++;
-	OnRep_Level();
 	UpdateValues();
 }
 
 
-void AAbilityBase::UpdateValues()
+void UAbilityBase::UpdateValues()
 {
 	DataTableRow = UDataHelperLibrary::GetAbilityDataFromName(AbilityComponent->SurvivalPlayerCharacter, AbilityName);
 	//尝试获取General的值
@@ -37,12 +29,3 @@ void AAbilityBase::UpdateValues()
 	OnGeneralValueChanged.Broadcast(AbilityName, BaseGeneral * GeneralMult);
 }
 
-void AAbilityBase::OnRep_Level()
-{
-}
-
-AAbilityBase::AAbilityBase()
-{
-	bReplicates = true;
-	bAlwaysRelevant = true;
-}

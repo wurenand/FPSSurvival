@@ -6,11 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "AbilityComponent.generated.h"
 
+struct FAbilityHandle;
 class ASurvivalPlayerCharacter;
 class ASurvivalPlayerState;
-class AWeaponAbility;
+class UWeaponAbility;
 class AWeaponBase;
-class AAbilityBase;
+class UAbilityBase;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class SURVIVAL_API UAbilityComponent : public UActorComponent
@@ -35,23 +36,28 @@ public:
 
 	//给技能升级，如果没有这个技能，则给予 On Server
 	void TryLevelUpAbility(FName AbilityName);
-	AAbilityBase* GiveAbility(FName AbilityName);
+	UAbilityBase* GiveAbility(FName AbilityName);
 	
 	//发生在OnRep_Weapon之后
 	//使得Character能够拿到收到所有数值变化 并获取初始值并广播 OnServer
 	void BindAllValueDelegatesAndInit();
-
 	
 protected:
-	UPROPERTY(Replicated)
-	TObjectPtr<AWeaponAbility> WeaponAbility;
+	//Server
+	UPROPERTY()
+	TObjectPtr<UWeaponAbility> WeaponAbility;
 	//为什么UObject类型必须要用TObjectPtr才能放在TArray中
-	UPROPERTY(Replicated)
-	TArray<TObjectPtr<AAbilityBase>> ActiveAbilities;
-
+	UPROPERTY()
+	TArray<TObjectPtr<UAbilityBase>> ActiveAbilities;
 	//快速查找Ability
 	UPROPERTY()
-	TMap<FName,TObjectPtr<AAbilityBase>> NameToAbility;
+	TMap<FName,TObjectPtr<UAbilityBase>> NameToAbility;
+
+	//同步结构体到Client，Client根据这个知晓当前已经拥有的Ability和Level
+	UPROPERTY(ReplicatedUsing = OnRep_AbilityHandles)
+	TArray<FAbilityHandle> AbilityHandles;
+	UFUNCTION()
+	void OnRep_AbilityHandles();
 };
 
 

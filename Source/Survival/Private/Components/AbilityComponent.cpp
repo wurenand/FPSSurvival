@@ -2,6 +2,7 @@
 
 #include "Ability/WeaponAbility.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 
@@ -13,8 +14,7 @@ UAbilityComponent::UAbilityComponent()
 void UAbilityComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(UAbilityComponent, WeaponAbility);
-	DOREPLIFETIME(UAbilityComponent, ActiveAbilities);
+	DOREPLIFETIME(UAbilityComponent, AbilityHandles)
 }
 
 float UAbilityComponent::GetShootFrequency()
@@ -37,30 +37,41 @@ float UAbilityComponent::GetShootDamage()
 
 void UAbilityComponent::TryLevelUpAbility(FName AbilityName)
 {
+	UAbilityBase* Ability = nullptr;
 	if (AbilityName == TEXT("Weapon"))
 	{
 		WeaponAbility->AddLevel();
+		Ability = WeaponAbility;
 	}
 	else
 	{
-		if (NameToAbility.Find(AbilityName) != nullptr)
+		if (NameToAbility.Find(AbilityName) == nullptr)
 		{
-			NameToAbility[AbilityName]->AddLevel();
+			//没有这个技能
+			GiveAbility(AbilityName);
 			return;
 		}
-		//没有这个技能
-		GiveAbility(AbilityName);
+		NameToAbility[AbilityName]->AddLevel();
+		Ability = NameToAbility[AbilityName];
+	}
+	//同步升级后的新等级
+	for (FAbilityHandle& Handle : AbilityHandles)
+	{
+		if (Handle.AbilityName == AbilityName)
+		{
+			Handle.Level = Ability->GetLevel();
+			OnRep_AbilityHandles();
+			return;
+		}
 	}
 }
 
-AAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
+UAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 {
-	FActorSpawnParameters SpawnParameters;
-	SpawnParameters.Owner = GetOwner();
-	AAbilityBase* NewAbility = nullptr;
+	UAbilityBase* NewAbility = nullptr;
 	if (AbilityName == TEXT("Weapon"))
 	{
-		WeaponAbility = GetWorld()->SpawnActor<AWeaponAbility>(SpawnParameters);
+		WeaponAbility = NewObject<UWeaponAbility>();
 		NewAbility = WeaponAbility;
 	}
 	else
@@ -68,10 +79,10 @@ AAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 		FAbilityDataTableRow AbilityInfo = UDataHelperLibrary::GetAbilityDataFromName(GetWorld(), AbilityName);
 		if (AbilityInfo.AbilityClass)
 		{
-			NewAbility = GetWorld()->SpawnActor<AAbilityBase>(AbilityInfo.AbilityClass, SpawnParameters);
+			NewAbility = NewObject<UAbilityBase>(AbilityInfo.AbilityClass);
 			//Add
 			ActiveAbilities.Add(NewAbility);
-			NameToAbility.Emplace(AbilityName,NewAbility);
+			NameToAbility.Emplace(AbilityName, NewAbility);
 		}
 		else
 		{
@@ -80,11 +91,13 @@ AAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 	}
 	NewAbility->AbilityName = AbilityName;
 	NewAbility->AbilityComponent = this;
+	//同步
+	AbilityHandles.Emplace(AbilityName, 1);
+	OnRep_AbilityHandles();
 	//初始化数值
 	NewAbility->UpdateValues();
 	return NewAbility;
 }
-
 
 void UAbilityComponent::BindAllValueDelegatesAndInit()
 {
@@ -122,5 +135,14 @@ void UAbilityComponent::BindAllValueDelegatesAndInit()
 	for (auto Ability : ActiveAbilities)
 	{
 		Ability->UpdateValues();
+	}
+}
+
+void UAbilityComponent::OnRep_AbilityHandles()
+{
+	for (auto& Handle : AbilityHandles)
+	{
+		UKismetSystemLibrary::PrintString(
+			this,("Ability" + Handle.AbilityName.ToString() + "Level : " + FString::FromInt(Handle.Level)));
 	}
 }

@@ -11,12 +11,12 @@ class AWeaponBase;
  * 
  */
 UCLASS()
-class SURVIVAL_API AWeaponAbility : public AAbilityBase
+class SURVIVAL_API UWeaponAbility : public UAbilityBase
 {
 	GENERATED_BODY()
 public:
 	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseMag,MagMult)
-	AWeaponAbility();
+	UWeaponAbility();
 
 	FOnAbilityValueChangedSignature OnMaxMagChanged;
 
