@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "AbilityBase.generated.h"
 
+class ASurvivalPlayerCharacter;
 class AAbilityBase;
 class UAbilityComponent;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAbilityValueChangedSignature, FName AbilityName, float NewValue);
@@ -18,7 +19,22 @@ struct FAbilityDataTableRow : public FTableRowBase
 	TObjectPtr<UCurveTable> AbilityCurveTable;
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
 	TSubclassOf<AAbilityBase> AbilityClass;
+	UPROPERTY(EditAnywhere, Category = "AbilityData")
+	FName AbilityName;
+	UPROPERTY(EditAnywhere, Category = "AbilityData")
+	UTexture2D* AbilityIcon;
 };
+
+//辅助生成Public函数开放给需要使用的地方
+#define MAKE_PUBLIC_VALUE_FUNCTIONS(BaseValue, ValueMult) \
+FORCEINLINE float Get##BaseValue() const { return BaseValue; } \
+FORCEINLINE float Get##ValueMult() const { return ValueMult; }
+//创建新变量的宏
+#define MAKE_VALUE(ValueName)\
+UPROPERTY(VisibleAnywhere, Category = "Values")\
+float Base##ValueName = 1.0f;\
+UPROPERTY(VisibleAnywhere, Category = "Values")\
+float ValueName##Mult = 1.0f;
 
 /**
  * 修改为AActor的子类，使用网络复制功能
@@ -32,25 +48,22 @@ class SURVIVAL_API AAbilityBase : public AActor
 
 public:
 	AAbilityBase();
-	FORCEINLINE float GetBaseDamage() const { return BaseDamage; }
-	FORCEINLINE float GetDamageMult() const { return DamageMult; }
-	FORCEINLINE float GetBaseFrequency() const { return BaseFrequency; }
-	FORCEINLINE float GetFrequencyMult() const { return FrequencyMult; }
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseGeneral,GeneralMult)
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseDamage,DamageMult)
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseFrequency,FrequencyMult)
 	
-	FORCEINLINE const FName& GetAbilityName() const { return AbilityName; }
-
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	FOnAbilityValueChangedSignature OnGeneralValueChanged;//广播最终结果 Base * Mult
+	
 	void AddLevel();
-
 	//会根据当前Level来读取值 并且广播
 	virtual void UpdateValues();
 
 	TObjectPtr<UAbilityComponent> AbilityComponent;
-
-protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Ability")
 	FName AbilityName;
+protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_Level, Category="Ability")
 	int32 Level = 1;
 	UFUNCTION()
@@ -58,12 +71,8 @@ protected:
 
 	FAbilityDataTableRow DataTableRow;
 
-	UPROPERTY(VisibleAnywhere, Category = "Values")
-	float BaseDamage = 1.0f; //基础伤害
-	UPROPERTY(VisibleAnywhere, Category = "Values")
-	float DamageMult = 1.0f; //伤害倍率
-	UPROPERTY(VisibleAnywhere, Category = "Values")
-	float BaseFrequency = 1.0f; //攻击速度
-	UPROPERTY(VisibleAnywhere, Category = "Values")
-	float FrequencyMult = 1.0f;
+	//通用数据，例如HP，移速等。避免创建新的子类
+	MAKE_VALUE(General)
+	MAKE_VALUE(Damage)//伤害
+	MAKE_VALUE(Frequency)//攻击速度/频率
 };

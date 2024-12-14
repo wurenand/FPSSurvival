@@ -11,7 +11,7 @@
 void AAbilityBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AAbilityBase,Level);
+	DOREPLIFETIME(AAbilityBase, Level);
 }
 
 void AAbilityBase::AddLevel()
@@ -21,17 +21,28 @@ void AAbilityBase::AddLevel()
 	UpdateValues();
 }
 
+
 void AAbilityBase::UpdateValues()
 {
-	DataTableRow = UDataHelperLibrary::GetAbilityDataFromName(AbilityComponent->SurvivalPlayerCharacter,AbilityName);
+	DataTableRow = UDataHelperLibrary::GetAbilityDataFromName(AbilityComponent->SurvivalPlayerCharacter, AbilityName);
+	//尝试获取General的值
+	if (DataTableRow.AbilityCurveTable)
+	{
+		FString ContextString;
+		FRealCurve* BaseCurve = DataTableRow.AbilityCurveTable->FindCurve(TEXT("BaseGeneral"), ContextString);
+		FRealCurve* CurveMult = DataTableRow.AbilityCurveTable->FindCurve(TEXT("GeneralMult"), ContextString);
+		BaseGeneral = BaseCurve ? BaseCurve->Eval(Level) : 0;
+		GeneralMult = CurveMult ? CurveMult->Eval(Level) : 0;
+	}
+	OnGeneralValueChanged.Broadcast(AbilityName, BaseGeneral * GeneralMult);
 }
 
 void AAbilityBase::OnRep_Level()
 {
-	
 }
 
 AAbilityBase::AAbilityBase()
 {
 	bReplicates = true;
+	bAlwaysRelevant = true;
 }

@@ -48,6 +48,10 @@ protected:
 	//为什么UObject类型必须要用TObjectPtr才能放在TArray中
 	UPROPERTY(Replicated)
 	TArray<TObjectPtr<AAbilityBase>> ActiveAbilities;
+
+	//快速查找Ability
+	UPROPERTY()
+	TMap<FName,TObjectPtr<AAbilityBase>> NameToAbility;
 };
 
 

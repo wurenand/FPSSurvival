@@ -43,9 +43,9 @@ public:
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_MaxHealth, Category="Health")
-	float MaxHealth = 100.f;
+	float MaxHealth = 0;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_Health, Category="Health")
-	float Health = 100.f;
+	float Health = 0;
 	UFUNCTION()
 	void OnRep_MaxHealth();
 	UFUNCTION()

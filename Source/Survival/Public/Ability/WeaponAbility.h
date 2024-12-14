@@ -15,16 +15,12 @@ class SURVIVAL_API AWeaponAbility : public AAbilityBase
 {
 	GENERATED_BODY()
 public:
-	FORCEINLINE float GetBaseMag() const{return BaseMag;}
-	FORCEINLINE float GetMagMult() const{return MagMult;}
+	MAKE_PUBLIC_VALUE_FUNCTIONS(BaseMag,MagMult)
 	AWeaponAbility();
 
 	FOnAbilityValueChangedSignature OnMaxMagChanged;
 
 	virtual void UpdateValues() override;
 protected:
-	UPROPERTY(VisibleAnywhere,Category = "Values")
-	float BaseMag = 1.0f;
-	UPROPERTY(VisibleAnywhere,Category = "Values")
-	float MagMult = 1.0f;//弹药系数
+	MAKE_VALUE(Mag)
 };

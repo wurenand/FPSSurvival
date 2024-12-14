@@ -5,7 +5,6 @@
 
 #include "InputActionValue.h"
 #include "PlayMontageCallbackProxy.h"
-#include "Ability/WeaponAbility.h"
 #include "Actor/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
