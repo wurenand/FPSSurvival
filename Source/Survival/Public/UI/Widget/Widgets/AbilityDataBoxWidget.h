@@ -15,7 +15,7 @@ class SURVIVAL_API UAbilityDataBoxWidget : public USurvivalUserWidget
 {
 	GENERATED_BODY()
 public:
-	void SetInfo();
+	void SetInfo(const FName& InDataName,const FRealCurve* Curve,int32 CurrentLevel);
 protected:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* DataName;

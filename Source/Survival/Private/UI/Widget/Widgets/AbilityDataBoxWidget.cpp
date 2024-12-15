@@ -2,6 +2,11 @@
 
 #include "UI/Widget/Widgets/AbilityDataBoxWidget.h"
 
-void UAbilityDataBoxWidget::SetInfo()
+#include "Components/TextBlock.h"
+
+void UAbilityDataBoxWidget::SetInfo(const FName& InDataName, const FRealCurve* Curve, int32 CurrentLevel)
 {
+	DataName->SetText(FText::FromString(InDataName.ToString()));
+	DataPreValue->SetText(FText::AsNumber(Curve->Eval(CurrentLevel)));
+	DataNewValue->SetText(FText::AsNumber(Curve->Eval(CurrentLevel + 1)));
 }
