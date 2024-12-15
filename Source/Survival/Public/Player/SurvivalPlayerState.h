@@ -25,6 +25,10 @@ public:
 	UFUNCTION(Server, Reliable,BlueprintCallable)
 	void SRV_SetTeam(ETeam NewTeam);
 
+	//TEST
+	UFUNCTION(BlueprintCallable,Category = "Test")
+	void TEST_GiveAbility(FName AbilityName);
+
 protected:
 	UPROPERTY(VisibleAnywhere,Replicated ,Category = "Ability")
 	TObjectPtr<UAbilityComponent> AbilityComponent;

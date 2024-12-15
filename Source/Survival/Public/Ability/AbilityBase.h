@@ -71,7 +71,7 @@ public:
 	FOnAbilityValueChangedSignature OnGeneralValueChanged; //广播最终结果 Base * Mult
 
 	void AddLevel();
-	//会根据当前Level来读取值 并且广播
+	//会根据当前Level来读取值 并且广播 第一次Give和AddLevel都会调用
 	virtual void UpdateValues();
 
 	TObjectPtr<UAbilityComponent> AbilityComponent;

@@ -26,6 +26,11 @@ UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
 	return AbilityComponent;
 }
 
+void ASurvivalPlayerState::TEST_GiveAbility(FName AbilityName)
+{
+	AbilityComponent->GiveAbility(AbilityName);
+}
+
 void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)
 {
 	if (Team == NewTeam)

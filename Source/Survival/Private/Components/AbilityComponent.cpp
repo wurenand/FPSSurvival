@@ -83,7 +83,7 @@ UAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 	UAbilityBase* NewAbility = nullptr;
 	if (AbilityName == TEXT("Weapon"))
 	{
-		WeaponAbility = NewObject<UWeaponAbility>();
+		WeaponAbility = NewObject<UWeaponAbility>(this);
 		NewAbility = WeaponAbility;
 	}
 	else
@@ -91,7 +91,7 @@ UAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 		FAbilityDataTableRow AbilityInfo = UDataHelperLibrary::GetAbilityDataFromName(GetWorld(), AbilityName);
 		if (AbilityInfo.AbilityClass)
 		{
-			NewAbility = NewObject<UAbilityBase>(AbilityInfo.AbilityClass);
+			NewAbility = NewObject<UAbilityBase>(this, AbilityInfo.AbilityClass);
 			//Add
 			ActiveAbilities.Add(NewAbility);
 			NameToAbility.Emplace(AbilityName, NewAbility);
@@ -106,6 +106,10 @@ UAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 	//同步
 	AbilityHandles.Emplace(AbilityName, 1);
 	OnRep_AbilityHandles();
+
+	UE_LOG(LogTemp, Warning, TEXT("AbilityName : %s,Class : %s"), *AbilityName.ToString(),
+	       *NewAbility->GetClass()->GetName())
+
 	//初始化数值
 	NewAbility->UpdateValues();
 	return NewAbility;

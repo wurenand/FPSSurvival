@@ -44,7 +44,7 @@ void USurvivalLevelUpPage::ReFreshOptions(UAbilityComponent* AbilityComponent, i
 		}
 		else
 		{
-			NewAbilityWidget->SetInfo(Handle->AbilityName, 0);
+			NewAbilityWidget->SetInfo(Row->AbilityName, 0);
 		}
 		VB_Options->AddChild(NewAbilityWidget);
 	}
