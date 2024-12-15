@@ -6,6 +6,7 @@
 #include "UI/Widget/SurvivalUserWidget.h"
 #include "AbilityWidget.generated.h"
 
+class UAbilityDataBoxWidget;
 class USurvivalLevelUpPage;
 class UButton;
 class UVerticalBox;
@@ -39,4 +40,7 @@ protected:
 	UTextBlock* Text_AbilityLevel;
 	UPROPERTY(meta = (BindWidget))
 	UVerticalBox* VB_AbilityData;
+
+	UPROPERTY(EditDefaultsOnly,Category = "Class")
+	TSubclassOf<UAbilityDataBoxWidget> AbilityDataBoxWidgetClass;
 };

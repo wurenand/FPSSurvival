@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "AbilityBase.generated.h"
 
+class UAbilityBase;
 class ASurvivalPlayerCharacter;
 class UAbilityComponent;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAbilityValueChangedSignature, FName AbilityName, float NewValue);
@@ -27,8 +28,13 @@ USTRUCT(BlueprintType)
 struct FAbilityDataTableRow : public FTableRowBase
 {
 	GENERATED_BODY()
+	//Ability的各级数据表
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
 	TObjectPtr<UCurveTable> AbilityCurveTable;
+	//数据表中每个Curve属性的Name对应的显示名字
+	UPROPERTY(EditAnywhere, Category = "AbilityData")
+	TMap<FName, FName> CurveNameToDisplayName;
+	//Ability的类型
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
 	TSubclassOf<UAbilityBase> AbilityClass;
 	UPROPERTY(EditAnywhere, Category = "AbilityData")
