@@ -41,6 +41,7 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, Weapon);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
+	DOREPLIFETIME(ASurvivalPlayerCharacter, MaxMagCount);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, AimDirection);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsReloading);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsShooting);
