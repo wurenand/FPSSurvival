@@ -18,7 +18,7 @@ AProjectileBase::AProjectileBase()
 	ProjectileMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ProjectileMesh->SetupAttachment(Root);
 	SphereCollision = CreateDefaultSubobject<USphereComponent>("SphereCollision");
-	SphereCollision->SetCollisionEnabled(ECollisionEnabled::Type::QueryOnly);
+	SphereCollision->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
 	SphereCollision->SetCollisionResponseToAllChannels(ECR_Overlap);
 	SphereCollision->SetCollisionObjectType(ECC_Ability);//设置为ECC_Ability
 	SphereCollision->SetupAttachment(RootComponent);
@@ -61,11 +61,6 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	}
 	//Spawn命中特效
 	UGameplayStatics::SpawnEmitterAtLocation(this, ImpactParticle,ProjectileMesh->GetComponentLocation() );
-	//通知开火者成功命中
-	if(ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(GetInstigator()->GetController()))
-	{
-		SurvivalPlayerController->CL_AttackHit();
-	}
 	//造成伤害
 	if (HasAuthority())
 	{
@@ -73,6 +68,11 @@ void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(OtherActor))
 		{
 			CombatInterface->CombatTakeDamage(Cast<ASurvivalCharacterBase>(GetInstigator()), Damage);
+			//通知开火者成功命中
+			if(ASurvivalPlayerController* SurvivalPlayerController = Cast<ASurvivalPlayerController>(GetInstigator()->GetController()))
+			{
+				SurvivalPlayerController->CL_AttackHit();
+			}
 		}
 		Destroy();
 	}

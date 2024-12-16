@@ -9,6 +9,9 @@
 class UProjectileMovementComponent;
 class USphereComponent;
 
+/**
+ * 飞行物的Base，Instigator需要是PlayerCharacter
+ */
 UCLASS()
 class SURVIVAL_API AProjectileBase : public AActor
 {
@@ -47,7 +50,7 @@ protected:
 	//~End
 
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	virtual void OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	           int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	//下面的数据应当来自于Weapon
