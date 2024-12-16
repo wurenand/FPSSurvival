@@ -18,6 +18,7 @@ void UAbilityBase::UpdateValues()
 {
 	DataTableRow = UDataHelperLibrary::GetAbilityDataFromName(AbilityComponent->SurvivalPlayerCharacter, AbilityName);
 	//尝试获取General的值
+	GET_VALUE_FROM_CURVE_HELPER(General,Level)
 	if (DataTableRow.AbilityCurveTable)
 	{
 		FString ContextString;

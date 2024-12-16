@@ -11,6 +11,20 @@ class ASurvivalPlayerCharacter;
 class UAbilityComponent;
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnAbilityValueChangedSignature, FName AbilityName, float NewValue);
 
+//用来读取表中属性值的辅助宏
+#define GET_VALUE_FROM_CURVE_HELPER(AttributeName,Level) \
+if (DataTableRow.AbilityCurveTable) \
+{ \
+FString ContextString; \
+FString BaseCurveName = FString::Printf(TEXT("Base%hs"), #AttributeName); \
+FString CurveMultName = FString::Printf(TEXT("%hsMult"), #AttributeName); \
+FRealCurve* BaseCurve = DataTableRow.AbilityCurveTable->FindCurve(*BaseCurveName, ContextString); \
+FRealCurve* CurveMult = DataTableRow.AbilityCurveTable->FindCurve(*CurveMultName, ContextString); \
+Base##AttributeName = BaseCurve ? BaseCurve->Eval(Level) : 0; \
+AttributeName##Mult = CurveMult ? CurveMult->Eval(Level) : 0; \
+}
+
+
 /**
  * Ability同步给其他人的结构体，Ability只在Server出现
  */
@@ -57,7 +71,7 @@ float ValueName##Mult = 1.0f;
 /**
  * 其他属性在Server端做修改，而发生变化时，会改动Character中对应的变量，那个会做同步 以后可以改掉
  */
-UCLASS()
+UCLASS(Blueprintable)
 class SURVIVAL_API UAbilityBase : public UObject
 {
 	GENERATED_BODY()

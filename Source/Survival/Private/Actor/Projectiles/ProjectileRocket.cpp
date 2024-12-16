@@ -48,6 +48,6 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* 
 				SurvivalPlayerController->CL_AttackHit();
 			}
 		}
-		Destroy();
 	}
+	Destroy();
 }

@@ -6,6 +6,7 @@
 #include "Ability/AbilityBase.h"
 #include "ActiveAbilityBase.generated.h"
 
+class AProjectileBase;
 /**
  * 非纯数据Ability，需要数据中包含Frequency，作为Timer触发的时间频率
  */
@@ -21,4 +22,7 @@ protected:
 	//每次实际触发的事件
 	virtual void TriggerActiveEvent();
 	FTimerHandle ActiveTimerHandle;
+
+	UPROPERTY(EditAnywhere,Category = "AbilitySpawnActor")
+	TSubclassOf<AProjectileBase> ProjectileClass;
 };
