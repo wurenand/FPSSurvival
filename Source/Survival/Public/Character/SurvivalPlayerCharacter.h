@@ -54,6 +54,9 @@ public:
 	FOnCharacterValueChangedSignature OnMagCountChanged;
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterValueChangedSignature OnMaxMagCountChanged;
+	//广播当前玩家准心是否对准了敌人 1为true 0为false
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterValueChangedSignature OnIsAimingEnemyChanged;
 	//用于广播所有初始值(一般在UI中设置参数之后由UI调用)
 	void InitUIValues();
 	//~End Delegate

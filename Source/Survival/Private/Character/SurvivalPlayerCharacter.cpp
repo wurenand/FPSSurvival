@@ -5,7 +5,7 @@
 
 #include "InputActionValue.h"
 #include "PlayMontageCallbackProxy.h"
-#include "Actor/ProjectileBase.h"
+#include "Actor/Projectiles/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
@@ -89,6 +89,7 @@ void ASurvivalPlayerCharacter::InitUIValues()
 	OnMagCountChanged.Broadcast(CurrentMagCount);
 	OnMaxHPChanged.Broadcast(MaxHealth);
 	OnHPChanged.Broadcast(Health);
+	OnIsAimingEnemyChanged.Broadcast(false);
 }
 
 void ASurvivalPlayerCharacter::OnRep_Weapon()
@@ -368,7 +369,16 @@ void ASurvivalPlayerCharacter::HitTraceTick(float DeltaSeconds)
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this);
 		GetWorld()->LineTraceSingleByChannel(HitTraceResult, ViewLocation, AimTargetPoint, ECC_Pawn, CollisionParams);
-		//TODO:这里可以判断是否是敌军
+
+		if (ICombatInterface* CombatInterface = Cast<ICombatInterface>(HitTraceResult.GetActor()))
+		{
+			if (CombatInterface->GetCharacterTeam() != GetCharacterTeam())
+			{
+				OnIsAimingEnemyChanged.Broadcast(1);
+				return;
+			}
+		}
+		OnIsAimingEnemyChanged.Broadcast(0);
 	}
 }
 
