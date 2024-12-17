@@ -53,6 +53,7 @@ protected:
 	void ForwardInputShootTriggered(const FInputActionValue& Value);
 	void ForwardInputShootCompleted(const FInputActionValue& Value);
 	void ForwardInputReload(const FInputActionValue& Value);
+	void ForwardInputJump(const FInputActionValue& Value);
 	UPROPERTY(EditAnywhere,Category = "Input")
 	TObjectPtr<UInputMappingContext> DefaultMappingContext;
 	UPROPERTY(EditAnywhere,Category = "Input")
@@ -63,5 +64,7 @@ protected:
 	TObjectPtr<UInputAction> ActionShoot;
 	UPROPERTY(EditAnywhere,Category = "Input")
 	TObjectPtr<UInputAction> ActionReload;
+	UPROPERTY(EditAnywhere,Category = "Input")
+	TObjectPtr<UInputAction> ActionJump;
 	//~End Input
 };

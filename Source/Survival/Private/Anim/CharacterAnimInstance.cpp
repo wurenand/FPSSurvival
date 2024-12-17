@@ -6,6 +6,7 @@
 #include "KismetAnimationLibrary.h"
 #include "Character/SurvivalCharacterBase.h"
 #include "Character/SurvivalPlayerCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 void UCharacterAnimInstance::NativeInitializeAnimation()
 {
@@ -25,6 +26,7 @@ void UCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		{
 			AimDirection = Player->AimDirection;
 		}
+		bIsInAir = GetCharacterBase()->GetCharacterMovement()->IsFalling();
 	}
 }
 

@@ -26,5 +26,7 @@ protected:
 	float MovementDirection;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
 	float AimDirection;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
+	bool bIsInAir;
 	ASurvivalCharacterBase* GetCharacterBase();
 };

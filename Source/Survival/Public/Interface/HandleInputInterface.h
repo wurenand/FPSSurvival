@@ -29,4 +29,5 @@ public:
 	virtual void HandleInputShootTriggered(const FInputActionValue& Value) = 0;
 	virtual void HandleInputShootCompleted(const FInputActionValue& Value) = 0;
 	virtual void HandleInputReload(const FInputActionValue& Value) = 0;
+	virtual void HandleInputJump(const FInputActionValue& Value) = 0;
 };

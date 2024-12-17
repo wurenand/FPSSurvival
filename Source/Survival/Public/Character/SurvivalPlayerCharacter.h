@@ -31,6 +31,7 @@ public:
 	virtual void HandleInputShootTriggered(const FInputActionValue& Value) override;
 	virtual void HandleInputShootCompleted(const FInputActionValue& Value) override;
 	virtual void HandleInputReload(const FInputActionValue& Value) override;
+	virtual void HandleInputJump(const FInputActionValue& Value) override;
 	//~End InputComponent
 
 

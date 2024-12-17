@@ -10,6 +10,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
 #include "Game/TotalGameModeBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Library/DataHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
@@ -157,6 +158,14 @@ void ASurvivalPlayerCharacter::HandleInputLook(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookVector.X);
 		AddControllerPitchInput(-LookVector.Y);
+	}
+}
+
+void ASurvivalPlayerCharacter::HandleInputJump(const FInputActionValue& Value)
+{
+	if (GetCharacterMovement()->CanEverJump())
+	{
+		Jump();
 	}
 }
 
