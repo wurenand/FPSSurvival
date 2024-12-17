@@ -4,6 +4,7 @@
 #include "Character/SurvivalPlayerCharacter.h"
 
 #include "InputActionValue.h"
+#include "ObjectPoolComponent.h"
 #include "PlayMontageCallbackProxy.h"
 #include "Actor/Projectiles/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
@@ -13,6 +14,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Library/DataHelperLibrary.h"
+#include "Library/PoolHelperLibrary.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/SurvivalPlayerController.h"
 #include "Player/SurvivalPlayerState.h"
@@ -326,14 +328,35 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	FRotator SpawnRotator = (AimTargetPoint - SpawnLocation).Rotation();
 	BulletTransform.SetLocation(SpawnLocation);
 	BulletTransform.SetRotation(SpawnRotator.Quaternion());
-	AProjectileBase* Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
-		BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
-		ESpawnActorScaleMethod::MultiplyWithRoot);
+
+	bool bUsePool = false;
+	AProjectileBase* Projectile = nullptr;
+	if (UObjectPoolComponent* ProjectilePoolComponent = UPoolHelperLibrary::GetPoolFromActorClass(
+		this, AProjectileBase::StaticClass()))
+	{
+		bUsePool = true;
+		Projectile = Cast<AProjectileBase>(ProjectilePoolComponent->RequestActorFromPool());
+	}
+	else
+	{
+		Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
+			BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
+			ESpawnActorScaleMethod::MultiplyWithRoot);
+	}
+
 	//TODO:这里可以配置数据
 	Projectile->SetDamage(AbilityComponent->GetShootDamage());
 	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
 	Projectile->SetInstigator(this);
-	Projectile->FinishSpawning(BulletTransform);
+	if (bUsePool)
+	{
+		Projectile->SetActorTransform(BulletTransform);
+		Cast<IObjectPoolInterface>(Projectile)->PoolActorBeginPlay();
+	}
+	else
+	{
+		Projectile->FinishSpawning(BulletTransform);
+	}
 }
 
 

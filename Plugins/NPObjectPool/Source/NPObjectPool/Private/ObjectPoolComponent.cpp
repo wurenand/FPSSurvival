@@ -25,7 +25,7 @@ AActor* UObjectPoolComponent::RequestActorFromPool()
 	}
 	if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(ReturnActor))
 	{
-		PoolInterface->EnableActor();
+		PoolInterface->SetEnableActor(true);
 	}
 	return ReturnActor;
 }
@@ -36,7 +36,7 @@ void UObjectPoolComponent::ReleaseActorToPool(AActor* ActorToRelease)
 	{
 		if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(ActorToRelease))
 		{
-			PoolInterface->DisableActor();
+			PoolInterface->SetEnableActor(false);
 		}
 		ObjectMap[ActorToRelease] = false;
 	}
@@ -47,10 +47,10 @@ void UObjectPoolComponent::ReleaseActorToPool(AActor* ActorToRelease)
 }
 
 
-void UObjectPoolComponent::InitializeObjectPool(const FWorldContext* WorldContext,
+void UObjectPoolComponent::InitializeObjectPool(UWorld* InWorld,
                                                 UObjectPoolProfileDataAsset* DataAsset)
 {
-	World = WorldContext->World();
+	World = InWorld;
 	PoolData = DataAsset;
 	for (int i = 0; i < DataAsset->InitialObjectCount; i++)
 	{
@@ -63,7 +63,7 @@ AActor* UObjectPoolComponent::SpawnNewActor()
 	AActor* NewActor = World->SpawnActorDeferred<AActor>(PoolData->PoolObjectClass, FTransform());
 	if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(NewActor))
 	{
-		PoolInterface->DisableActor();
+		PoolInterface->SetEnableActor(false);
 	}
 	if (ObjectMap.Num() < PoolData->MaxObjectCount)
 	{

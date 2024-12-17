@@ -16,7 +16,6 @@ class NPOBJECTPOOL_API UObjectPoolComponent : public UActorComponent
 
 public:
 	UObjectPoolComponent();
-
 	
 	/**
 	 * 尝试请求Actor
@@ -26,7 +25,7 @@ public:
 
 	void ReleaseActorToPool(AActor* ActorToRelease);
 	
-	void InitializeObjectPool(const FWorldContext* WorldContext,UObjectPoolProfileDataAsset* DataAsset);
+	void InitializeObjectPool(UWorld* InWorld,UObjectPoolProfileDataAsset* DataAsset);
 
 protected:
 	AActor* SpawnNewActor();

@@ -6,6 +6,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "TotalGameModeBase.generated.h"
 
+class UObjectPoolProfileDataAsset;
+class UObjectPoolComponent;
 class ATeamPlayerStart;
 class ASurvivalPlayerController;
 class ASurvivalCharacterBase;
@@ -25,11 +27,18 @@ public:
 	virtual void PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
 	                              ASurvivalPlayerController* VictimController,
 	                              ASurvivalPlayerController* AttackerController);
+	virtual void BeginPlay() override;
 
+	//GameMode中ActorPool所在位置
+	UPROPERTY()
+	TMap<UClass*, TObjectPtr<UObjectPoolComponent>> ActorPools;
 protected:
 	//在PostLogin之后就更新一次，这时候在RestartPlayer调用之前 当然是按需的(为什么Server端Post)
 	UPROPERTY(EditAnywhere)
 	TArray<AActor*> PlayerStarts;
 	UPROPERTY()
 	TArray<APlayerController*> ConnectedPlayers;
+
+	UPROPERTY(EditAnywhere, Category = "Pools")
+	TArray<TObjectPtr<UObjectPoolProfileDataAsset>> PoolData;
 };
