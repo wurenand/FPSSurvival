@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "PoolHelperLibrary.generated.h"
 
+class ASurvivalPlayerState;
 class UObjectPoolComponent;
 /**
  * 辅助拿到GameMode中的Pool
@@ -16,5 +17,5 @@ class SURVIVAL_API UPoolHelperLibrary : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 	public:
 	UFUNCTION()
-	static UObjectPoolComponent* GetPoolFromActorClass(const UObject* WorldContextObject,UClass* ActorClass);
+	static UObjectPoolComponent* GetProjectilePool(APlayerState* PlayerState,UClass* ProjectileClass);
 };

@@ -321,6 +321,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	//Effect
 	Mult_ShootWeaponEffect(GetActorLocation());
 
+	//Spawn Bullet
 	TSubclassOf<AProjectileBase> BulletClass = Weapon->WeaponInfo.BulletClass;
 	checkf(BulletClass, TEXT("WeaponTable BulletClass is NULL"));
 	FTransform BulletTransform;
@@ -328,35 +329,20 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	FRotator SpawnRotator = (AimTargetPoint - SpawnLocation).Rotation();
 	BulletTransform.SetLocation(SpawnLocation);
 	BulletTransform.SetRotation(SpawnRotator.Quaternion());
-
-	bool bUsePool = false;
+	//从Pool中获得Projectile
 	AProjectileBase* Projectile = nullptr;
-	if (UObjectPoolComponent* ProjectilePoolComponent = UPoolHelperLibrary::GetPoolFromActorClass(
-		this, AProjectileBase::StaticClass()))
+	if (UObjectPoolComponent* PoolComponent = UPoolHelperLibrary::GetProjectilePool(GetPlayerState(), BulletClass))
 	{
-		bUsePool = true;
-		Projectile = Cast<AProjectileBase>(ProjectilePoolComponent->RequestActorFromPool());
+		Projectile = Cast<AProjectileBase>(PoolComponent->RequestActorFromPool());
 	}
-	else
-	{
-		Projectile = GetWorld()->SpawnActorDeferred<AProjectileBase>(
-			BulletClass, BulletTransform, GetController(), this, ESpawnActorCollisionHandlingMethod::AlwaysSpawn,
-			ESpawnActorScaleMethod::MultiplyWithRoot);
-	}
-
 	//TODO:这里可以配置数据
 	Projectile->SetDamage(AbilityComponent->GetShootDamage());
 	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
 	Projectile->SetInstigator(this);
-	if (bUsePool)
-	{
-		Projectile->SetActorTransform(BulletTransform);
-		Cast<IObjectPoolInterface>(Projectile)->PoolActorBeginPlay();
-	}
-	else
-	{
-		Projectile->FinishSpawning(BulletTransform);
-	}
+	Projectile->SetActorTransform(BulletTransform);
+	//Pool
+	Projectile->SetEnableActor(true);
+	Projectile->PoolActorBeginPlay();
 }
 
 

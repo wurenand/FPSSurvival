@@ -7,6 +7,7 @@
 #include "ObjectPoolComponent.generated.h"
 
 
+class APoolActor;
 class UObjectPoolProfileDataAsset;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -21,19 +22,22 @@ public:
 	 * 尝试请求Actor
 	 * @return 
 	 */
-	AActor* RequestActorFromPool();
+	APoolActor* RequestActorFromPool();
 
-	void ReleaseActorToPool(AActor* ActorToRelease);
-	
-	void InitializeObjectPool(UWorld* InWorld,UObjectPoolProfileDataAsset* DataAsset);
+	void ReleaseActorToPool(APoolActor* ActorToRelease);
 
+	//在拥有者BeginPlay的时候调用，确保World存在
+	void InitializeObjectPool(UWorld* InWorld);
+
+
+	UPROPERTY(EditAnywhere,Category = "Info")
+	TObjectPtr<UObjectPoolProfileDataAsset> PoolData;
 protected:
-	AActor* SpawnNewActor();
+	APoolActor* SpawnNewActor();
 	
 	UPROPERTY()
-	TMap<TObjectPtr<AActor>,bool> ObjectMap;
+	TMap<TObjectPtr<APoolActor>,bool> ObjectMap;
 	UPROPERTY()
 	TObjectPtr<UWorld> World = nullptr;
-	
-	TObjectPtr<UObjectPoolProfileDataAsset> PoolData;
+
 };

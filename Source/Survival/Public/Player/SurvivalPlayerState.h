@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ObjectPoolComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Survival/Survival.h"
 #include "SurvivalPlayerState.generated.h"
@@ -19,6 +20,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	UAbilityComponent* GetAbilityComponent() const;
+	UObjectPoolComponent* GetPoolComponent(UClass* PoolActorClass) const;
 	FORCEINLINE ETeam GetTeam() const { return Team; }
 	
 	//Only Used In CS
@@ -29,9 +31,13 @@ public:
 	UFUNCTION(BlueprintCallable,Category = "Test")
 	void TEST_GiveAbility(FName AbilityName);
 
+	virtual void BeginPlay() override;
 protected:
 	UPROPERTY(VisibleAnywhere,Replicated ,Category = "Ability")
 	TObjectPtr<UAbilityComponent> AbilityComponent;
+
+	UPROPERTY(EditAnywhere,Category = "Pool")
+	TObjectPtr<UObjectPoolComponent> PoolComponent;
 
 	UPROPERTY(VisibleAnywhere, Replicated, Category = "Team")
 	ETeam Team = ETeam::ETeam_NoTeam;

@@ -2,17 +2,13 @@
 
 
 #include "Library/PoolHelperLibrary.h"
+#include "Player/SurvivalPlayerState.h"
 
-#include "Game/TotalGameModeBase.h"
-
-UObjectPoolComponent* UPoolHelperLibrary::GetPoolFromActorClass(const UObject* WorldContextObject, UClass* ActorClass)
+UObjectPoolComponent* UPoolHelperLibrary::GetProjectilePool(APlayerState* PlayerState, UClass* ProjectileClass)
 {
-	if (ATotalGameModeBase* GameModeBase = Cast<ATotalGameModeBase>(WorldContextObject->GetWorld()->GetAuthGameMode()))
+	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(PlayerState))
 	{
-		if (GameModeBase->ActorPools.Contains(ActorClass))
-		{
-			return GameModeBase->ActorPools[ActorClass];
-		}
+		return SurvivalPlayerState->GetPoolComponent(ProjectileClass);
 	}
 	return nullptr;
 }

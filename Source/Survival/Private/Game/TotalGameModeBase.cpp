@@ -45,14 +45,4 @@ void ATotalGameModeBase::PlayerEliminated(ASurvivalCharacterBase* EliminatedChar
 void ATotalGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-	for (TObjectPtr<UObjectPoolProfileDataAsset> Data : PoolData)
-	{
-		if (!ActorPools.Contains(Data->PoolObjectClass))
-		{
-			UObjectPoolComponent* NewPool = CreateDefaultSubobject<UObjectPoolComponent>(
-				FName(Data->PoolObjectClass->GetName()));
-			NewPool->InitializeObjectPool(GetWorld(), Data);
-			ActorPools.Add(Data->PoolObjectClass, NewPool);
-		}
-	}
 }

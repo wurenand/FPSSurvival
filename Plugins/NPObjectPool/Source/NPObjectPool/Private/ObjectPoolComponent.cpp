@@ -1,43 +1,37 @@
 #include "ObjectPoolComponent.h"
-
-#include "ObjectPoolInterface.h"
 #include "ObjectPoolProfileDataAsset.h"
+#include "PoolActor.h"
+#include "GameFramework/PlayerState.h"
 
 UObjectPoolComponent::UObjectPoolComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-AActor* UObjectPoolComponent::RequestActorFromPool()
+APoolActor* UObjectPoolComponent::RequestActorFromPool()
 {
-	AActor* ReturnActor = nullptr;
-	for (auto ActorPair : ObjectMap)
+	APoolActor* ReturnActor = nullptr;
+	for (auto& ActorPair : ObjectMap)
 	{
 		if (!ActorPair.Value)
 		{
 			ActorPair.Value = true;
 			ReturnActor = ActorPair.Key;
+			break;
 		}
 	}
 	if (ReturnActor == nullptr)
 	{
 		ReturnActor = SpawnNewActor();
 	}
-	if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(ReturnActor))
-	{
-		PoolInterface->SetEnableActor(true);
-	}
 	return ReturnActor;
 }
 
-void UObjectPoolComponent::ReleaseActorToPool(AActor* ActorToRelease)
+void UObjectPoolComponent::ReleaseActorToPool(APoolActor* ActorToRelease)
 {
 	if (ObjectMap.Contains(ActorToRelease))
 	{
-		if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(ActorToRelease))
-		{
-			PoolInterface->SetEnableActor(false);
-		}
+		ActorToRelease->SetEnableActor(false);
 		ObjectMap[ActorToRelease] = false;
 	}
 	else
@@ -46,30 +40,38 @@ void UObjectPoolComponent::ReleaseActorToPool(AActor* ActorToRelease)
 	}
 }
 
-
-void UObjectPoolComponent::InitializeObjectPool(UWorld* InWorld,
-                                                UObjectPoolProfileDataAsset* DataAsset)
+void UObjectPoolComponent::InitializeObjectPool(UWorld* InWorld)
 {
 	World = InWorld;
-	PoolData = DataAsset;
-	for (int i = 0; i < DataAsset->InitialObjectCount; i++)
+	if (PoolData != nullptr)
 	{
-		SpawnNewActor();
+		for (int i = 0; i < PoolData->InitialObjectCount; i++)
+		{
+			SpawnNewActor();
+		}
 	}
 }
 
-AActor* UObjectPoolComponent::SpawnNewActor()
+APoolActor* UObjectPoolComponent::SpawnNewActor()
 {
-	AActor* NewActor = World->SpawnActorDeferred<AActor>(PoolData->PoolObjectClass, FTransform());
-	if (IObjectPoolInterface* PoolInterface = Cast<IObjectPoolInterface>(NewActor))
+	FTransform Transform;
+	Transform.SetLocation(FVector(0, 0, 1000.f));
+	APawn* Instigator = nullptr;
+	if (APlayerState* PlayerState = Cast<APlayerState>(GetOuter()))
 	{
-		PoolInterface->SetEnableActor(false);
+		Instigator = PlayerState->GetPawn();
 	}
+	APoolActor* NewActor = World->SpawnActorDeferred<APoolActor>(PoolData->PoolObjectClass, Transform,
+	                                                             GetOwner()->GetOwner(), Instigator);
+	NewActor->SetEnableActor(false);
+	NewActor->SetPoolComponent(this);
 	if (ObjectMap.Num() < PoolData->MaxObjectCount)
 	{
 		ObjectMap.Add(NewActor);
 		ObjectMap[NewActor] = false;
+		//如果Pool还能容纳，则池化
+		NewActor->bUsePool = true;
 	}
-	NewActor->FinishSpawning(FTransform());
+	NewActor->FinishSpawning(Transform);
 	return NewActor;
 }

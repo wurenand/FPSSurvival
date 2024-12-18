@@ -3,6 +3,8 @@
 
 #include "Survival/Public/Player/SurvivalPlayerState.h"
 
+#include "ObjectPoolComponent.h"
+#include "ObjectPoolProfileDataAsset.h"
 #include "Components/AbilityComponent.h"
 #include "Game/CounterStrikeGameState.h"
 #include "Net/UnrealNetwork.h"
@@ -12,6 +14,7 @@ ASurvivalPlayerState::ASurvivalPlayerState()
 {
 	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
 	AbilityComponent->SetIsReplicated(true);
+	PoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("BulletPool"));
 }
 
 void ASurvivalPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
@@ -21,9 +24,27 @@ void ASurvivalPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProp
 	DOREPLIFETIME(ASurvivalPlayerState, Team);
 }
 
+void ASurvivalPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+	if (HasAuthority())
+	{
+		PoolComponent->InitializeObjectPool(GetWorld());
+	}
+}
+
 UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
 {
 	return AbilityComponent;
+}
+
+UObjectPoolComponent* ASurvivalPlayerState::GetPoolComponent(UClass* PoolActorClass) const
+{
+	if (PoolComponent->PoolData && PoolComponent->PoolData->PoolObjectClass == PoolActorClass)
+	{
+		return PoolComponent;
+	}
+	return nullptr;
 }
 
 void ASurvivalPlayerState::TEST_GiveAbility(FName AbilityName)
