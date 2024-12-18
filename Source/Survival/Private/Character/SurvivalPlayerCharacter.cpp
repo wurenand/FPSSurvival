@@ -102,7 +102,10 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	{
 		//AttachWeapon到Character 并 获取配表中的信息
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
-		AbilityComponent->WeaponInfo = Weapon->WeaponInfo;
+		if (AbilityComponent)
+		{
+			AbilityComponent->WeaponInfo = Weapon->WeaponInfo;
+		}
 		Weapon->EquipWeapon(this);
 	}
 }
@@ -339,10 +342,10 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	Projectile->SetDamage(AbilityComponent->GetShootDamage());
 	Projectile->SetInitialSpeed(Weapon->WeaponInfo.BulletSpeed);
 	Projectile->SetInstigator(this);
-	Projectile->SetActorTransform(BulletTransform);
 	//Pool
+	Projectile->Mult_SetActorTransform(BulletTransform);
 	Projectile->SetEnableActor(true);
-	Projectile->PoolActorBeginPlay();
+	Projectile->Mult_PoolActorBeginPlay();
 }
 
 

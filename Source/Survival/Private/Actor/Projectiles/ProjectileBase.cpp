@@ -28,7 +28,7 @@ AProjectileBase::AProjectileBase()
 
 	TrailSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>("TrailSystemComponent");
 	TrailSystemComponent->SetupAttachment(RootComponent);
-	SetReplicates(true);
+	bReplicates = true;
 	//因为使用ActorPool BeginPlay会对此调用，
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AProjectileBase::OnHit);
 }
@@ -42,10 +42,14 @@ void AProjectileBase::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>
 void AProjectileBase::OnRep_bIsEnable()
 {
 	Super::OnRep_bIsEnable();
-	ProjectileMovement->Velocity = FVector::ZeroVector;
+	if (!bIsEnable)
+	{
+		ProjectileMovement->Velocity = FVector::ZeroVector;
+		TrailSystemComponent->DeactivateImmediate();
+	}
 }
 
-void AProjectileBase::PoolActorBeginPlay_Implementation()
+void AProjectileBase::Mult_PoolActorBeginPlay_Implementation()
 {
 	//做一些速度初始化，为什么不在构造函数做？...
 	ProjectileMovement->Velocity = GetActorRotation().Vector() * InitialSpeed;

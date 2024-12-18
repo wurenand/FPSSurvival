@@ -8,7 +8,7 @@
 
 APoolActor::APoolActor()
 {
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void APoolActor::SetEnableActor(bool bInIsEnable)
@@ -29,6 +29,11 @@ void APoolActor::PoolDestroy()
 	}
 }
 
+void APoolActor::Mult_SetActorTransform_Implementation(FTransform Transform)
+{
+	SetActorTransform(Transform);
+}
+
 void APoolActor::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -36,7 +41,7 @@ void APoolActor::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& Out
 	DOREPLIFETIME(APoolActor, bUsePool)
 }
 
-void APoolActor::PoolActorBeginPlay_Implementation()
+void APoolActor::Mult_PoolActorBeginPlay_Implementation()
 {
 }
 
@@ -45,7 +50,7 @@ void APoolActor::BeginPlay()
 	Super::BeginPlay();
 	if (!bUsePool)
 	{
-		PoolActorBeginPlay_Implementation(); //如果不使用Pool
+		Mult_PoolActorBeginPlay_Implementation(); //如果不使用Pool
 	}
 }
 

@@ -60,6 +60,6 @@ protected:
 	float Damage = 10.f;
 
 	//PoolActor
-	virtual void PoolActorBeginPlay_Implementation() override;
+	virtual void Mult_PoolActorBeginPlay_Implementation() override;
 	virtual void OnRep_bIsEnable() override;
 };

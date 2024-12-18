@@ -63,8 +63,6 @@ APoolActor* UObjectPoolComponent::SpawnNewActor()
 	}
 	APoolActor* NewActor = World->SpawnActorDeferred<APoolActor>(PoolData->PoolObjectClass, Transform,
 	                                                             GetOwner()->GetOwner(), Instigator);
-	NewActor->SetEnableActor(false);
-	NewActor->SetPoolComponent(this);
 	if (ObjectMap.Num() < PoolData->MaxObjectCount)
 	{
 		ObjectMap.Add(NewActor);
@@ -72,6 +70,8 @@ APoolActor* UObjectPoolComponent::SpawnNewActor()
 		//如果Pool还能容纳，则池化
 		NewActor->bUsePool = true;
 	}
+	NewActor->SetEnableActor(false);
+	NewActor->SetPoolComponent(this);
 	NewActor->FinishSpawning(Transform);
 	return NewActor;
 }

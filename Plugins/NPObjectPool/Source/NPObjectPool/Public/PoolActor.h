@@ -23,7 +23,9 @@ public:
 	virtual void PoolDestroy();
 	//PoolActor的BeginPlay，由使用者在拿到Actor并使用的最后调用 使用NetMult是确保所有实例都能调用BeginPlay
 	UFUNCTION(NetMulticast, Reliable)
-	void PoolActorBeginPlay(); //需要重写PoolActorBeginPlay_Implementation
+	void Mult_PoolActorBeginPlay(); //需要重写PoolActorBeginPlay_Implementation
+	UFUNCTION(NetMulticast, Reliable)
+	void Mult_SetActorTransform(FTransform Transform);
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
