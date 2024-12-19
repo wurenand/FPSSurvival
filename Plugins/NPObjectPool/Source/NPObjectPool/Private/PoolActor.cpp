@@ -57,7 +57,7 @@ void APoolActor::BeginPlay()
 void APoolActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsEnable)
+	if (bIsEnable && bUseLifeSpan)
 	{
 		PoolLifeSpanRemain -= DeltaTime;
 		if (PoolLifeSpanRemain <= 0)

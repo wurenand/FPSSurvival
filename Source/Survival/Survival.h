@@ -15,3 +15,4 @@ enum class ETeam : uint8
 };
 
 #define ECC_Ability ECollisionChannel::ECC_GameTraceChannel1
+#define ECC_PlayerInteract ECollisionChannel::ECC_GameTraceChannel2

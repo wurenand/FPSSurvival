@@ -6,6 +6,11 @@
 #include "Game/SurvivalGameState.h"
 #include "Player/SurvivalPlayerController.h"
 
+ASurvivalGameMode::ASurvivalGameMode()
+{
+	XPBallPool = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("XPBallPool"));
+}
+
 void ASurvivalGameMode::PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
                                          ASurvivalPlayerController* VictimController,
                                          ASurvivalPlayerController* AttackerController)
@@ -55,4 +60,3 @@ ASurvivalGameState* ASurvivalGameMode::GetSurvivalGameState()
 	}
 	return SurvivalGameState;
 }
-

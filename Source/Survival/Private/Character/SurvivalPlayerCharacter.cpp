@@ -10,6 +10,7 @@
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
 #include "Components/AbilityComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Game/TotalGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -23,6 +24,7 @@
 ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_PlayerInteract,ECR_Overlap);
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->bUsePawnControlRotation = true; //让摄像机与PawnController相同旋转
 	SpringArm->TargetArmLength = 0;

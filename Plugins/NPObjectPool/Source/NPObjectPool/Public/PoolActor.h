@@ -45,6 +45,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Pool")
 	float PoolLifeSpan = 5.f;
 	float PoolLifeSpanRemain = PoolLifeSpan;
+	bool bUseLifeSpan = true;
 
 	UPROPERTY()
 	TObjectPtr<UObjectPoolComponent> PoolComponent;
