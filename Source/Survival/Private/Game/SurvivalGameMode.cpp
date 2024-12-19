@@ -3,6 +3,8 @@
 
 #include "Survival/Public/Game/SurvivalGameMode.h"
 
+#include "Actor/XPBallActor.h"
+#include "Character/SurvivalCharacterBase.h"
 #include "Game/SurvivalGameState.h"
 #include "Player/SurvivalPlayerController.h"
 
@@ -10,6 +12,17 @@ ASurvivalGameMode::ASurvivalGameMode()
 {
 	XPBallPool = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("XPBallPool"));
 }
+
+
+void ASurvivalGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+	if (XPBallPool->PoolData)
+	{
+		XPBallPool->InitializeObjectPool(GetWorld(), GetWorld()->GetFirstPlayerController());
+	}
+}
+
 
 void ASurvivalGameMode::PlayerEliminated(ASurvivalCharacterBase* EliminatedCharacter,
                                          ASurvivalPlayerController* VictimController,
@@ -21,6 +34,15 @@ void ASurvivalGameMode::EnemyEliminated(ASurvivalCharacterBase* EliminatedCharac
                                         ASurvivalPlayerController* AttackerController)
 {
 	//TODO:Spawn经验球
+	if (XPBallPool->PoolData)
+	{
+		APoolActor* PoolActor = XPBallPool->RequestActorFromPool();
+		if (AXPBallActor* XPBall = Cast<AXPBallActor>(PoolActor))
+		{
+			XPBall->SetXP(10);
+			XPBall->SetActorLocation(EliminatedCharacter->GetActorLocation());
+		}
+	}
 }
 
 void ASurvivalGameMode::LevelUp()

@@ -27,7 +27,7 @@ public:
 	void ReleaseActorToPool(APoolActor* ActorToRelease);
 
 	//在拥有者BeginPlay的时候调用，确保World存在
-	void InitializeObjectPool(UWorld* InWorld);
+	void InitializeObjectPool(UWorld* InWorld,AActor* InPoolActorOwner = nullptr);
 
 
 	UPROPERTY(EditAnywhere,Category = "Info")
@@ -39,5 +39,7 @@ protected:
 	TMap<TObjectPtr<APoolActor>,bool> ObjectMap;
 	UPROPERTY()
 	TObjectPtr<UWorld> World = nullptr;
+	UPROPERTY()
+	TObjectPtr<AActor> PoolActorOwner = nullptr;
 
 };

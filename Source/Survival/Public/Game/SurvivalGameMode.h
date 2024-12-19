@@ -25,6 +25,8 @@ public:
 	void LevelUp();
 	void PlayerResume(ASurvivalPlayerController* Player);
 
+	virtual void BeginPlay() override;
+	
 protected:
 	ASurvivalGameState* GetSurvivalGameState();
 	TObjectPtr<ASurvivalGameState> SurvivalGameState;

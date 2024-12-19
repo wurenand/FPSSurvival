@@ -24,6 +24,7 @@ APoolActor* UObjectPoolComponent::RequestActorFromPool()
 	{
 		ReturnActor = SpawnNewActor();
 	}
+	ReturnActor->SetEnableActor(true);
 	return ReturnActor;
 }
 
@@ -40,9 +41,10 @@ void UObjectPoolComponent::ReleaseActorToPool(APoolActor* ActorToRelease)
 	}
 }
 
-void UObjectPoolComponent::InitializeObjectPool(UWorld* InWorld)
+void UObjectPoolComponent::InitializeObjectPool(UWorld* InWorld, AActor* InPoolActorOwner)
 {
 	World = InWorld;
+	PoolActorOwner = InPoolActorOwner ? InPoolActorOwner : GetOwner()->GetOwner();
 	if (PoolData != nullptr)
 	{
 		for (int i = 0; i < PoolData->InitialObjectCount; i++)
@@ -62,7 +64,7 @@ APoolActor* UObjectPoolComponent::SpawnNewActor()
 		Instigator = PlayerState->GetPawn();
 	}
 	APoolActor* NewActor = World->SpawnActorDeferred<APoolActor>(PoolData->PoolObjectClass, Transform,
-	                                                             GetOwner()->GetOwner(), Instigator);
+	                                                            PoolActorOwner, Instigator);
 	if (ObjectMap.Num() < PoolData->MaxObjectCount)
 	{
 		ObjectMap.Add(NewActor);

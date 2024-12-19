@@ -1,9 +1,13 @@
 
 #include "Character/SurvivalEnemyCharacter.h"
 
+#include "Game/SurvivalGameMode.h"
+#include "Player/SurvivalPlayerController.h"
+
 ASurvivalEnemyCharacter::ASurvivalEnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	Team = ETeam::ETeam_Enemy;
 }
 
 ETeam ASurvivalEnemyCharacter::GetCharacterTeam()
@@ -17,8 +21,11 @@ void ASurvivalEnemyCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIns
 	Health -= DamageValue;
 	if (Health <= 0)
 	{
-		Destroy();
-		//TODO:这里AI死亡，可以增加Player的击杀数，播放Montage等
+		if (ASurvivalGameMode* SurvivalGameMode = Cast<ASurvivalGameMode>(GetWorld()->GetAuthGameMode()))
+		{
+			ASurvivalPlayerController* Attacker = Cast<ASurvivalPlayerController>(DamageInstigator->GetController());
+			SurvivalGameMode->EnemyEliminated(this,Attacker);
+		}
 	}
 }
 
