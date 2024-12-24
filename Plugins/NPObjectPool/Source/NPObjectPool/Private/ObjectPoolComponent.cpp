@@ -24,6 +24,11 @@ APoolActor* UObjectPoolComponent::RequestActorFromPool()
 	{
 		ReturnActor = SpawnNewActor();
 	}
+	//标记为使用，放在这里是为了处理SpawnNewActor中获得的，且新存放在Pool的
+	if (ObjectMap.Contains(ReturnActor))
+	{
+		ObjectMap[ReturnActor] = true;
+	}
 	ReturnActor->SetEnableActor(true);
 	return ReturnActor;
 }
