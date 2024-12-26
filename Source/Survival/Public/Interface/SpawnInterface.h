@@ -19,5 +19,5 @@ class SURVIVAL_API ISpawnInterface
 
 public:
 	//根据Level设置数值
-	virtual void SetLevel(int32 Level);
+	virtual void SetLevel(int32 Level) = 0;
 };
