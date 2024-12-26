@@ -5,12 +5,14 @@
 
 #include "Actor/XPBallActor.h"
 #include "Character/SurvivalCharacterBase.h"
+#include "Components/SpawnComponent.h"
 #include "Game/SurvivalGameState.h"
 #include "Player/SurvivalPlayerController.h"
 
 ASurvivalGameMode::ASurvivalGameMode()
 {
 	XPBallPool = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("XPBallPool"));
+	EnemySpawn = CreateDefaultSubobject<USpawnComponent>(TEXT("EnemySpawn"));
 }
 
 
@@ -21,6 +23,7 @@ void ASurvivalGameMode::BeginPlay()
 	{
 		XPBallPool->InitializeObjectPool(GetWorld(), GetWorld()->GetFirstPlayerController());
 	}
+	EnemySpawn->StartSpawning();
 }
 
 

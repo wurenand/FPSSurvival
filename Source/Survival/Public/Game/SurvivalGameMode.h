@@ -6,6 +6,7 @@
 #include "TotalGameModeBase.h"
 #include "SurvivalGameMode.generated.h"
 
+class USpawnComponent;
 class ASurvivalGameState;
 /**
  * 
@@ -35,4 +36,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Pool")
 	TObjectPtr<UObjectPoolComponent> XPBallPool;
+	UPROPERTY(EditAnywhere, Category = "SpawnEnemy")
+	TObjectPtr<USpawnComponent> EnemySpawn;
 };
