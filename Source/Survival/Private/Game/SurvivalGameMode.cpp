@@ -43,6 +43,18 @@ void ASurvivalGameMode::EnemyEliminated(ASurvivalCharacterBase* EliminatedCharac
 			XPBall->SetActorLocation(EliminatedCharacter->GetActorLocation());
 		}
 	}
+	//DestroyEnemy
+	EliminatedCharacter->SetPendingDeath();
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate;
+	TimerDelegate.BindLambda([EliminatedCharacter]()-> void
+	{
+		if (IsValid(EliminatedCharacter))
+		{
+			EliminatedCharacter->Destroy();
+		}
+	});
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 2.f, false);
 }
 
 void ASurvivalGameMode::LevelUp()

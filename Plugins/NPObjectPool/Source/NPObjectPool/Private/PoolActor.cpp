@@ -77,4 +77,5 @@ void APoolActor::OnRep_bIsEnable()
 	SetActorEnableCollision(bIsEnable);
 	SetActorTickEnabled(bIsEnable);
 	SetActorHiddenInGame(!bIsEnable);
+	NetUpdateFrequency = bIsEnable ? 100 : 2;
 }
