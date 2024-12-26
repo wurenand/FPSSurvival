@@ -33,8 +33,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "SpawnInfo")
 	TObjectPtr<USpawnProfileDataAsset> SpawnProfile;
 	//Spawn的位置 在里面随机选择
-	UPROPERTY(EditAnywhere, Category = "GameInfo")
-	TArray<TObjectPtr<ATargetPoint>> TargetPoint;
+	UPROPERTY(VisibleAnywhere, Category = "GameInfo")
+	TArray<AActor*> TargetPoints;
 
 private:
 	bool bIsSpawning = false;

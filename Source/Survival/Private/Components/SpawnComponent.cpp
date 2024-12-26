@@ -3,6 +3,7 @@
 #include "Data/SpawnProfileDataAsset.h"
 #include "Engine/TargetPoint.h"
 #include "Interface/SpawnInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 USpawnComponent::USpawnComponent()
 {
@@ -16,8 +17,13 @@ void USpawnComponent::StartSpawning()
 	{
 		return;
 	}
+	//初始化
 	bIsSpawning = true;
 	IntervalCounter = 0.f;
+	if (TargetPoints.Num() == 0)
+	{
+		UGameplayStatics::GetAllActorsOfClass(GetOwner(),ATargetPoint::StaticClass(),TargetPoints);
+	}
 	CurrentSpawnParamsCopy = SpawnProfile->Intervals[CurrentIntervalIndex];
 	//为区间内的每种类，设定定时器来Spawn
 	for (auto& ClassToNum : CurrentSpawnParamsCopy.ClassToCount)
@@ -26,8 +32,8 @@ void USpawnComponent::StartSpawning()
 		FTimerDelegate TimerDelegate;
 		TimerDelegate.BindLambda([this,&ClassToNum]()-> void
 		{
-			int32 RandIndex = FMath::RandRange(0, TargetPoint.Num() - 1);
-			const FTransform& SpawnPoint = TargetPoint[RandIndex]->GetActorTransform();
+			int32 RandIndex = FMath::RandRange(0, TargetPoints.Num() - 1);
+			const FTransform& SpawnPoint = TargetPoints[RandIndex]->GetActorTransform();
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.Owner = GetWorld()->GetFirstPlayerController(); //确保有连接，能够正常网络复制
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
