@@ -3,7 +3,7 @@
 
 #include "Survival/Public/Game/SurvivalGameMode.h"
 
-#include "Actor/XPBallActor.h"
+#include "Actor/CollisionInteract/XPBallActor.h"
 #include "Character/SurvivalCharacterBase.h"
 #include "Components/SpawnComponent.h"
 #include "Game/SurvivalGameState.h"
