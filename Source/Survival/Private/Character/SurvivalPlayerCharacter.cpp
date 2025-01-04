@@ -142,6 +142,7 @@ void ASurvivalPlayerCharacter::InitializeAbilityComponent()
 		{
 			ATotalHUD* TotalHUD = Cast<ATotalHUD>(PlayerController->GetHUD());
 			TotalHUD->UpdateParamCharacter(this);
+			PlayerController->TryInitializeHUDParams();
 		}
 	}
 	//设置完UI之后广播初始值

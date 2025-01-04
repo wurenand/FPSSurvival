@@ -24,18 +24,7 @@ void ASurvivalPlayerController::BeginPlay()
 		EISubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 	//初始化UI
-	if (IsLocalController())
-	{
-		if (ATotalHUD* TotalHUD = Cast<ATotalHUD>(GetHUD()))
-		{
-			FBaseWidgetControllerParams Params;
-			Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
-			Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
-			Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
-			Params.PlayerController = this;
-			TotalHUD->InitializeOverlay(Params);
-		}
-	}
+	TryInitializeHUDParams();
 }
 
 void ASurvivalPlayerController::CL_ChangeOverlayPage_Implementation(FName PageName)
@@ -81,6 +70,22 @@ void ASurvivalPlayerController::SRV_SelectAbility_Implementation(FName AbilityNa
 	}
 }
 
+void ASurvivalPlayerController::TryInitializeHUDParams()
+{
+	if (IsLocalController())
+	{
+		if (ATotalHUD* TotalHUD = Cast<ATotalHUD>(GetHUD()))
+		{
+			FBaseWidgetControllerParams Params;
+			Params.Character = Cast<ASurvivalPlayerCharacter>(GetCharacter());
+			Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
+			Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
+			Params.PlayerController = this;
+			TotalHUD->InitializeOverlay(Params);
+		}
+	}
+}
+
 void ASurvivalPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
@@ -98,7 +103,7 @@ void ASurvivalPlayerController::SetupInputComponent()
 		EnhancedInputComponent->BindAction(ActionReload, ETriggerEvent::Started, this,
 		                                   &ASurvivalPlayerController::ForwardInputReload);
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Started, this,
-								   &ASurvivalPlayerController::ForwardInputJump);
+		                                   &ASurvivalPlayerController::ForwardInputJump);
 	}
 }
 
