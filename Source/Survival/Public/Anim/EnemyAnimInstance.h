@@ -26,6 +26,4 @@ public:
 	TObjectPtr<ASurvivalEnemyCharacter> EnemyCharacter;
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation")
 	int32 RandomIdleIndex;
-	
-	
 };
