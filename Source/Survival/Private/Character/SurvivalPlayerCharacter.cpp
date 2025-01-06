@@ -24,7 +24,7 @@
 ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_PlayerInteract,ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_PlayerInteract, ECR_Overlap);
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->bUsePawnControlRotation = true; //让摄像机与PawnController相同旋转
 	SpringArm->TargetArmLength = 0;
@@ -39,6 +39,8 @@ ASurvivalPlayerCharacter::ASurvivalPlayerCharacter()
 	ThirdPersonMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	ThirdPersonMesh->SetHiddenInGame(true);
 	ThirdPersonMesh->SetCastHiddenShadow(true); //打开隐藏阴影，即使HideInGame也能投射Shadow
+
+	Tags.Add(FName("Player"));
 }
 
 void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
