@@ -8,6 +8,7 @@
 
 struct FAIStimulus;
 /**
+ * Only On Server 负责运行行为树 感知组件。控制AI
  * 蓝图中配置感知组件，主要使用视觉
  */
 UCLASS()
