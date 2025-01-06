@@ -17,8 +17,6 @@ void ASurvivalAIController::OnTargetPerceptionCallback(AActor* Actor, FAIStimulu
 	if (Stimulus.WasSuccessfullySensed() && Actor->ActorHasTag(FName("Player")))
 	{
 		GetBlackboardComponent()->SetValueAsObject(FName("TargetPlayer"), Actor);
-		//TODO：下面这个TargetLocation暂时无用
-		GetBlackboardComponent()->SetValueAsVector(FName("TargetLocation"), Actor->GetActorLocation());
 	}
 	else
 	{
