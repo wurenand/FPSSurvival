@@ -56,16 +56,16 @@ void ASurvivalEnemyCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIns
 	}
 }
 
+void ASurvivalEnemyCharacter::Mult_PlayMontage_Implementation(UAnimMontage* MontageToPlay)
+{
+	if (MontageToPlay)
+	{
+		PlayAnimMontage(MontageToPlay);
+	}
+}
+
 void ASurvivalEnemyCharacter::Notify_SetEnableAttackCheck(bool bIsEnable)
 {
 	ECollisionEnabled::Type EnabledType = bIsEnable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision;
 	AttackCapsule->SetCollisionEnabled(EnabledType);
-}
-
-void ASurvivalEnemyCharacter::Mult_EnemyAttack_Implementation()
-{
-	if (AttackMontage)
-	{
-		PlayAnimMontage(AttackMontage);
-	}
 }

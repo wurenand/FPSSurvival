@@ -19,7 +19,7 @@ public:
 
 	//用于RPC到所有客户端播放攻击动画
 	UFUNCTION(NetMulticast, Unreliable, BlueprintCallable)
-	void Mult_EnemyAttack();
+	void Mult_PlayMontage(UAnimMontage* MontageToPlay);
 	//~Begin ForAnimInstance(MontageNotify)
 	void Notify_SetEnableAttackCheck(bool bIsEnable);
 
@@ -27,8 +27,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="EnemyAttack")
 	TObjectPtr<UCapsuleComponent> AttackCapsule;
 	//TODO:后续使用一个DataTable统一进行管理，包括Level，对应的HP，Damage，AttackMontage等。暂时先这样
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="EnemyAttackInfo")
-	TObjectPtr<UAnimMontage> AttackMontage;
 
 	UFUNCTION()
 	void OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
