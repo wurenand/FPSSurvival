@@ -4,6 +4,7 @@
 #include "AI/SurvivalAIController.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 
 ASurvivalAIController::ASurvivalAIController()
@@ -14,22 +15,26 @@ ASurvivalAIController::ASurvivalAIController()
 
 void ASurvivalAIController::OnTargetPerceptionCallback(AActor* Actor, FAIStimulus Stimulus)
 {
-	if (Stimulus.WasSuccessfullySensed() && Actor->ActorHasTag(FName("Player")))
+	//追踪玩家逻辑
+	if (Actor->ActorHasTag(FName("Player")))
 	{
-		GetBlackboardComponent()->SetValueAsObject(FName("TargetPlayer"), Actor);
-	}
-	else
-	{
-		//找不到玩家了
-		FTimerHandle TimerHandle;
-		FTimerDelegate TimerDelegate;
-		TimerDelegate.BindLambda([&]()-> void
+		if (Stimulus.WasSuccessfullySensed())
 		{
-			GetBlackboardComponent()->SetValueAsBool(FName("bShouldRoar"), true);
-			GetBlackboardComponent()->SetValueAsObject(FName("TargetPlayer"), nullptr);
-		});
-		//3s后则放弃追逐
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 3.f, false);
+			GetBlackboardComponent()->SetValueAsObject(FName("TargetPlayer"), Actor);
+		}
+		else
+		{
+			//找不到玩家了
+			FTimerHandle TimerHandle;
+			FTimerDelegate TimerDelegate;
+			TimerDelegate.BindLambda([&]()-> void
+			{
+				GetBlackboardComponent()->SetValueAsBool(FName("bShouldRoar"), true);
+				GetBlackboardComponent()->SetValueAsObject(FName("TargetPlayer"), nullptr);
+			});
+			//3s后则放弃追逐
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 3.f, false);
+		}
 	}
 }
 
