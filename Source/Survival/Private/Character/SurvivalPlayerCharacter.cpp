@@ -198,7 +198,7 @@ void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue
 
 void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 {
-	if (bIsReloading)
+	if (bIsReloading || CurrentMagCount == MaxMagCount)
 	{
 		return;
 	}
@@ -355,7 +355,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 
 void ASurvivalPlayerCharacter::Mult_ReloadWeaponEffect_Implementation()
 {
-	//TODO:后续改成MontageEvent？
+	//MontageNotify
 	ReloadMontageProxy = nullptr; //让GC回收之前的对象
 	ReloadMontageProxy = UPlayMontageCallbackProxy::CreateProxyObjectForPlayMontage(
 		GetMesh(), Weapon->WeaponInfo.ReloadMontage, 1);
