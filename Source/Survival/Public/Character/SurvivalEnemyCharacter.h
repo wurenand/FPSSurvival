@@ -4,6 +4,8 @@
 #include "SurvivalCharacterBase.h"
 #include "SurvivalEnemyCharacter.generated.h"
 
+class AAIPatrolPathSpline;
+
 UCLASS()
 class SURVIVAL_API ASurvivalEnemyCharacter : public ASurvivalCharacterBase
 {
@@ -12,6 +14,10 @@ class SURVIVAL_API ASurvivalEnemyCharacter : public ASurvivalCharacterBase
 public:
 	ASurvivalEnemyCharacter();
 
+	//如果有的话，则会按照设定路线巡逻，否则随机(BTTask_Route)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="EnemyAttack")
+	TObjectPtr<AAIPatrolPathSpline> PatrolPathSpline;
+	
 	//~Begin ICombatInterface
 	virtual ETeam GetCharacterTeam() override;
 	virtual void CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue) override;
