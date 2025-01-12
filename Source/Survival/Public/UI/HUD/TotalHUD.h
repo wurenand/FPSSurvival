@@ -42,6 +42,8 @@ public:
 	UPROPERTY()
 	TObjectPtr<UTotalWidgetController> WidgetController;
 
+	bool bIsInitialized = false;
+
 protected:
 	//在所有Overlay中要默认显示的PageName
 	UPROPERTY(EditAnywhere,Category = "ClassInfo")

@@ -81,7 +81,14 @@ void ASurvivalPlayerController::TryInitializeHUDParams()
 			Params.PlayerState = GetPlayerState<ASurvivalPlayerState>();
 			Params.TotalGameState = GetWorld()->GetGameState<ATotalGameStateBase>();
 			Params.PlayerController = this;
-			TotalHUD->InitializeOverlay(Params);
+			if (!TotalHUD->bIsInitialized)
+			{
+				TotalHUD->InitializeOverlay(Params);
+			}
+			else
+			{
+				TotalHUD->SetWidgetControllerParams(Params);
+			}
 		}
 	}
 }

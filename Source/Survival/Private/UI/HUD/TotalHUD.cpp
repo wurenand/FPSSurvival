@@ -27,11 +27,13 @@ void ATotalHUD::InitializeOverlay(const FBaseWidgetControllerParams& Params)
 			SurvivalUserWidget->SetWidgetController(WidgetController);
 		}
 		ChangeOverlayPage(DefaultName);
+		bIsInitialized = true;
 	}
 }
 
 void ATotalHUD::ChangeOverlayPage(FName PageName)
 {
+	UE_LOG(LogTemp, Display, TEXT("HUD:ChangeOverlayPageName ： %s"),*PageName.ToString());
 	for (auto ItPair : NameToOverlayWidgets)
 	{
 		ItPair.Value->RemoveFromParent();

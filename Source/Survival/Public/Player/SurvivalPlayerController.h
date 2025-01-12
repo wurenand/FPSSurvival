@@ -41,7 +41,7 @@ public:
 	FInformHUDSignature OnAttackHitDelegate;//攻击成功命中 Value无意义
 	//~End HUD Delegates
 
-	//用于绑定HUD中WidgetController的参数，让HUD绑定委托 开放给Character调用
+	//用于绑定HUD中WidgetController的参数，让HUD绑定委托 开放给Character调用（如果初始化过HUD了，只更新Parms）
 	void TryInitializeHUDParams();
 	
 protected:
