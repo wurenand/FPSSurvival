@@ -47,6 +47,10 @@ void AProjectileBase::OnRep_bIsEnable()
 		ProjectileMovement->Velocity = FVector::ZeroVector;
 		TrailSystemComponent->DeactivateImmediate();
 	}
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AProjectileBase Name %s is enable ? = %d"), *GetName(), bIsEnable);
+	}
 }
 
 void AProjectileBase::Mult_PoolActorBeginPlay_Implementation()
@@ -54,6 +58,10 @@ void AProjectileBase::Mult_PoolActorBeginPlay_Implementation()
 	//做一些速度初始化，为什么不在构造函数做？...
 	ProjectileMovement->Velocity = GetActorRotation().Vector() * InitialSpeed;
 	TrailSystemComponent->Activate();
+	if (HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AProjectileBase Name %s is BeginPlay"), *GetName());
+	}
 }
 
 void AProjectileBase::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

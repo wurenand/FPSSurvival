@@ -29,7 +29,6 @@ APoolActor* UObjectPoolComponent::RequestActorFromPool()
 	{
 		ObjectMap[ReturnActor] = true;
 	}
-	ReturnActor->SetEnableActor(true);
 	return ReturnActor;
 }
 

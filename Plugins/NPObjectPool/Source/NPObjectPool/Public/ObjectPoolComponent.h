@@ -19,7 +19,7 @@ public:
 	UObjectPoolComponent();
 	
 	/**
-	 * 尝试请求Actor
+	 * 尝试请求Actor，在外部需要调用SetEnableActor true
 	 * @return 
 	 */
 	APoolActor* RequestActorFromPool();
