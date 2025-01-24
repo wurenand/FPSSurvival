@@ -76,7 +76,7 @@ void ASurvivalPlayerCharacter::PossessedBy(AController* NewController)
 	if (ASurvivalPlayerState* SurvivalPlayerState = (GetController()->GetPlayerState<ASurvivalPlayerState>()))
 	{
 		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
-		InitializeAbilityComponent();
+		InitializeCharacter();
 	}
 }
 
@@ -87,7 +87,7 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 	{
 		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
 		Team = SurvivalPlayerState->GetTeam();
-		InitializeAbilityComponent();
+		InitializeCharacter();
 	}
 }
 
@@ -114,7 +114,7 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 	}
 }
 
-void ASurvivalPlayerCharacter::InitializeAbilityComponent()
+void ASurvivalPlayerCharacter::InitializeCharacter()
 {
 	AbilityComponent->SurvivalPlayerCharacter = this;
 	if (HasAuthority())

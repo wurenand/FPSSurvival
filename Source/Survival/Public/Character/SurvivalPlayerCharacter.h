@@ -81,8 +81,8 @@ protected:
 	//从PS中获得 自己不构造
 	UPROPERTY()
 	TObjectPtr<UAbilityComponent> AbilityComponent;
-	//得到AbilityComponent后的初始化  UpdateWidgetController中的Character
-	void InitializeAbilityComponent();
+	//得到AbilityComponent后的初始化  负责Weapon，HUD Params，AbilityComponent的初始化
+	void InitializeCharacter();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,ReplicatedUsing = OnRep_Weapon,Category="Weapon")
 	TObjectPtr<AWeaponBase> Weapon;

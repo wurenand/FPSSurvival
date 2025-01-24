@@ -8,7 +8,6 @@ ASurvivalEnemyCharacter::ASurvivalEnemyCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	Team = ETeam::ETeam_Enemy;
-
 	//Attack
 	AttackCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AttackCapsule"));
 	AttackCapsule->SetupAttachment(GetRootComponent());
