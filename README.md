@@ -1,5 +1,8 @@
 # 游戏公开课大作业
 实现了**支持联网**的两种游戏模式：1.类吸血鬼幸存者模式 2.普通CS团队竞技模式
+
+**演示视频地址：** https://www.bilibili.com/video/BV1A9N6eoEWB/?share_source=copy_web&vd_source=38644d178e20382fb7837c5ea447501c
+
 # 基本系统组成
 
 ## 输入系统
