@@ -62,13 +62,9 @@ APoolActor* UObjectPoolComponent::SpawnNewActor()
 {
 	FTransform Transform;
 	Transform.SetLocation(FVector(0, 0, 1000.f));
-	APawn* Instigator = nullptr;
-	if (APlayerState* PlayerState = Cast<APlayerState>(GetOuter()))
-	{
-		Instigator = PlayerState->GetPawn();
-	}
 	APoolActor* NewActor = World->SpawnActorDeferred<APoolActor>(PoolData->PoolObjectClass, Transform,
-	                                                            PoolActorOwner, Instigator);
+	                                                            PoolActorOwner, nullptr);
+	//如果对象池还有空间，则池化。（目前没有考虑动态扩容/缩容问题）
 	if (ObjectMap.Num() < PoolData->MaxObjectCount)
 	{
 		ObjectMap.Add(NewActor);
