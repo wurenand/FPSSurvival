@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "ObjectPoolComponent.generated.h"
 
-
+//TODO:将对象池支持动态容量改变
 class APoolActor;
 class UObjectPoolProfileDataAsset;
 

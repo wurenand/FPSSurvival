@@ -12,7 +12,7 @@ struct FBaseWidgetControllerParams;
 class USurvivalUserWidget;
 /**
  * HUD的基类
- * 负责初始化所有Overlay Page
+ * 负责初始化所有Overlay Page 并保存Name To Widget的映射
  * 创建绑定WidgetController
  * 切换Overlay Page
  */

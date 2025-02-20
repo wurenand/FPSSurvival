@@ -41,7 +41,7 @@ public:
 	UAbilityBase* GiveAbility(FName AbilityName);
 	
 	//发生在OnRep_Weapon之后
-	//使得Character能够拿到收到所有数值变化 并获取初始值并广播 OnServer
+	//初始化AbilityComponent，若已经初始化，则绑定委托到Character，能够拿到收到所有数值变化 并获取初始值并广播 OnServer
 	void BindAllValueDelegatesAndInit();
 	
 protected:

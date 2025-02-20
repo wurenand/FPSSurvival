@@ -24,7 +24,7 @@ void ASurvivalPlayerController::BeginPlay()
 		EISubsystem->AddMappingContext(DefaultMappingContext, 0);
 	}
 	//初始化UI
-	TryInitializeHUDParams();
+	TryInitializeHUDorParams();
 }
 
 void ASurvivalPlayerController::CL_ChangeOverlayPage_Implementation(FName PageName)
@@ -70,7 +70,7 @@ void ASurvivalPlayerController::SRV_SelectAbility_Implementation(FName AbilityNa
 	}
 }
 
-void ASurvivalPlayerController::TryInitializeHUDParams()
+void ASurvivalPlayerController::TryInitializeHUDorParams()
 {
 	if (IsLocalController())
 	{

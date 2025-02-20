@@ -42,7 +42,7 @@ public:
 	//~End HUD Delegates
 
 	//用于绑定HUD中WidgetController的参数，让HUD绑定委托 开放给Character调用（如果初始化过HUD了，只更新Parms）
-	void TryInitializeHUDParams();
+	void TryInitializeHUDorParams();
 	
 protected:
 	virtual void SetupInputComponent() override;
