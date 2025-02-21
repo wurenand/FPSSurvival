@@ -34,6 +34,12 @@ void APoolActor::Mult_SetActorTransform_Implementation(FTransform Transform)
 	SetActorTransform(Transform);
 }
 
+void APoolActor::FinishRequesting()
+{
+	SetEnableActor(true);
+	Mult_PoolActorBeginPlay();
+}
+
 void APoolActor::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

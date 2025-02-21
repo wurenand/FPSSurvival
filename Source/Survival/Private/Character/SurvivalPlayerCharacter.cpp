@@ -349,8 +349,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	Projectile->SetInstigator(this);
 	//Pool
 	Projectile->Mult_SetActorTransform(BulletTransform);
-	Projectile->SetEnableActor(true);
-	Projectile->Mult_PoolActorBeginPlay();
+	Projectile->FinishRequesting();
 }
 
 

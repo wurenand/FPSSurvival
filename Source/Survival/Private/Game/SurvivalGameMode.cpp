@@ -45,7 +45,7 @@ void ASurvivalGameMode::EnemyEliminated(ASurvivalCharacterBase* EliminatedCharac
 			XPBall->SetXP(10);
 			XPBall->SetActorLocation(EliminatedCharacter->GetActorLocation());
 		}
-		PoolActor->SetEnableActor(true);
+		PoolActor->FinishRequesting();
 	}
 	//DestroyEnemy
 	EliminatedCharacter->SetPendingDeath();

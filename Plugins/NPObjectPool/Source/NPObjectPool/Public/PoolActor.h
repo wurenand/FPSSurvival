@@ -27,6 +27,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void Mult_SetActorTransform(FTransform Transform);
 
+	//在完成Actor的初始化之后，决定启用Actor
+	void FinishRequesting();
+	
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UPROPERTY(EditAnywhere, Replicated, Category = "Pool")
