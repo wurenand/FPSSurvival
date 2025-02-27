@@ -95,8 +95,6 @@ void ASurvivalPlayerCharacter::InitUIValues()
 {
 	OnMaxMagCountChanged.Broadcast(MaxMagCount);
 	OnMagCountChanged.Broadcast(CurrentMagCount);
-	OnMaxHPChanged.Broadcast(MaxHealth);
-	OnHPChanged.Broadcast(Health);
 	OnIsAimingEnemyChanged.Broadcast(false);
 }
 

@@ -5,6 +5,8 @@
 
 #include "ObjectPoolComponent.h"
 #include "ObjectPoolProfileDataAsset.h"
+#include "Ability/SurvivalAbilitySystemComponent.h"
+#include "Ability/SurvivalAttributeSet.h"
 #include "Components/AbilityComponent.h"
 #include "Game/CounterStrikeGameState.h"
 #include "Net/UnrealNetwork.h"
@@ -12,16 +14,30 @@
 
 ASurvivalPlayerState::ASurvivalPlayerState()
 {
-	AbilityComponent = CreateDefaultSubobject<UAbilityComponent>(TEXT("AbilityComponent"));
-	AbilityComponent->SetIsReplicated(true);
+	AbilitySystemComponent = CreateDefaultSubobject<USurvivalAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	//Mixed 标识只会把GE复制到它的Owner处
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Mixed);
+	//不需要复制，Attribute由AttributeSet负责复制，AttributeSet会自动注册到ASC中，默认就会复制
+	AttributeSet = CreateDefaultSubobject<USurvivalAttributeSet>(TEXT("AttributeSet"));
+
 	PoolComponent = CreateDefaultSubobject<UObjectPoolComponent>(TEXT("BulletPool"));
 }
 
 void ASurvivalPlayerState::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ASurvivalPlayerState, AbilityComponent);
 	DOREPLIFETIME(ASurvivalPlayerState, Team);
+}
+
+UAbilitySystemComponent* ASurvivalPlayerState::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+USurvivalAttributeSet* ASurvivalPlayerState::GetSurvivalAttributeSet() const
+{
+	return AttributeSet;
 }
 
 void ASurvivalPlayerState::BeginPlay()
@@ -33,11 +49,6 @@ void ASurvivalPlayerState::BeginPlay()
 	}
 }
 
-UAbilityComponent* ASurvivalPlayerState::GetAbilityComponent() const
-{
-	return AbilityComponent;
-}
-
 UObjectPoolComponent* ASurvivalPlayerState::GetPoolComponent(UClass* PoolActorClass) const
 {
 	if (PoolComponent->PoolData && PoolComponent->PoolData->PoolObjectClass == PoolActorClass)
@@ -45,11 +56,6 @@ UObjectPoolComponent* ASurvivalPlayerState::GetPoolComponent(UClass* PoolActorCl
 		return PoolComponent;
 	}
 	return nullptr;
-}
-
-void ASurvivalPlayerState::TEST_GiveAbility(FName AbilityName)
-{
-	AbilityComponent->GiveAbility(AbilityName);
 }
 
 void ASurvivalPlayerState::SRV_SetTeam_Implementation(ETeam NewTeam)

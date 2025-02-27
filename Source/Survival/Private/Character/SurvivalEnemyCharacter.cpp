@@ -1,5 +1,7 @@
 #include "Character/SurvivalEnemyCharacter.h"
 
+#include "Ability/SurvivalAbilitySystemComponent.h"
+#include "Ability/SurvivalAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 #include "Game/SurvivalGameMode.h"
 #include "Player/SurvivalPlayerController.h"
@@ -16,8 +18,20 @@ ASurvivalEnemyCharacter::ASurvivalEnemyCharacter()
 	AttackCapsule->SetCollisionObjectType(ECC_Ability); //设置为ECC_Ability
 	AttackCapsule->SetCollisionResponseToChannel(ECC_Ability, ECR_Ignore);
 	AttackCapsule->OnComponentBeginOverlap.AddDynamic(this, &ASurvivalEnemyCharacter::OnAttackBeginOverlap);
+
+	AbilitySystemComponent = CreateDefaultSubobject<USurvivalAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
+	AbilitySystemComponent->SetIsReplicated(true);
+	AbilitySystemComponent->SetReplicationMode(EGameplayEffectReplicationMode::Minimal);
+
+	AttributeSet = CreateDefaultSubobject<USurvivalAttributeSet>(TEXT("AttributeSet"));
 }
 
+void ASurvivalEnemyCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	//初始化技能
+	InitializeCharacter();
+}
 
 void ASurvivalEnemyCharacter::OnAttackBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                    UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
@@ -35,6 +49,13 @@ void ASurvivalEnemyCharacter::OnAttackBeginOverlap(UPrimitiveComponent* Overlapp
 	}
 }
 
+void ASurvivalEnemyCharacter::InitializeCharacter()
+{
+	for (auto AbilityClass : StartupAbilities)
+	{
+		GiveCharacterAbility(AbilityClass);
+	}
+}
 
 ETeam ASurvivalEnemyCharacter::GetCharacterTeam()
 {

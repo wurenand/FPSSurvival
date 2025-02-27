@@ -11,7 +11,7 @@ public class Survival : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput",
-			"Slate","SlateCore","UMG", "MoviePlayer", "NPObjectPool","AIModule","NavigationSystem"
+			"Slate","SlateCore","UMG", "MoviePlayer", "NPObjectPool","AIModule","NavigationSystem", "GameplayAbilities","GameplayTags",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "AnimGraphRuntime" });

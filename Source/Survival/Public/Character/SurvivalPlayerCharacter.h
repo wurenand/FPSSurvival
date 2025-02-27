@@ -82,7 +82,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAbilityComponent> AbilityComponent;
 	//得到AbilityComponent后的初始化  负责Weapon，HUD Params，AbilityComponent的初始化
-	void InitializeCharacter();
+	virtual void InitializeCharacter() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,ReplicatedUsing = OnRep_Weapon,Category="Weapon")
 	TObjectPtr<AWeaponBase> Weapon;
