@@ -14,15 +14,12 @@ class SURVIVAL_API USurvivalAbilitySystemComponent : public UAbilitySystemCompon
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this component's properties
 	USurvivalAbilitySystemComponent();
+	//激活技能接口 同时使用InputTag和AbilityTag
+	void TryActivateAbilityByTag(const FGameplayTag& Tag);
+	void TryGiveAbility(const FGameplayAbilitySpec& Spec);
 
 protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
+	//记录已给予技能的InputTagToAbilityTag
+	TMap<FGameplayTag,FGameplayTag> InputTagToAbility;
 };

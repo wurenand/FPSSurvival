@@ -18,9 +18,6 @@ public:
 	//主动触发的按键，如果有的话
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability")
 	FGameplayTag InputTrigger;
-	//标识区分当前是哪个Ability
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Ability")
-	FGameplayTag AbilityTag;
 	//是否自动触发，可以用于被动技能
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Ability")
 	bool bAutoActivateOnGranted = false;

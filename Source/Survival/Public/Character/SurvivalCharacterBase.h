@@ -8,6 +8,7 @@
 #include "Survival/Survival.h"
 #include "SurvivalCharacterBase.generated.h"
 
+struct FGameplayTag;
 class UGameplayEffect;
 class UGameplayAbilityBase;
 class USurvivalAbilitySystemComponent;
@@ -29,8 +30,6 @@ public:
 
 	//授予ASC能力的接口
 	virtual void GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass);
-	//用来激活技能的接口
-	void TryActivateAbilityByTag();
 	//给自身施加GE的接口
 	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectToBeApplied,float Level);
 
@@ -54,8 +53,8 @@ public:
 	FOnCharacterValueChangedSignature OnMaxHPChanged;
 
 protected:
-	TWeakObjectPtr<USurvivalAbilitySystemComponent> AbilitySystemComponent;
-	TWeakObjectPtr<USurvivalAttributeSet> AttributeSet;
+	TObjectPtr<USurvivalAbilitySystemComponent> AbilitySystemComponent;
+	TObjectPtr<USurvivalAttributeSet> AttributeSet;
 
 	//初始化自带GA
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Ability")

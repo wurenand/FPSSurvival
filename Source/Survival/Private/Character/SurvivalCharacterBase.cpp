@@ -19,29 +19,31 @@ void ASurvivalCharacterBase::GetLifetimeReplicatedProps(TArray<class FLifetimePr
 
 void ASurvivalCharacterBase::InitializeCharacter()
 {
-	
-}
-
-void ASurvivalCharacterBase::TryActivateAbilityByTag()
-{
-	
 }
 
 void ASurvivalCharacterBase::ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectToBeApplied,
-	float Level)
+                                                       float Level)
 {
-	
+	if (EffectToBeApplied == nullptr || !IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+	FGameplayEffectContextHandle EffectContextHandle = AbilitySystemComponent->MakeEffectContext();
+	EffectContextHandle.AddSourceObject(this);
+	FGameplayEffectSpecHandle EffectSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(
+		EffectToBeApplied, Level, EffectContextHandle);
+	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), AbilitySystemComponent.Get());
 }
 
 void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass)
 {
-	if (!GetLocalRole() == ROLE_Authority || !AbilitySystemComponent.IsValid())
+	if (!GetLocalRole() == ROLE_Authority || !IsValid(AbilitySystemComponent))
 	{
 		return;
 	}
 	FGameplayAbilitySpec Spec(AbilityClass);
 	Spec.SourceObject = this;
-	AbilitySystemComponent->GiveAbility(Spec);
+	AbilitySystemComponent->TryGiveAbility(Spec);
 }
 
 ETeam ASurvivalCharacterBase::GetCharacterTeam()
