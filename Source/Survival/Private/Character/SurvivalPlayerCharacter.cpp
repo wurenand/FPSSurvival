@@ -6,6 +6,8 @@
 #include "InputActionValue.h"
 #include "ObjectPoolComponent.h"
 #include "PlayMontageCallbackProxy.h"
+#include "Ability/SurvivalAbilitySystemComponent.h"
+#include "Ability/SurvivalAttributeSet.h"
 #include "Actor/Projectiles/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
@@ -75,7 +77,7 @@ void ASurvivalPlayerCharacter::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	if (ASurvivalPlayerState* SurvivalPlayerState = (GetController()->GetPlayerState<ASurvivalPlayerState>()))
 	{
-		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
+		Team = SurvivalPlayerState->GetTeam();
 		InitializeCharacter();
 	}
 }
@@ -85,7 +87,6 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
 	{
-		AbilityComponent = SurvivalPlayerState->GetAbilityComponent();
 		Team = SurvivalPlayerState->GetTeam();
 		InitializeCharacter();
 	}
@@ -114,7 +115,20 @@ void ASurvivalPlayerCharacter::OnRep_Weapon()
 
 void ASurvivalPlayerCharacter::InitializeCharacter()
 {
-	AbilityComponent->SurvivalPlayerCharacter = this;
+	//1 获得PS中的ASC和AS
+	if (ASurvivalPlayerState* PlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
+	{
+		AbilitySystemComponent = Cast<USurvivalAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
+		AttributeSet = PlayerState->GetSurvivalAttributeSet();
+	}
+
+	if (!IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+	//2 初始化Actor Info
+	AbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
+
 	if (HasAuthority())
 	{
 		checkf(AbilityComponent->WeaponClass, TEXT("AbilityComponent::WeaponClass is NULL"))
@@ -135,7 +149,10 @@ void ASurvivalPlayerCharacter::InitializeCharacter()
 		OnRep_CurrentMagCount();
 	}
 
-	//如果有HUD，则更新其WidgetController中的Character参数
+	//5 初始化技能 ？
+	//TODO: 应用 初始值GE来初始化数值
+	
+	//4 如果有HUD，则更新其WidgetController中的Character参数
 	if (IsLocallyControlled())
 	{
 		if (ASurvivalPlayerController* PlayerController = Cast<ASurvivalPlayerController>(GetController()))

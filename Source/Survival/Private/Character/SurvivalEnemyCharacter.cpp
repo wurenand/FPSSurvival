@@ -55,6 +55,8 @@ void ASurvivalEnemyCharacter::InitializeCharacter()
 	{
 		GiveCharacterAbility(AbilityClass);
 	}
+	checkf(DefaultEffectClass,TEXT("EnemyCharacter DefaultEffectClass Is Null"))
+	ApplyGameplayEffectToSelf(DefaultEffectClass, 1);
 }
 
 ETeam ASurvivalEnemyCharacter::GetCharacterTeam()
@@ -65,7 +67,8 @@ ETeam ASurvivalEnemyCharacter::GetCharacterTeam()
 void ASurvivalEnemyCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
 {
 	Super::CombatTakeDamage(DamageInstigator, DamageValue);
-	Health -= DamageValue;
+	//TODO:使用AttributeSet替换
+	/*Health -= DamageValue;
 	if (Health <= 0)
 	{
 		if (ASurvivalGameMode* SurvivalGameMode = Cast<ASurvivalGameMode>(GetWorld()->GetAuthGameMode()))
@@ -73,7 +76,7 @@ void ASurvivalEnemyCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIns
 			ASurvivalPlayerController* Attacker = Cast<ASurvivalPlayerController>(DamageInstigator->GetController());
 			SurvivalGameMode->EnemyEliminated(this, Attacker);
 		}
-	}
+	}*/
 }
 
 void ASurvivalEnemyCharacter::Mult_PlayMontage_Implementation(UAnimMontage* MontageToPlay)
