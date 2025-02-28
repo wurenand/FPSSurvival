@@ -26,6 +26,10 @@
 		{
 			"Name": "NPObjectPool",
 			"Enabled": true
+		},
+		{
+			"Name": "GameplayAbilities",
+			"Enabled": true
 		}
 	]
 }

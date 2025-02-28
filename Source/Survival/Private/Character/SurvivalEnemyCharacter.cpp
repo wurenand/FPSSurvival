@@ -51,12 +51,14 @@ void ASurvivalEnemyCharacter::OnAttackBeginOverlap(UPrimitiveComponent* Overlapp
 
 void ASurvivalEnemyCharacter::InitializeCharacter()
 {
-	for (auto AbilityClass : StartupAbilities)
+	for (auto AbilityClass : StartupAbilityClasses)
 	{
-		GiveCharacterAbility(AbilityClass);
+		GiveCharacterAbility(AbilityClass, 1);
 	}
-	checkf(DefaultEffectClass,TEXT("EnemyCharacter DefaultEffectClass Is Null"))
-	ApplyGameplayEffectToSelf(DefaultEffectClass, 1);
+	for (auto EffectClass : DefaultEffectClasses)
+	{
+		ApplyGameplayEffectToSelf(EffectClass, 1);
+	}
 }
 
 ETeam ASurvivalEnemyCharacter::GetCharacterTeam()

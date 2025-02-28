@@ -117,7 +117,7 @@ UAbilityBase* UAbilityComponent::GiveAbility(FName AbilityName)
 
 void UAbilityComponent::BindAllValueDelegatesAndInit()
 {
-	//WeaponAbility
+	/*//WeaponAbility
 	if (WeaponAbility == nullptr)
 	{
 		//说明AC第一次使用，GiveWeaponAbility
@@ -151,7 +151,7 @@ void UAbilityComponent::BindAllValueDelegatesAndInit()
 	for (auto Ability : ActiveAbilities)
 	{
 		Ability->UpdateValues();
-	}
+	}*/
 }
 
 void UAbilityComponent::OnRep_AbilityHandles()

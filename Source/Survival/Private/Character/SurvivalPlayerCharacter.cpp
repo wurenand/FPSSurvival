@@ -122,10 +122,10 @@ void ASurvivalPlayerCharacter::BindAttributeDelegatesFromSet()
 void ASurvivalPlayerCharacter::InitializeCharacter()
 {
 	//1 获得PS中的ASC和AS
-	if (ASurvivalPlayerState* PlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
+	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
 	{
-		AbilitySystemComponent = Cast<USurvivalAbilitySystemComponent>(PlayerState->GetAbilitySystemComponent());
-		AttributeSet = PlayerState->GetSurvivalAttributeSet();
+		AbilitySystemComponent = Cast<USurvivalAbilitySystemComponent>(SurvivalPlayerState->GetAbilitySystemComponent());
+		AttributeSet = SurvivalPlayerState->GetSurvivalAttributeSet();
 	}
 
 	if (!IsValid(AbilitySystemComponent))

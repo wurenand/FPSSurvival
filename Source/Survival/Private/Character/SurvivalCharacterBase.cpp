@@ -37,7 +37,7 @@ void ASurvivalCharacterBase::ApplyGameplayEffectToSelf(const TSubclassOf<UGamepl
 
 void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass,int32 Level)
 {
-	if (!GetLocalRole() == ROLE_Authority || !IsValid(AbilitySystemComponent))
+	if (!(GetLocalRole() == ROLE_Authority) || !IsValid(AbilitySystemComponent))
 	{
 		return;
 	}

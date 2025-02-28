@@ -45,7 +45,8 @@ void ASurvivalPlayerController::CL_HandleLevelUp_Implementation()
 {
 	if (ASurvivalHUD* SurvivalHUD = Cast<ASurvivalHUD>(GetHUD()))
 	{
-		SurvivalHUD->GetOptions(GetPlayerState<ASurvivalPlayerState>()->GetAbilityComponent());
+		//TODO:GA
+		//SurvivalHUD->GetOptions(GetPlayerState<ASurvivalPlayerState>()->GetAbilityComponent());
 	}
 	CL_ChangeOverlayPage(TEXT("LevelUp"));
 }
@@ -61,13 +62,14 @@ void ASurvivalPlayerController::ResumePause()
 
 void ASurvivalPlayerController::SRV_SelectAbility_Implementation(FName AbilityName)
 {
-	if (ASurvivalPlayerState* SurvivalPlayerState = GetPlayerState<ASurvivalPlayerState>())
+	//TODO:GA
+	/*if (ASurvivalPlayerState* SurvivalPlayerState = GetPlayerState<ASurvivalPlayerState>())
 	{
 		//升级
 		SurvivalPlayerState->GetAbilityComponent()->TryLevelUpAbility(AbilityName);
 		//申请继续
 		ResumePause();
-	}
+	}*/
 }
 
 void ASurvivalPlayerController::TryInitializeHUDorParams()
