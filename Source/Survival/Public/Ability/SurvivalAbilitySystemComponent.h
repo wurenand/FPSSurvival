@@ -19,6 +19,8 @@ public:
 	void TryActivateAbilityByTag(const FGameplayTag& Tag);
 	void TryGiveAbility(const FGameplayAbilitySpec& Spec);
 
+	//用来标识是否是第一次初始化，如果是则需要给予初始GA
+	bool bInitialized = false;
 protected:
 	//记录已给予技能的InputTagToAbilityTag
 	TMap<FGameplayTag,FGameplayTag> InputTagToAbility;

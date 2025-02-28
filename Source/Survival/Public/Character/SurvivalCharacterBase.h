@@ -29,9 +29,9 @@ public:
 	virtual void InitializeCharacter();
 
 	//授予ASC能力的接口
-	virtual void GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass);
+	virtual void GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass, int32 Level);
 	//给自身施加GE的接口
-	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectToBeApplied,float Level);
+	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectToBeApplied, float Level);
 
 	//~Begin ICombatInterface
 	//交给子类来实现
@@ -58,10 +58,10 @@ protected:
 
 	//初始化自带GA
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Ability")
-	TArray<TSubclassOf<UGameplayAbilityBase>> StartupAbilities;
+	TArray<TSubclassOf<UGameplayAbilityBase>> StartupAbilityClasses;
 	//Spawn或ReSpawn时用来恢复HP等数据到默认值的
-	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="Ability")
-	TSubclassOf<UGameplayEffect> DefaultEffectClass;
+	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Ability")
+	TArray<TSubclassOf<UGameplayEffect>> DefaultEffectClasses;
 
 	//Enemy默认就是NoTeam不需要修改，Player的会从PlayerState获取更新
 	ETeam Team = ETeam::ETeam_NoTeam;

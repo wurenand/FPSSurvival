@@ -11,7 +11,6 @@
 #include "Actor/Projectiles/ProjectileBase.h"
 #include "Actor/WeaponBase.h"
 #include "Camera/CameraComponent.h"
-#include "Components/AbilityComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Game/TotalGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -49,8 +48,6 @@ void ASurvivalPlayerCharacter::GetLifetimeReplicatedProps(TArray<class FLifetime
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, Weapon);
-	DOREPLIFETIME(ASurvivalPlayerCharacter, CurrentMagCount);
-	DOREPLIFETIME(ASurvivalPlayerCharacter, MaxMagCount);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, AimDirection);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsReloading);
 	DOREPLIFETIME(ASurvivalPlayerCharacter, bIsShooting);
@@ -92,25 +89,34 @@ void ASurvivalPlayerCharacter::OnRep_PlayerState()
 	}
 }
 
-void ASurvivalPlayerCharacter::InitUIValues()
-{
-	OnMaxMagCountChanged.Broadcast(MaxMagCount);
-	OnMagCountChanged.Broadcast(CurrentMagCount);
-	OnIsAimingEnemyChanged.Broadcast(false);
-}
-
 void ASurvivalPlayerCharacter::OnRep_Weapon()
 {
 	if (Weapon)
 	{
 		//AttachWeapon到Character 并 获取配表中的信息
 		Weapon->WeaponInfo = UDataHelperLibrary::GetWeaponInfoFromName(this, Weapon->WeaponName);
-		if (AbilityComponent)
-		{
-			AbilityComponent->WeaponInfo = Weapon->WeaponInfo;
-		}
 		Weapon->EquipWeapon(this);
 	}
+}
+
+void ASurvivalPlayerCharacter::BindAttributeDelegatesFromSet()
+{
+	AttributeSet->HealthChangedDelegate.AddLambda([this](float NewValue)
+	{
+		OnHPChanged.Broadcast(NewValue);
+	});
+	AttributeSet->MaxHealthChangedDelegate.AddLambda([this](float NewValue)
+	{
+		OnMaxHPChanged.Broadcast(NewValue);
+	});
+	AttributeSet->MagCountChangedDelegate.AddLambda([this](float NewValue)
+	{
+		OnMagCountChanged.Broadcast(NewValue);
+	});
+	AttributeSet->MaxMagCountChangedDelegate.AddLambda([this](float NewValue)
+	{
+		OnMaxMagCountChanged.Broadcast(NewValue);
+	});
 }
 
 void ASurvivalPlayerCharacter::InitializeCharacter()
@@ -129,30 +135,35 @@ void ASurvivalPlayerCharacter::InitializeCharacter()
 	//2 初始化Actor Info
 	AbilitySystemComponent->InitAbilityActorInfo(GetPlayerState(), this);
 
+
 	if (HasAuthority())
 	{
-		checkf(AbilityComponent->WeaponClass, TEXT("AbilityComponent::WeaponClass is NULL"))
+		//3 Spawn Weapon Gun
 		FActorSpawnParameters SpawnParameters;
 		SpawnParameters.Owner = GetController();
 		//只在Server端生成，注意要给Weapon设置为复制，这样Client端才会同步生成
 		Weapon = Cast<AWeaponBase>(
-			GetWorld()->SpawnActor(AbilityComponent->WeaponClass, nullptr, nullptr, SpawnParameters));
+			GetWorld()->SpawnActor(WeaponClass, nullptr, nullptr, SpawnParameters));
 		OnRep_Weapon();
-		//TODO:AC这里会读表，并绑定回调用于更新Character的数值
-		/**为什么这里只在Server端绑定呢？首先伤害计算是通过直接Get函数来获取的，而伤害只在Server计算，所以无所谓。
-		 * 对于需要同步到客户端UI显示的：流程是，当Ac中的Ability等级变化时，会广播使得Character中的值变化，Server端的数值收到后，更新再复制给Client。
-		 * 也就是说，可以直接使用Character里面的例如MaxMagCount的值，因为它已经与AC中的值同步了
-		*/
-		AbilityComponent->BindAllValueDelegatesAndInit();
-		//初始化子弹值
-		CurrentMagCount = MaxMagCount;
-		OnRep_CurrentMagCount();
+
+		// MaxHP和MaxMagCount由单独的GA管理
+		//4 如果是第一次，则基于默认GA (Weapon HP 两个数值GA 和 Shoot Reload 动作GA)
+		if (!AbilitySystemComponent->bInitialized)
+		{
+			for (auto AbilityClass : StartupAbilityClasses)
+			{
+				GiveCharacterAbility(AbilityClass, 1);
+			}
+			//让AttributeSet绑定自身的委托到Attribute变化 供下面Character的委托使用
+			AttributeSet->BindAttributeDelegates();
+			AbilitySystemComponent->bInitialized = true;
+		}
 	}
 
-	//5 初始化技能 ？
-	//TODO: 应用 初始值GE来初始化数值
-	
-	//4 如果有HUD，则更新其WidgetController中的Character参数
+	//5 绑定Attribute数据委托 (Server 和 Client都绑定)
+	BindAttributeDelegatesFromSet();
+
+	//6 如果有HUD，则更新其WidgetController中的Character参数
 	if (IsLocallyControlled())
 	{
 		if (ASurvivalPlayerController* PlayerController = Cast<ASurvivalPlayerController>(GetController()))
@@ -162,8 +173,16 @@ void ASurvivalPlayerCharacter::InitializeCharacter()
 			PlayerController->TryInitializeHUDorParams();
 		}
 	}
-	//设置完UI之后广播初始值
-	InitUIValues();
+
+	//5 初始化数值
+	//应用 初始值GE来初始化数值(HP,MagCount)
+	if (HasAuthority())
+	{
+		for (auto DefaultEffectClass : DefaultEffectClasses)
+		{
+			ApplyGameplayEffectToSelf(DefaultEffectClass, 1);
+		}
+	}
 }
 
 void ASurvivalPlayerCharacter::HandleInputMove(const FInputActionValue& Value)
@@ -213,15 +232,7 @@ void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue
 
 void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
 {
-	if (bIsReloading || CurrentMagCount == MaxMagCount)
-	{
-		return;
-	}
-	if (bIsShooting)
-	{
-		SRV_ShootWeapon(false, AimTargetPoint);
-	}
-	SRV_ReloadWeapon();
+	//TODO: Activate Ability
 }
 
 ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
@@ -238,7 +249,8 @@ ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 
 void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageInstigator, float DamageValue)
 {
-	//因为伤害只在Server处理。这个函数只在Server调用
+	//TODO:使用GE替代
+	/*//因为伤害只在Server处理。这个函数只在Server调用
 	Health -= DamageValue;
 	if (Health <= 0)
 	{
@@ -252,7 +264,7 @@ void ASurvivalPlayerCharacter::CombatTakeDamage(ASurvivalCharacterBase* DamageIn
 	}
 	//Server端BoardCast HP
 	OnRep_Health();
-	OnRep_MaxHealth();
+	OnRep_MaxHealth();*/
 }
 
 void ASurvivalPlayerCharacter::SetPendingDeath(bool bQuickDestroy)
@@ -284,7 +296,8 @@ void ASurvivalPlayerCharacter::SetPendingDeath(bool bQuickDestroy)
 
 void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooting, FVector LocalTargetPoint)
 {
-	if (bShouldShooting)
+	//TODO ： Use GA
+	/*if (bShouldShooting)
 	{
 		//接受从Client传递来的正确的瞄准位置
 		AimTargetPoint = LocalTargetPoint;
@@ -306,7 +319,7 @@ void ASurvivalPlayerCharacter::SRV_ShootWeapon_Implementation(bool bShouldShooti
 			GetWorld()->GetTimerManager().ClearTimer(ShootTimer);
 			bIsShooting = false;
 		}
-	}
+	}*/
 }
 
 void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Location)
@@ -321,19 +334,10 @@ void ASurvivalPlayerCharacter::Mult_ShootWeaponEffect_Implementation(FVector Loc
 	Weapon->HandleShootEffect();
 }
 
-void ASurvivalPlayerCharacter::OnRep_CurrentMagCount()
-{
-	OnMagCountChanged.Broadcast(CurrentMagCount);
-}
-
-void ASurvivalPlayerCharacter::OnRep_MaxMagCount()
-{
-	OnMaxMagCountChanged.Broadcast(MaxMagCount);
-}
-
 void ASurvivalPlayerCharacter::ShootWeaponLoop()
 {
-	if (CurrentMagCount <= 0)
+	//TODO：Use GA
+	/*if (CurrentMagCount <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("NeedReload"));
 		return;
@@ -364,7 +368,7 @@ void ASurvivalPlayerCharacter::ShootWeaponLoop()
 	Projectile->SetInstigator(this);
 	//Pool
 	Projectile->Mult_SetActorTransform(BulletTransform);
-	Projectile->FinishRequesting();
+	Projectile->FinishRequesting();*/
 }
 
 
@@ -443,10 +447,11 @@ void ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin(FName NotifyName)
 
 void ASurvivalPlayerCharacter::OnReceiveMontageCompleted(FName NotifyName)
 {
-	if (bIsReloading && HasAuthority())
+	
+	/*if (bIsReloading && HasAuthority())
 	{
 		CurrentMagCount = MaxMagCount;
 		OnRep_CurrentMagCount();
 		bIsReloading = false;
-	}
+	}*/
 }

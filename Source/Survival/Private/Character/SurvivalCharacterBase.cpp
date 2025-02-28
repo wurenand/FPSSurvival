@@ -35,7 +35,7 @@ void ASurvivalCharacterBase::ApplyGameplayEffectToSelf(const TSubclassOf<UGamepl
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), AbilitySystemComponent.Get());
 }
 
-void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass)
+void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass,int32 Level)
 {
 	if (!GetLocalRole() == ROLE_Authority || !IsValid(AbilitySystemComponent))
 	{
@@ -43,6 +43,7 @@ void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBa
 	}
 	FGameplayAbilitySpec Spec(AbilityClass);
 	Spec.SourceObject = this;
+	Spec.Level = Level;
 	AbilitySystemComponent->TryGiveAbility(Spec);
 }
 

@@ -18,13 +18,13 @@ class SURVIVAL_API ASurvivalPlayerCharacter : public ASurvivalCharacterBase, pub
 {
 	GENERATED_BODY()
 
-friend class UAbilityComponent;
-	
+	friend class UAbilityComponent;
+
 public:
 	ASurvivalPlayerCharacter();
 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
-	
+
 	//~Begin InputComponent
 	virtual void HandleInputMove(const FInputActionValue& Value) override;
 	virtual void HandleInputLook(const FInputActionValue& Value) override;
@@ -41,7 +41,7 @@ public:
 	//~End ICombatInterface
 
 	virtual void SetPendingDeath(bool bQuickDestroy = false) override;
-	
+
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	//TODO:
@@ -58,16 +58,11 @@ public:
 	//广播当前玩家准心是否对准了敌人 1为true 0为false
 	UPROPERTY(BlueprintAssignable)
 	FOnCharacterValueChangedSignature OnIsAimingEnemyChanged;
-	//用于广播所有初始值(一般在UI中设置参数之后由UI调用)
-	void InitUIValues();
 	//~End Delegate
 
 	//AnimInstance
 	UPROPERTY(Replicated)
 	float AimDirection;
-
-	//TODO:Temp
-	UAbilityComponent* GetAbilityComponent() {return AbilityComponent;};
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Camera")
@@ -77,45 +72,38 @@ protected:
 	//第三人称Mesh，为了解决隐藏第一人称头部导致的阴影消失问题，只做显示阴影使用！
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category ="Mesh")
 	TObjectPtr<USkeletalMeshComponent> ThirdPersonMesh;
-	
-	//从PS中获得 自己不构造
-	UPROPERTY()
-	TObjectPtr<UAbilityComponent> AbilityComponent;
+
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	TSubclassOf<AWeaponBase> WeaponClass;
+
 	//得到AbilityComponent后的初始化  负责Weapon，HUD Params，AbilityComponent的初始化
 	virtual void InitializeCharacter() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite,ReplicatedUsing = OnRep_Weapon,Category="Weapon")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_Weapon, Category="Weapon")
 	TObjectPtr<AWeaponBase> Weapon;
 	UFUNCTION()
 	void OnRep_Weapon();
+
 	
+	void BindAttributeDelegatesFromSet();
+
 	//~Begin Shoot相关逻辑
-	UPROPERTY(Replicated,BlueprintReadOnly,Category="Shoot")
+	UPROPERTY(Replicated, BlueprintReadOnly, Category="Shoot")
 	bool bIsReloading = false;
-	UPROPERTY(Replicated,BlueprintReadOnly,Category = "Shoot")
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Shoot")
 	bool bIsShooting = false;
 	FTimerHandle ShootTimer;
 	
-	UPROPERTY(ReplicatedUsing = OnRep_CurrentMagCount,BlueprintReadOnly,Category = "ShootData")
-	int32 CurrentMagCount = 0;
-	UFUNCTION()
-	void OnRep_CurrentMagCount();
-	UPROPERTY(ReplicatedUsing = OnRep_MaxMagCount,BlueprintReadOnly,Category = "ShootData")
-	int32 MaxMagCount = 0;
-	//用于更新UI
-	UFUNCTION()
-	void OnRep_MaxMagCount();
-	
-	UFUNCTION(Server,Reliable,Category= "Shoot")
-	void SRV_ShootWeapon(bool bShouldShooting,FVector LocalAimTargetPoint);
+	UFUNCTION(Server, Reliable, Category= "Shoot")
+	void SRV_ShootWeapon(bool bShouldShooting, FVector LocalAimTargetPoint);
 	//多播，负责处理蒙太奇，音效，特效
-	UFUNCTION(NetMulticast,Reliable,Category = "Shoot")
+	UFUNCTION(NetMulticast, Reliable, Category = "Shoot")
 	void Mult_ShootWeaponEffect(FVector Location);
 	void ShootWeaponLoop();
 
-	UFUNCTION(Server,Reliable,Category ="Reload")
+	UFUNCTION(Server, Reliable, Category ="Reload")
 	void SRV_ReloadWeapon();
-	UFUNCTION(NetMulticast,Reliable,Category ="Reload")
+	UFUNCTION(NetMulticast, Reliable, Category ="Reload")
 	void Mult_ReloadWeaponEffect();
 	//加上UProperty用于GC
 	UPROPERTY()
@@ -138,7 +126,7 @@ protected:
 	//这里重写只是为了隐藏掉第三人称Mesh的模型
 	virtual void Mult_DeathEffect_Implementation() override;
 	//~End Death
-	
+
 	//~Begin Montage Callback
 	UFUNCTION()
 	void OnReceiveMontageNotifyBegin(FName NotifyName);
@@ -146,4 +134,3 @@ protected:
 	void OnReceiveMontageCompleted(FName NotifyName);
 	//~End
 };
-

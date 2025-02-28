@@ -14,6 +14,7 @@ GAMEPLAYATTRIBUTE_VALUE_GETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_SETTER(PropertyName) \
 GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAttributeChaned, float, NewValue);
 
 /**
  * 
@@ -24,7 +25,6 @@ class SURVIVAL_API USurvivalAttributeSet : public UAttributeSet
 	GENERATED_BODY()
 
 public:
-	USurvivalAttributeSet();
 
 	//重写重要函数
 	//在对CurrentValue的修改之前会调用  只会改变Modifier的结果，不对Modifier做改变
@@ -49,6 +49,14 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category="Attribute|MaxMagCount", ReplicatedUsing=OnRep_MaxMagCount)
 	FGameplayAttributeData MaxMagCount;
 	ATTRIBUTE_ACCESSORS(USurvivalAttributeSet, MaxMagCount)
+
+	//只在初始化的时候调用
+	void BindAttributeDelegates();
+	
+	FOnAttributeChaned HealthChangedDelegate;
+	FOnAttributeChaned MaxHealthChangedDelegate;
+	FOnAttributeChaned MagCountChangedDelegate;
+	FOnAttributeChaned MaxMagCountChangedDelegate;
 
 protected:
 	UFUNCTION()

@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 
 #include "Ability/SurvivalAttributeSet.h"
 
@@ -24,6 +22,11 @@ void USurvivalAttributeSet::GetLifetimeReplicatedProps(TArray<class FLifetimePro
 	DOREPLIFETIME_CONDITION_NOTIFY(USurvivalAttributeSet, MaxHealth, COND_None, REPNOTIFY_Always)
 	DOREPLIFETIME_CONDITION_NOTIFY(USurvivalAttributeSet, MagCount, COND_None, REPNOTIFY_Always)
 	DOREPLIFETIME_CONDITION_NOTIFY(USurvivalAttributeSet, MaxMagCount, COND_None, REPNOTIFY_Always)
+}
+
+void USurvivalAttributeSet::BindAttributeDelegates()
+{
+	
 }
 
 void USurvivalAttributeSet::OnRep_Health(const FGameplayAttributeData& OldValue)
