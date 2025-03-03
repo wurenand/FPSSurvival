@@ -124,7 +124,8 @@ void ASurvivalPlayerCharacter::InitializeCharacter()
 	//1 获得PS中的ASC和AS
 	if (ASurvivalPlayerState* SurvivalPlayerState = Cast<ASurvivalPlayerState>(GetPlayerState()))
 	{
-		AbilitySystemComponent = Cast<USurvivalAbilitySystemComponent>(SurvivalPlayerState->GetAbilitySystemComponent());
+		AbilitySystemComponent = Cast<
+			USurvivalAbilitySystemComponent>(SurvivalPlayerState->GetAbilitySystemComponent());
 		AttributeSet = SurvivalPlayerState->GetSurvivalAttributeSet();
 	}
 
@@ -213,7 +214,17 @@ void ASurvivalPlayerCharacter::HandleInputJump(const FInputActionValue& Value)
 	}
 }
 
-void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue& Value)
+void ASurvivalPlayerCharacter::HandleInputTagInputTriggered(FGameplayTag InputTag)
+{
+	if (!IsValid(AbilitySystemComponent))
+	{
+		return;
+	}
+		AbilitySystemComponent->TryActivateAbilityByTag(InputTag);
+
+}
+
+/*void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue& Value)
 {
 	if (bIsReloading)
 	{
@@ -221,19 +232,14 @@ void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue
 	}
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try Triggered SHOOT"));
 	SRV_ShootWeapon(true, AimTargetPoint);
-}
+}*/
 
 
-void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue& Value)
+/*void ASurvivalPlayerCharacter::HandleInputShootCompleted(const FInputActionValue& Value)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AASurvivalPlayerCharacter : Try End SHOOT"));
 	SRV_ShootWeapon(false, AimTargetPoint);
-}
-
-void ASurvivalPlayerCharacter::HandleInputReload(const FInputActionValue& Value)
-{
-	//TODO: Activate Ability
-}
+}*/
 
 ETeam ASurvivalPlayerCharacter::GetCharacterTeam()
 {
@@ -447,7 +453,6 @@ void ASurvivalPlayerCharacter::OnReceiveMontageNotifyBegin(FName NotifyName)
 
 void ASurvivalPlayerCharacter::OnReceiveMontageCompleted(FName NotifyName)
 {
-	
 	/*if (bIsReloading && HasAuthority())
 	{
 		CurrentMagCount = MaxMagCount;

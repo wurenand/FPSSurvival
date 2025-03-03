@@ -4,6 +4,7 @@
 #include "Survival/Public/Player/SurvivalPlayerController.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameplayTagContainer.h"
 #include "Character/SurvivalPlayerCharacter.h"
 #include "Components/AbilityComponent.h"
 #include "Game/SurvivalGameMode.h"
@@ -107,8 +108,6 @@ void ASurvivalPlayerController::SetupInputComponent()
 		                                   &ASurvivalPlayerController::ForwardInputLook);
 		EnhancedInputComponent->BindAction(ActionShoot, ETriggerEvent::Triggered, this,
 		                                   &ASurvivalPlayerController::ForwardInputShootTriggered);
-		EnhancedInputComponent->BindAction(ActionShoot, ETriggerEvent::Completed, this,
-		                                   &ASurvivalPlayerController::ForwardInputShootCompleted);
 		EnhancedInputComponent->BindAction(ActionReload, ETriggerEvent::Started, this,
 		                                   &ASurvivalPlayerController::ForwardInputReload);
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Started, this,
@@ -158,15 +157,7 @@ void ASurvivalPlayerController::ForwardInputShootTriggered(const FInputActionVal
 {
 	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
 	{
-		Interface->HandleInputShootTriggered(Value);
-	}
-}
-
-void ASurvivalPlayerController::ForwardInputShootCompleted(const FInputActionValue& Value)
-{
-	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
-	{
-		Interface->HandleInputShootCompleted(Value);
+		Interface->HandleInputTagInputTriggered(FGameplayTag::RequestGameplayTag(FName("Input.LMB")));
 	}
 }
 
@@ -174,7 +165,7 @@ void ASurvivalPlayerController::ForwardInputReload(const FInputActionValue& Valu
 {
 	if (IHandleInputInterface* Interface = Cast<IHandleInputInterface>(GetPawn()))
 	{
-		Interface->HandleInputReload(Value);
+		Interface->HandleInputTagInputTriggered(FGameplayTag::RequestGameplayTag(FName("Input.R")));
 	}
 }
 

@@ -28,10 +28,8 @@ public:
 	//~Begin InputComponent
 	virtual void HandleInputMove(const FInputActionValue& Value) override;
 	virtual void HandleInputLook(const FInputActionValue& Value) override;
-	virtual void HandleInputShootTriggered(const FInputActionValue& Value) override;
-	virtual void HandleInputShootCompleted(const FInputActionValue& Value) override;
-	virtual void HandleInputReload(const FInputActionValue& Value) override;
 	virtual void HandleInputJump(const FInputActionValue& Value) override;
+	virtual void HandleInputTagInputTriggered(FGameplayTag InputTag) override;
 	//~End InputComponent
 
 
