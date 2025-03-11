@@ -7,7 +7,7 @@
 #include "AnimNotify_SetAttackEnabled.generated.h"
 
 /**
- * 用来通知当前是否处于Attack检测段
+ * 用来在蒙太奇中通知AI是否开启Attack碰撞检测
  */
 UCLASS()
 class SURVIVAL_API UAnimNotify_SetAttackEnabled : public UAnimNotify

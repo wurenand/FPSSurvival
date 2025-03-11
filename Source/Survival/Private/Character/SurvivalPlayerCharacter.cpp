@@ -220,8 +220,7 @@ void ASurvivalPlayerCharacter::HandleInputTagInputTriggered(FGameplayTag InputTa
 	{
 		return;
 	}
-		AbilitySystemComponent->TryActivateAbilityByTag(InputTag);
-
+	AbilitySystemComponent->TryActivateAbilityByTag(InputTag);
 }
 
 /*void ASurvivalPlayerCharacter::HandleInputShootTriggered(const FInputActionValue& Value)

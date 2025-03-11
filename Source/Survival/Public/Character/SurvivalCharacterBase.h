@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AbilitySystemInterface.h"
 #include "GameFramework/Character.h"
 #include "Interface/CombatInterface.h"
 #include "Survival/Survival.h"
 #include "SurvivalCharacterBase.generated.h"
 
+class UAttributeSet;
 struct FGameplayTag;
 class UGameplayEffect;
 class UGameplayAbilityBase;
@@ -16,7 +18,7 @@ class USurvivalAttributeSet;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharacterValueChangedSignature, float, NewValue);
 
 UCLASS()
-class SURVIVAL_API ASurvivalCharacterBase : public ACharacter, public ICombatInterface
+class SURVIVAL_API ASurvivalCharacterBase : public ACharacter, public ICombatInterface,public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -32,6 +34,10 @@ public:
 	virtual void GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass, int32 Level);
 	//给自身施加GE的接口
 	void ApplyGameplayEffectToSelf(const TSubclassOf<UGameplayEffect>& EffectToBeApplied, float Level);
+
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	UAttributeSet* GetAttributeSet()const;
+	
 
 	//~Begin ICombatInterface
 	//交给子类来实现

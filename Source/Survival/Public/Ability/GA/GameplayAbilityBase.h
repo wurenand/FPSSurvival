@@ -27,7 +27,9 @@ protected:
 	//伤害数值
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Ability|Values")
 	FScalableFloat Damage;
-	//造成伤害的GE类
+	//GE类 :造成伤害/换弹等
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Ability")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
+	TSubclassOf<UGameplayEffect> EffectClass;
+	UPROPERTY(BlueprintReadOnly,EditAnywhere,Category="Ability")
+	TObjectPtr<UAnimMontage> MontageToPlay;
 };

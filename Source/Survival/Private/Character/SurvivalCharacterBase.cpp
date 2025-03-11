@@ -4,6 +4,7 @@
 #include "Survival/Public/Character/SurvivalCharacterBase.h"
 #include "Ability/GA/GameplayAbilityBase.h"
 #include "Ability/SurvivalAbilitySystemComponent.h"
+#include "Ability/SurvivalAttributeSet.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Net/UnrealNetwork.h"
@@ -35,7 +36,17 @@ void ASurvivalCharacterBase::ApplyGameplayEffectToSelf(const TSubclassOf<UGamepl
 	AbilitySystemComponent->ApplyGameplayEffectSpecToTarget(*EffectSpecHandle.Data.Get(), AbilitySystemComponent.Get());
 }
 
-void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass,int32 Level)
+UAbilitySystemComponent* ASurvivalCharacterBase::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+UAttributeSet* ASurvivalCharacterBase::GetAttributeSet() const
+{
+	return AttributeSet;
+}
+
+void ASurvivalCharacterBase::GiveCharacterAbility(TSubclassOf<UGameplayAbilityBase> AbilityClass, int32 Level)
 {
 	if (!(GetLocalRole() == ROLE_Authority) || !IsValid(AbilitySystemComponent))
 	{

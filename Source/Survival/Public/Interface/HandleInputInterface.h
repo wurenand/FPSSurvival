@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "HandleInputInterface.generated.h"
 
+struct FGameplayTag;
 struct FInputActionValue;
 // This class does not need to be modified.
 UINTERFACE()
